@@ -36,7 +36,7 @@
     "dependencies": {
         "bilibili-live-ws": "^5.1.1",
         "ini": "^2.0.0",
-        "ws": "^7.5.3"
+        "ws": "^8.2.2"
     },
     "repository": {
         "type": "git",
