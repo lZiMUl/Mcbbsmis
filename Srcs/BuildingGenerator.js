@@ -1,6 +1,6 @@
 'use strict';
 
-const Import = require ('modules-import');
+const Import = require ('node-modules-import');
 
 //基模塊
 new Import (new Array ('fs', 'http', 'path'));

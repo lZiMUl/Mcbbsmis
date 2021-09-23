@@ -13,13 +13,13 @@
             "url": "https://b23.tv/ymEtPO"
         }
     ],
-    "version": "30.29.1",
-    "Vn": 45,
+    "version": "30.29.2",
+    "Vn": 46,
     "license": "MIT",
     "homepage": "https://b23.tv/ymEtPO",
     "main": "./Srcs/MainActivity.js",
     "scripts": {
-        "init": "npm install && cd ..",
+        "init": "npm install && echo 依賴安裝完畢，輸入 cd .. 然後 在輸入 node Mcbbsmis， node Mcbbsmis 是啟動命令 請記住它",
         "LinuxUpdate": "echo \"正在更新中... 請稍等\" && cd ../ && mv ./Mcbbsmis/Configs/ ./ && mv ./Mcbbsmis/Plugins/ ./ && rm -rf ./Mcbbsmis/ && git clone https://github.com/lZiMUl/Mcbbsmis.git && rm -rf ./Mcbbsmis/Configs && mv ./Configs/ ./Mcbbsmis/ && mv ./Plugins/ ./Mcbbsmis/ && echo \"更新完成\"",
         "WindowUpdate": "echo \"正在更新中... 請稍等\" && cd ..\\ && move .\\Mcbbsmis\\Configs\\ .\\ && move .\\Mcbbsmis\\Plugins\\ .\\ && rd /s /q .\\Mcbbsmis\\ && git clone https://github.com/lZiMUl/Mcbbsmis.git && rd /s /q .\\Mcbbsmis\\Configs\\ && move .\\Configs\\ .\\Mcbbsmis\\ && mv .\\Plugins\\ .\\Mcbbsmis\\ && echo \"更新完成\""
     },
@@ -36,6 +36,8 @@
     "dependencies": {
         "bilibili-live-ws": "^5.1.1",
         "ini": "^2.0.0",
+        "mcbbsmis-plugins-loader": "^1.1.2",
+        "node-modules-import": "^1.1.1",
         "ws": "^8.2.2"
     },
     "repository": {

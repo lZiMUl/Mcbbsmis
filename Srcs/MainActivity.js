@@ -1,10 +1,10 @@
 //設定嚴格模式
 'use strict';
 
-const Import = require ('modules-import');
+const Import = require ('node-modules-import');
 
 //基模塊
-const Ml = new Import (['fs', 'ws', 'ini', 'http', 'https', 'path', 'plugins-loader']);
+const Ml = new Import (['fs', 'ws', 'ini', 'http', 'https', 'path', 'mcbbsmis-plugins-loader']);
 
 const {LiveTCP} = require ('bilibili-live-ws');
 
