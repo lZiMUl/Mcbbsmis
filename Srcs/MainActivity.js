@@ -369,7 +369,7 @@ console ['info'] (`-
 
 `);
 
-Https ['get'] ('https://cdn.jsdelivr.net/gh/lZiMUl/Mcbbsmis/package.json', Response => {
+Https ['get'] ('https://ghproxy.com/https://raw.githubusercontent.com/lZiMUl/Mcbbsmis/main/package.json', Response => {
 	let LocalVersion = JSON ['parse'] (Fs ['readFileSync'] (LWPC (`${Path ['join'] (Path ['resolve'] (), 'Mcbbsmis/package')}.json`))) ['Vn'];
 	let Resource = [];
 	Response ['on'] ('data', Data => Resource ['push'] (Data));
