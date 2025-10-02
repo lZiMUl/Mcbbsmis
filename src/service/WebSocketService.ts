@@ -34,7 +34,7 @@ class WebsocketService extends WebSocketServer {
         headers: {
           Cookie: this.auth.get(Config.APP_UUID)
         },
-        uid: 291883246
+        uid: Config.get('bilibili', 'userid')
       });
 
       Config.LOGGER.info(Config.LANGUAGE.get('#16'));

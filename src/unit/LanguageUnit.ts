@@ -59,7 +59,7 @@ class LanguageUnit {
 
   private parseFile(path: string): Array<ILanguage> {
     return this.readFile(path)
-      .split('\r\n')
+      .split('\n')
       .map((item: string): ILanguage => {
         return {
           key: item.substring(item.indexOf('"') + 1, item.lastIndexOf('"')),
