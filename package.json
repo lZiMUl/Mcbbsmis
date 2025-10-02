@@ -1,0 +1,108 @@
+{
+  "name": "mcbbsmis",
+  "description": "",
+  "version": "1.1.0",
+  "author": {
+    "name": "lZiMUl",
+    "email": "lZiMUl@lzimul.com",
+    "url": "https://lzimul.com"
+  },
+  "contributors": [
+    {
+      "name": "lZiMUl",
+      "email": "lZiMUl@lzimul.com",
+      "url": "https://lzimul.com"
+    }
+  ],
+  "maintainers": [
+    {
+      "name": "lZiMUl",
+      "email": "lZiMUl@lzimul.com",
+      "url": "https://lzimul.com"
+    }
+  ],
+  "homepage": "https://lzimul.com",
+  "main": "./build/index.js",
+  "types": "./lib/index.d.ts",
+  "typings": "./lib/index.d.ts",
+  "license": "MIT",
+  "scripts": {
+    "start": "node .",
+    "lint": "npx eslint --fix",
+    "build": "npm run lint && tsc && npm run typedoc",
+    "typedoc": "typedoc",
+    "dev": "npm run build && npm run start",
+    "test": "npm run build && npm run start",
+    "install:china": "npm install --legacy-peer-deps --register=https://registry.npmmirror.com",
+    "update:china": "npm update --legacy-peer-deps --register=https://registry.npmmirror.com"
+  },
+  "exports": {
+    ".": {
+      "default": {
+        "default": "./build/index.js",
+        "require": "./build/index.js",
+        "types": "./lib/index.d.ts"
+      }
+    }
+  },
+  "files": [
+    "./build/",
+    "./lib/",
+    "./LICENSE",
+    "README.md",
+    "./SECURITY.md"
+  ],
+  "keywords": [
+    "lZiMUl",
+    "BiliBili",
+    "Danmu",
+    "Send"
+  ],
+  "dependencies": {
+    "axios": "^1.11.0",
+    "bili-sender": "^1.1.0",
+    "chalk": "^5.6.0",
+    "log4js": "^6.9.1",
+    "qrcode-terminal": "^0.12.0",
+    "tiny-bilibili-ws": "^1.0.2",
+    "toml": "^3.0.0",
+    "ws": "^8.18.3"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^9.33.0",
+    "@types/node": "^24.3.0",
+    "@types/qrcode-terminal": "^0.12.2",
+    "@types/ws": "^8.18.1",
+    "@typescript-eslint/eslint-plugin": "^8.39.1",
+    "@typescript-eslint/parser": "^8.39.1",
+    "eslint": "^9.33.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "globals": "^16.3.0",
+    "npm-check-updates": "^18.0.2",
+    "prettier": "^3.6.2",
+    "tslib": "^2.8.1",
+    "typedoc": "^0.28.10",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.39.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lZiMUl/Mcbbsmis.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lZiMUl/Mcbbsmis/issues",
+    "email": "lZiMUl@lzimul.com"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "provenance": true,
+    "access": "public",
+    "tag": "latest"
+  },
+  "sideEffects": false,
+  "private": false,
+  "preferGlobal": true,
+  "deprecated": false
+}
