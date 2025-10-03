@@ -1,0 +1,13 @@
+[global]
+host = '0.0.0.0'
+port = 5700
+language = 'en_US'
+command_prefix = '$'
+
+[bilibili] 
+roomid = 9329583
+userid = 291883246
+username = 'lZiMUl' 
+
+[xbox]
+username = 'lZiMUl'

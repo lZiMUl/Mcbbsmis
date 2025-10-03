@@ -1,4 +1,6 @@
 # Mcbbsmis
+## Minecraft Connect Bind BiliBili Sync Message Interaction Service
+
 [![BiliBili](https://img.shields.io/badge/BiliBili-Mcbbsmis%20開發者B站-red?logo=bilibili)](https://b23.tv/ymEtPO)
 [![Npm](https://img.shields.io/npm/v/mcbbsmis.svg?label=Npm&logo=npm)](https://www.npmjs.com/package/mcbbsmis)
 [![Snyk](https://snyk.io/advisor/npm-package/mcbbsmis/badge.svg?label=Package%20Health)](https://snyk.io/advisor/npm-package/mcbbsmis)
