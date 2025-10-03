@@ -5,6 +5,7 @@ interface IGlobalConfig {
     host: string;
     port: number;
     language: LanguageEnum;
+    command_prefix: string;
   };
   bilibili: {
     roomid: number;

@@ -1,5 +1,11 @@
 import { join, resolve } from 'node:path';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  writeFileSync,
+  rmSync
+} from 'node:fs';
 
 import axios, { AxiosHeaders } from 'axios';
 import QrcodeTerminal from 'qrcode-terminal';
@@ -21,13 +27,20 @@ class Cookie {
     return readFileSync(join(this.path, `./${username}.txt`), {
       encoding: 'utf-8',
       flag: 'r'
-    }) as string;
+    });
   }
 
   public set(username: string, cookie: string): void {
     writeFileSync(join(this.path, `./${username}.txt`), cookie, {
       encoding: 'utf-8',
       flag: 'w'
+    });
+  }
+
+  public delete(username: string): void {
+    rmSync(join(this.path, `./${username}.txt`), {
+      force: true,
+      retryDelay: 3000
     });
   }
 }
@@ -99,10 +112,16 @@ class AuthUnit extends Cookie {
 
             default: {
               Config.LOGGER.warn(`${Config.LANGUAGE.get('#14')} ${code}`);
+              super.delete(username);
+              process.exit(0);
             }
           }
         }, 2000);
-      } catch (e) {}
+      } catch (e) {
+        Config.LOGGER.error(Config.LANGUAGE.get('#21'));
+        super.delete(username);
+        process.exit(0);
+      }
     }
   }
 

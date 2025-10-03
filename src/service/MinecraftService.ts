@@ -36,10 +36,14 @@ class MinecraftService {
   }
 
   public sendMessage(content: string): void {
-    const json: string = JSON.stringify({
-      rawtext: [{ text: '§l§o§b(§l§o§3Mcbbsmis§l§o§b) §f' }, { text: content }]
-    });
-    this.sendCommand(`tellraw @a ${json}`);
+    this.sendCommand(
+      `tellraw @a ${JSON.stringify({
+        rawtext: [
+          { text: '§l§o§b(§l§o§3Mcbbsmis§l§o§b) §f' },
+          { text: content }
+        ]
+      })}`
+    );
   }
 
   public sendCommand(content: string): void {

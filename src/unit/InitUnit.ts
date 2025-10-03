@@ -6,6 +6,7 @@ const INIT_CONFIG_CONTENT: string = `[global]
 host = '0.0.0.0'
 port = 5700
 language = 'en_US'
+command_prefix = '$'
 
 [bilibili] 
 roomid = 9329583

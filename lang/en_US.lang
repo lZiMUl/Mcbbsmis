@@ -1,3 +1,4 @@
+<string key="#-1">This feature is under development</string>
 <string key="#0">Project Starting...</string>
 <string key="#1">Configuration file not found</string>
 <string key="#2">Initializing configuration file</string>
@@ -19,3 +20,4 @@
 <string key="#18">Please enter the connection command in the game</string>
 <string key="#19">Connected to the game client</string>
 <string key="#20">Invalid command</string>
+<string key="#21">Failed to generate login QR code</string>

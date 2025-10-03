@@ -1,3 +1,4 @@
+<string key="#-1">该功能正在开发中</string>
 <string key="#0">项目启动中...</string>
 <string key="#1">未发现配置文件</string>
 <string key="#2">初始化配置文件</string>
@@ -19,3 +20,4 @@
 <string key="#18">请在游戏内输入连接命令</string>
 <string key="#19">已连接游戏客户端</string>
 <string key="#20">非法命令</string>
+<string key="#21">生成登录二维码失败</string>

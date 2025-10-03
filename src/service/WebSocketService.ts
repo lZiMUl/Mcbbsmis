@@ -87,26 +87,40 @@ class WebsocketService extends WebSocketServer {
 
   private parseEventResult(eventResult: IEventResult): void {
     const message: string = eventResult.body.message;
-    const commander: string = eventResult.body.sender;
+    const sender: string = eventResult.body.sender;
     const xbox: string = Config.get('xbox', 'username');
 
-    if (commander !== xbox) {
+    if (sender !== xbox) {
       return;
     }
 
-    const command_prefix: string | void = message.split('').at(0);
-    const command_content: Array<string> = message.split(' ');
+    const command_content: Array<string> = message
+      .replaceAll(new RegExp('( )+', 'img'), ' ')
+      .split(' ');
+    const command_prefix: string | void = command_content.at(0)?.at(0);
     const command_event: string | void = command_content
       .at(0)
       ?.substring(1, command_content.at(0)?.length);
-    const command_body: string | void = command_content.at(1);
-    if (command_prefix === '$' && command_body) {
+    const command_body: string | void = message.replaceAll(
+      new RegExp('^\\$send ', 'img'),
+      ''
+    );
+
+    if (
+      command_prefix === Config.get('global', 'command_prefix') &&
+      command_body
+    ) {
       switch (command_event) {
         case 'send':
           {
             this.bili.send(command_body);
           }
           break;
+
+        case 'config': {
+          this.minecraft?.sendMessage(Config.LANGUAGE.get('#-1'));
+          break;
+        }
 
         default: {
           this.minecraft?.sendMessage(Config.LANGUAGE.get('#20'));
