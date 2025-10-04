@@ -1,18 +1,27 @@
-import { writeFileSync, existsSync, mkdirSync } from 'node:fs';
+import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { dirname } from 'path';
 import Config from '../config';
 
-const INIT_CONFIG_CONTENT: string = `[global]
+const INIT_CONFIG_CONTENT: string = `#Mcbbsmis Configs File;
+
+#GitHub: Mcbbsmis;
+#Npm: Mcbbsmis;
+#BiliBili: lZiMUl;
+
+# Global Setting
+[global]
 host = '0.0.0.0'
 port = 5700
 language = 'en_US'
-command_prefix = '$'
+identifier = '$'
 
+# BiliBili Setting
 [bilibili] 
 roomid = 9329583
 userid = 291883246
 username = 'lZiMUl' 
 
+# Client Setting
 [xbox]
 username = 'lZiMUl'
 `;

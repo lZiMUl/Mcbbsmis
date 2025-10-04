@@ -1,7 +1,10 @@
 import Config from '../config';
-import IEventResult from '../interface/IEventResult';
+import ICommandResult from '../interface/ICommandResult';
 
 class MinecraftService {
+  private static readonly REGEXP: string = `(${(
+    Config.get('global', 'identifier') || '$'
+  ).replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')})([\\w\\u4e00-\\u9fa5]+)\\s*(.*)`;
   private socket: WebSocket;
 
   public constructor(socket: any) {
@@ -9,8 +12,15 @@ class MinecraftService {
     this.init();
   }
 
-  private init() {
-    this.subscribe('PlayerMessage');
+  public static parseCommand(message: string): ICommandResult {
+    const data: RegExpMatchArray | null = message.match(
+      MinecraftService.REGEXP
+    );
+    return {
+      identifier: data?.at(1) as string,
+      command: data?.at(2) as string,
+      content: data?.at(3) ?? ''
+    };
   }
 
   public subscribe(eventName: string) {
@@ -27,12 +37,6 @@ class MinecraftService {
         }
       })
     );
-  }
-
-  public unsubscribe() {}
-
-  public static ParseResBody(rawMessage: string): IEventResult {
-    return JSON.parse(rawMessage) as IEventResult;
   }
 
   public sendMessage(content: string): void {
@@ -64,6 +68,10 @@ class MinecraftService {
         }
       })
     );
+  }
+
+  private init() {
+    this.subscribe('PlayerMessage');
   }
 }
 

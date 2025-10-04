@@ -21,3 +21,5 @@
 <string key="#19">Connected to the game client</string>
 <string key="#20">Invalid command</string>
 <string key="#21">Failed to generate login QR code</string>
+<string key="#22">Connection successful. Listening to the live room comments</string>
+<string key="#23">Please check the README document</string>

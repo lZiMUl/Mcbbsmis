@@ -3,8 +3,8 @@ import {
   existsSync,
   mkdirSync,
   readFileSync,
-  writeFileSync,
-  rmSync
+  rmSync,
+  writeFileSync
 } from 'node:fs';
 
 import axios, { AxiosHeaders } from 'axios';
@@ -40,15 +40,15 @@ class Cookie {
   public delete(username: string): void {
     rmSync(join(this.path, `./${username}.txt`), {
       force: true,
-      retryDelay: 3000
+      retryDelay: 1000
     });
   }
 }
 
 class AuthUnit extends Cookie {
-  private static AuthIn: AuthUnit;
   public static readonly QRCODE_URL: string =
     'https://passport.bilibili.com/x/passport-login/web/qrcode/generate?source=main-fe-header';
+  private static AuthUnit: AuthUnit;
   private headers = new AxiosHeaders({
     'User-Agent': 'PostmanRuntime/7.43.0',
     Origin: 'https://www.bilibili.com',
@@ -58,6 +58,13 @@ class AuthUnit extends Cookie {
   private constructor(username: string) {
     super();
     this.getUser(username);
+  }
+
+  public static create(username: string = Config.APP_UUID): AuthUnit {
+    if (!AuthUnit.AuthUnit) {
+      AuthUnit.AuthUnit = new AuthUnit(username);
+    }
+    return AuthUnit.AuthUnit;
   }
 
   private async getUser(username: string): Promise<void> {
@@ -111,25 +118,18 @@ class AuthUnit extends Cookie {
               break;
 
             default: {
-              Config.LOGGER.warn(`${Config.LANGUAGE.get('#14')} ${code}`);
+              Config.LOGGER.error(`${Config.LANGUAGE.get('#14')} ${code}`);
               super.delete(username);
               process.exit(0);
             }
           }
         }, 2000);
-      } catch (e) {
+      } catch (err) {
         Config.LOGGER.error(Config.LANGUAGE.get('#21'));
         super.delete(username);
         process.exit(0);
       }
     }
-  }
-
-  public static create(username: string = Config.APP_UUID): AuthUnit {
-    if (!AuthUnit.AuthIn) {
-      AuthUnit.AuthIn = new AuthUnit(username);
-    }
-    return AuthUnit.AuthIn;
   }
 }
 

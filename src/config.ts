@@ -46,11 +46,7 @@ class Config {
     T extends keyof IGlobalConfig,
     V extends keyof IGlobalConfig[T]
   >(root: T, key: V): IGlobalConfig[T][V] {
-    try {
-      existsSync(Config.CONFIG_FILE_PATH);
-    } catch (e) {
-      InitUnit();
-    }
+    if (!existsSync(Config.CONFIG_FILE_PATH)) InitUnit();
 
     const CONFIG_CONTENT: IGlobalConfig = parse(
       readFileSync(Config.CONFIG_FILE_PATH, {

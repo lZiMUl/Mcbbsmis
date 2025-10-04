@@ -4,20 +4,25 @@ import Config from '../config';
 import AuthUnit from '../unit/AuthUnit';
 import IEventResult from '../interface/IEventResult';
 import MinecraftService from './MinecraftService';
+import ICommandResult from '../interface/ICommandResult';
 
 class WebsocketService extends WebSocketServer {
+  private static websocketService: WebsocketService;
   private readonly auth: AuthUnit = AuthUnit.create(Config.APP_UUID);
   private readonly userConfig: IConfig = {
     Cookie: this.auth.get(Config.APP_UUID)
   };
-  private roomId: number = Config.get('bilibili', 'roomid');
-  private bili: BiliSender = new BiliSender(this.roomId, this.userConfig);
-  private tinyBiliWs = import('tiny-bilibili-ws');
+  private readonly roomId: number = Config.get('bilibili', 'roomid');
+  private readonly bili: BiliSender = new BiliSender(
+    this.roomId,
+    this.userConfig
+  );
+  private readonly tinyBiliWs = import('tiny-bilibili-ws');
   private minecraft: MinecraftService | undefined;
   private readonly host: string;
   private readonly port: number;
 
-  public constructor(
+  private constructor(
     host: string = Config.get('global', 'host'),
     port: number = Config.get('global', 'port')
   ) {
@@ -26,6 +31,14 @@ class WebsocketService extends WebSocketServer {
     this.port = port;
     this.core();
   }
+
+  public static create(): WebsocketService {
+    if (!WebsocketService.websocketService) {
+      WebsocketService.websocketService = new WebsocketService();
+    }
+    return WebsocketService.websocketService;
+  }
+
   public async core(): Promise<void> {
     try {
       const { KeepLiveWS } = await this.tinyBiliWs;
@@ -38,25 +51,42 @@ class WebsocketService extends WebSocketServer {
       });
 
       Config.LOGGER.info(Config.LANGUAGE.get('#16'));
-      client.reconnect();
       await client.runWhenConnected();
       Config.LOGGER.info(Config.LANGUAGE.get('#17'));
       Config.LOGGER.info(
         `${Config.LANGUAGE.get('#18')} => /connect ws://${this.host === '0.0.0.0' ? '127.0.0.1' : this.host}:${this.port}`
       );
-      super.addListener('connection', socket => {
+      super.addListener('connection', (socket): void => {
+        Config.LOGGER.info(Config.LANGUAGE.get('#22'));
         this.minecraft = new MinecraftService(socket);
-        Config.LOGGER.info(Config.LANGUAGE.get('#19'));
-        client.addListener('DANMU_MSG', ({ data }): void => {
-          const danmu: string = data.info.at(1);
-          const username: string = data.info.at(2).at(1);
-          if (username !== Config.get('bilibili', 'username')) {
-            Config.LOGGER.info(`[${username}]: ${danmu}`);
+        this.minecraft?.sendMessage(
+          `§l§o§9Connect Status §l§o§a${Config.LANGUAGE.get('#22')}`
+        );
+        client.addListener(
+          'LIKE_INFO_V3_CLICK',
+          ({
+            data: {
+              data: { uname, like_text }
+            }
+          }): void => {
+            Config.LOGGER.info(`[${uname}]: ${like_text}`);
             this.minecraft?.sendMessage(
-              `§l§o§9Barrage §l§o§b[§l§o§c${username}§l§o§b]§l§o§d: §l§o§6${danmu.replace(new RegExp('@e', 'img'), '')}`
+              `§l§o§9Like §l§o§b[§l§o§c${uname}§l§o§b]§l§o§d: §l§o§g${like_text}`
             );
           }
+        );
+
+        client.addListener('DANMU_MSG', ({ data }): void => {
+          const [danmu, username]: Array<string> = [
+            data.info.at(1),
+            data.info.at(2).at(1)
+          ];
+          Config.LOGGER.info(`[${username}]: ${danmu}`);
+          this.minecraft?.sendMessage(
+            `§l§o§9Barrage §l§o§b[§l§o§c${username}§l§o§b]§l§o§d: §l§o§6${danmu}`
+          );
         });
+
         client.addListener(
           'SEND_GIFT',
           ({
@@ -70,62 +100,56 @@ class WebsocketService extends WebSocketServer {
             );
           }
         );
-        socket.addListener('message', (message: RawData): void => {
-          this.parseEventResult(
-            MinecraftService.ParseResBody(message.toString())
-          );
+        socket.addListener('message', (rawData: RawData): void => {
+          this.parseEventResult(rawData.toString());
         });
       });
 
       ['error', 'close', 'wsClientError'].forEach((event: string): void => {
         super.addListener(event, (): boolean => client.close());
       });
-    } catch (e) {
-      console.info(e);
-    }
+    } catch (err) {}
   }
 
-  private parseEventResult(eventResult: IEventResult): void {
-    const message: string = eventResult.body.message;
-    const sender: string = eventResult.body.sender;
-    const xbox: string = Config.get('xbox', 'username');
+  private parseEventResult(rawData: string): void {
+    const {
+      body: { message, sender, type }
+    }: IEventResult = JSON.parse(rawData);
 
-    if (sender !== xbox) {
-      return;
-    }
+    switch (type) {
+      case 'chat':
+        {
+          if (sender === Config.get('xbox', 'username')) {
+            const { identifier, command, content }: ICommandResult =
+              MinecraftService.parseCommand(message);
+            if (identifier === (Config.get('global', 'identifier') || '$')) {
+              switch (command) {
+                case 'help':
+                  {
+                    this.minecraft?.sendMessage(
+                      `§l§o§9Helper §l§o§a${Config.LANGUAGE.get('#23')}`
+                    );
+                  }
+                  break;
+                case '送':
+                  {
+                    this.bili.send(content);
+                  }
+                  break;
 
-    const command_content: Array<string> = message
-      .replaceAll(new RegExp('( )+', 'img'), ' ')
-      .split(' ');
-    const command_prefix: string | void = command_content.at(0)?.at(0);
-    const command_event: string | void = command_content
-      .at(0)
-      ?.substring(1, command_content.at(0)?.length);
-    const command_body: string | void = message.replaceAll(
-      new RegExp('^\\$send ', 'img'),
-      ''
-    );
+                case 'config': {
+                  this.minecraft?.sendMessage(Config.LANGUAGE.get('#-1'));
+                  break;
+                }
 
-    if (
-      command_prefix === Config.get('global', 'command_prefix') &&
-      command_body
-    ) {
-      switch (command_event) {
-        case 'send':
-          {
-            this.bili.send(command_body);
+                default: {
+                  this.minecraft?.sendMessage(Config.LANGUAGE.get('#20'));
+                }
+              }
+            }
           }
-          break;
-
-        case 'config': {
-          this.minecraft?.sendMessage(Config.LANGUAGE.get('#-1'));
-          break;
         }
-
-        default: {
-          this.minecraft?.sendMessage(Config.LANGUAGE.get('#20'));
-        }
-      }
+        break;
     }
   }
 }

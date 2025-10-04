@@ -2,7 +2,9 @@
   "tsconfig": "./tsconfig.json",
   "name": "Bili Sender",
   "readme": "README.md",
-  "entryPoints": ["./src/*.ts"],
+  "entryPoints": [
+    "./src/*.ts"
+  ],
   "out": "./docs",
   "includeVersion": true,
   "disableSources": false

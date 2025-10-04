@@ -1,5 +1,4 @@
-import { resolve, join } from 'node:path';
-import ILanguage from '../interface/ILanguage';
+import { join, resolve } from 'node:path';
 import LanguageEnum from '../enum/LanguageEnum';
 import IGlobalConfig from '../interface/IGlobalConfig';
 import { existsSync, readFileSync } from 'node:fs';
@@ -20,9 +19,7 @@ class LanguageConfig {
     T extends keyof IGlobalConfig,
     V extends keyof IGlobalConfig[T]
   >(root: T, key: V): IGlobalConfig[T][V] {
-    try {
-      existsSync(LanguageConfig.CONFIG_FILE_PATH);
-    } catch (e) {
+    if (!existsSync(LanguageConfig.CONFIG_FILE_PATH)) {
       InitUnit();
     }
 
@@ -38,42 +35,55 @@ class LanguageConfig {
 
 class LanguageUnit {
   private static DEFAULT_LANG: LanguageEnum = LanguageEnum.EN_US;
-  private readonly language: Array<ILanguage>;
+  public readonly regExp: RegExp = /<string key="([^"]+)">([^<]+)<\/string>/;
+  private readonly language: Map<string, string> = new Map<string, string>();
 
   public constructor(rootPath: string) {
-    this.language = this.parseFile(rootPath);
-  }
-  private tryReadFile(path: string, lang: LanguageEnum): string {
-    return readFileSync(join(path, 'lang', `${lang}.lang`), {
-      encoding: 'utf-8',
-      flag: 'r'
-    });
-  }
-  private readFile(path: string): string {
-    try {
-      return this.tryReadFile(path, LanguageConfig.get('global', 'language'));
-    } catch (err) {
-      return this.tryReadFile(path, LanguageUnit.DEFAULT_LANG);
-    }
-  }
-
-  private parseFile(path: string): Array<ILanguage> {
-    return this.readFile(path)
+    this.readFile(rootPath)
       .split('\n')
-      .map((item: string): ILanguage => {
-        return {
-          key: item.substring(item.indexOf('"') + 1, item.lastIndexOf('"')),
-          value: item.substring(item.indexOf('>') + 1, item.lastIndexOf('<'))
-        };
+      .forEach((item: string): void => {
+        const data: RegExpMatchArray | null = item.match(this.regExp);
+        if (data && data.at(1)) {
+          const [key, value]: Array<string> = [
+            data.at(1) as string,
+            data.at(2) as string
+          ];
+          if (!this.language.has(key)) {
+            this.language.set(key, value);
+          }
+        }
       });
   }
 
   public get(key: string): string {
-    return this.language
-      .filter((language: ILanguage): string | void => {
-        if (language.key === key) return language.value;
-      })
-      .at(0)?.value as string;
+    return this.language.get(key) as string;
+  }
+
+  private tryReadFile(path: string, lang: LanguageEnum): string {
+    try {
+      return readFileSync(join(path, 'lang', `${lang}.lang`), {
+        encoding: 'utf-8',
+        flag: 'r'
+      });
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        throw new Error(
+          `Failed to read language file for ${lang}: ${err.message}`
+        );
+      } else {
+        throw new Error(
+          'Unknown error occurred while reading the language file.'
+        );
+      }
+    }
+  }
+
+  private readFile(path: string): string {
+    try {
+      return this.tryReadFile(path, LanguageConfig.get('global', 'language'));
+    } catch (err: unknown) {
+      return this.tryReadFile(path, LanguageUnit.DEFAULT_LANG);
+    }
   }
 }
 

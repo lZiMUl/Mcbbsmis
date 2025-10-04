@@ -21,3 +21,5 @@
 <string key="#19">已连接游戏客户端</string>
 <string key="#20">非法命令</string>
 <string key="#21">生成登录二维码失败</string>
+<string key="#22">连接成功 正在监听直播间弹幕</string>
+<string key="#23">请查看README文档</string>

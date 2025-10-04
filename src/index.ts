@@ -1,10 +1,10 @@
 import Config from './config';
 import update from './unit/UpdateUnit';
 import WebsocketService from './service/WebSocketService';
-
-Config.LOGGER.info(Config.LANGUAGE.get('#0'));
 import InitUnit from './unit/InitUnit';
 import AuthUnit from './unit/AuthUnit';
+
+Config.LOGGER.info(Config.LANGUAGE.get('#0'));
 Config.LOGGER.info(Config.LANGUAGE.get('#3'));
 
 function App(): void {
@@ -14,7 +14,7 @@ function App(): void {
       return App();
     }
     Config.LOGGER.info(Config.LANGUAGE.get('#15'));
-    new WebsocketService();
+    WebsocketService.create();
   }, 2000);
 }
 

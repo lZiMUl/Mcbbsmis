@@ -1,9 +1,7 @@
-type EventsTabel = 'PlayerMessage';
-
 interface IEventResult {
   body: { message: string; sender: string; type: 'chat' };
   header: {
-    eventName: EventsTabel;
+    eventName: 'PlayerMessage';
     messagePurpose: 'event';
     version: number;
   };
