@@ -1,5 +1,6 @@
 import Config from '../config';
 import ICommandResult from '../interface/ICommandResult';
+import { WebSocket } from 'ws';
 
 class MinecraftService {
   private static readonly REGEXP: string = `(${(
@@ -7,9 +8,9 @@ class MinecraftService {
   ).replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')})([\\w\\u4e00-\\u9fa5]+)\\s*(.*)`;
   private socket: WebSocket;
 
-  public constructor(socket: any) {
+  public constructor(socket: InstanceType<typeof WebSocket.WebSocket>) {
     this.socket = socket;
-    this.init();
+    this.subscribe('PlayerMessage');
   }
 
   public static parseCommand(message: string): ICommandResult {
@@ -39,9 +40,15 @@ class MinecraftService {
     );
   }
 
+  public sendActionBar(content: string): void {
+    this.sendCommand(
+      `title ${Config.get('xbox', 'username')} actionbar ${content}`
+    );
+  }
+
   public sendMessage(content: string): void {
     this.sendCommand(
-      `tellraw @a ${JSON.stringify({
+      `tellraw ${Config.get('xbox', 'username')} ${JSON.stringify({
         rawtext: [
           { text: '§l§o§b(§l§o§3Mcbbsmis§l§o§b) §f' },
           { text: content }
@@ -68,10 +75,6 @@ class MinecraftService {
         }
       })
     );
-  }
-
-  private init() {
-    this.subscribe('PlayerMessage');
   }
 }
 

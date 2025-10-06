@@ -23,3 +23,6 @@
 <string key="#21">Failed to generate login QR code</string>
 <string key="#22">Connection successful. Listening to the live room comments</string>
 <string key="#23">Please check the README document</string>
+<string key="#24">Loading...</string>
+<string key="#25">View</string>
+<string key="#26">Online</string>

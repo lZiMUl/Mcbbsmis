@@ -15,6 +15,15 @@ port = 5700
 language = 'en_US'
 identifier = '$'
 
+[options]
+welcome = false
+watch = false
+online = false
+like = true
+danmu = true
+gift = true
+share = false
+
 # BiliBili Setting
 [bilibili] 
 roomid = 9329583

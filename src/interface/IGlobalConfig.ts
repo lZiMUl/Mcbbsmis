@@ -7,6 +7,15 @@ interface IGlobalConfig {
     language: LanguageEnum;
     identifier: string;
   };
+  options: {
+    welcome: boolean;
+    watch: boolean;
+    online: boolean;
+    like: boolean;
+    danmu: boolean;
+    gift: boolean;
+    share: boolean;
+  };
   bilibili: {
     roomid: number;
     userid: number;

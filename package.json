@@ -1,7 +1,7 @@
 {
   "name": "mcbbsmis",
   "description": "Minecraft Connect Bind BiliBili Sync Message Interaction Service",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "author": {
     "name": "lZiMUl",
     "email": "lZiMUl@lzimul.com",
@@ -100,7 +100,7 @@
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
-    "provenance": true,
+    "provenance": false,
     "access": "public",
     "tag": "latest"
   },

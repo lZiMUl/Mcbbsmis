@@ -3,5 +3,6 @@
 /config
 /lib
 /node_modules
+/test
 /tsconfig.tsbuildinfo
 /package-lock.json

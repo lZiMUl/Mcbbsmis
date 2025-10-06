@@ -1,10 +1,21 @@
 import BiliSender, { IConfig } from 'bili-sender';
-import { RawData, WebSocketServer } from 'ws';
+import { RawData, Server, WebSocket, WebSocketServer } from 'ws';
 import Config from '../config';
 import AuthUnit from '../unit/AuthUnit';
 import IEventResult from '../interface/IEventResult';
 import MinecraftService from './MinecraftService';
 import ICommandResult from '../interface/ICommandResult';
+import BiliBiliService from './BiliBiliService';
+import { Event } from '../enum/ListenerEnum';
+import {
+  WATCH,
+  ONLINE,
+  ILike,
+  IDanmu,
+  IGift,
+  Share
+} from '../interface/IListenerResult';
+import TickerService from './TickerService';
 
 class WebsocketService extends WebSocketServer {
   private static websocketService: WebsocketService;
@@ -41,6 +52,44 @@ class WebsocketService extends WebSocketServer {
 
   public async core(): Promise<void> {
     try {
+      super.addListener(
+        'connection',
+        (socket: InstanceType<typeof WebSocket.WebSocket>): void => {
+          Config.LOGGER.info(Config.LANGUAGE.get('#22'));
+          this.minecraft = new MinecraftService(socket);
+          this.minecraft?.sendMessage(
+            `§9Connect Status §a${Config.LANGUAGE.get('#22')}`
+          );
+          const [watchStatus, onlineStatus]: Array<boolean> = [
+            Config.get('options', 'watch'),
+            Config.get('options', 'online')
+          ];
+          tickerService.tick((): void => {
+            const ActionBar: Array<string> = [];
+
+            if (watchStatus)
+              ActionBar.push(
+                `§f${Config.LANGUAGE.get('#25')}§d: §b[§f${
+                  tickerService.getData<number>(Event.WATCHED_CHANGE) ||
+                  Config.LANGUAGE.get('#24')
+                }§b]`
+              );
+            if (onlineStatus)
+              ActionBar.push(
+                `§f${Config.LANGUAGE.get('#26')}§d: §b[§f${
+                  tickerService.getData<number>(Event.ONLINE_RANK_COUNT) ||
+                  Config.LANGUAGE.get('#24')
+                }§b]`
+              );
+            if (ActionBar.length)
+              this.minecraft?.sendActionBar(ActionBar.join(' §g| '));
+          }, 0.45);
+          socket.addListener('message', (rawData: RawData): void => {
+            this.parseEventResult(rawData.toString());
+          });
+        }
+      );
+
       const { KeepLiveWS } = await this.tinyBiliWs;
 
       const client = new KeepLiveWS(Config.get('bilibili', 'roomid'), {
@@ -56,58 +105,74 @@ class WebsocketService extends WebSocketServer {
       Config.LOGGER.info(
         `${Config.LANGUAGE.get('#18')} => /connect ws://${this.host === '0.0.0.0' ? '127.0.0.1' : this.host}:${this.port}`
       );
-      super.addListener('connection', (socket): void => {
-        Config.LOGGER.info(Config.LANGUAGE.get('#22'));
-        this.minecraft = new MinecraftService(socket);
-        this.minecraft?.sendMessage(
-          `§l§o§9Connect Status §l§o§a${Config.LANGUAGE.get('#22')}`
-        );
-        client.addListener(
-          'LIKE_INFO_V3_CLICK',
-          ({
-            data: {
-              data: { uname, like_text }
-            }
-          }): void => {
-            Config.LOGGER.info(`[${uname}]: ${like_text}`);
-            this.minecraft?.sendMessage(
-              `§l§o§9Like §l§o§b[§l§o§c${uname}§l§o§b]§l§o§d: §l§o§g${like_text}`
-            );
-          }
-        );
 
-        client.addListener('DANMU_MSG', ({ data }): void => {
-          const [danmu, username]: Array<string> = [
-            data.info.at(1),
-            data.info.at(2).at(1)
-          ];
+      const biliBiliService: BiliBiliService = new BiliBiliService(client);
+      type dataType = string | number;
+      const tickerService: TickerService<dataType> =
+        new TickerService<dataType>();
+
+      biliBiliService.addService<WATCH>(
+        Event.WATCHED_CHANGE,
+        ({ num }: WATCH): void => {
+          tickerService.setData(Event.WATCHED_CHANGE, num);
+        },
+        Config.get('options', 'watch')
+      );
+      biliBiliService.addService<ONLINE>(
+        Event.ONLINE_RANK_COUNT,
+        ({ count }: ONLINE): void => {
+          tickerService.setData(Event.ONLINE_RANK_COUNT, count);
+        },
+        Config.get('options', 'online')
+      );
+
+      biliBiliService.addService<ILike>(
+        Event.LIKE_INFO_V3_CLICK,
+        ({ uname, like_text }: ILike) => {
+          Config.LOGGER.info(`[${uname}]: ${like_text}`);
+          this.minecraft?.sendMessage(
+            `§9Like §b[§c${uname}§b]§d: §g${like_text}`
+          );
+        },
+        Config.get('options', 'like')
+      );
+      biliBiliService.addService<IDanmu>(
+        Event.DANMU_MSG,
+        ({ username, danmu }: IDanmu): void => {
           Config.LOGGER.info(`[${username}]: ${danmu}`);
           this.minecraft?.sendMessage(
-            `§l§o§9Barrage §l§o§b[§l§o§c${username}§l§o§b]§l§o§d: §l§o§6${danmu}`
+            `§9Barrage §b[§c${username}§b]§d: §6${danmu}`
           );
-        });
+        },
+        Config.get('options', 'danmu')
+      );
+      biliBiliService.addService<IGift>(
+        Event.SEND_GIFT,
+        ({ uname, action, giftName, num }: IGift): void => {
+          biliBiliService.giftDebounce(
+            ({ uname, action, giftName, num }: IGift): void => {
+              Config.LOGGER.info(`[${uname}]: ${action} ${giftName} * ${num}`);
+              this.minecraft?.sendMessage(
+                `§9Gift §b[§c${uname}§b]§d: §6${action} §b${giftName} §6* §a${num}`
+              );
+            },
+            { uname, action, giftName, num }
+          );
+        },
+        Config.get('options', 'gift')
+      );
+      biliBiliService.addService(
+        Event.DM_INTERACTION,
+        ({ suffix_text }: Share): void => {
+          tickerService.setData(Event.DM_INTERACTION, suffix_text);
+        },
+        Config.get('options', 'share')
+      );
 
-        client.addListener(
-          'SEND_GIFT',
-          ({
-            data: {
-              data: { uname, action, giftName, num }
-            }
-          }): void => {
-            Config.LOGGER.info(`[${uname}]: ${action} ${giftName} * ${num}`);
-            this.minecraft?.sendMessage(
-              `§l§o§9Gift §l§o§b[§l§o§c${uname}§l§o§b]§l§o§d: §l§o§6${action} §l§o§b${giftName} §l§o§6* §l§o§a${num}`
-            );
-          }
-        );
-        socket.addListener('message', (rawData: RawData): void => {
-          this.parseEventResult(rawData.toString());
-        });
-      });
-
-      ['error', 'close', 'wsClientError'].forEach((event: string): void => {
-        super.addListener(event, (): boolean => client.close());
-      });
+      ['error', 'close', 'wsClientError'].forEach(
+        (event: string): Server =>
+          super.addListener(event, (): boolean => client.close())
+      );
     } catch (err) {}
   }
 
@@ -127,11 +192,11 @@ class WebsocketService extends WebSocketServer {
                 case 'help':
                   {
                     this.minecraft?.sendMessage(
-                      `§l§o§9Helper §l§o§a${Config.LANGUAGE.get('#23')}`
+                      `§9Helper §a${Config.LANGUAGE.get('#23')}`
                     );
                   }
                   break;
-                case '送':
+                case 'send':
                   {
                     this.bili.send(content);
                   }
