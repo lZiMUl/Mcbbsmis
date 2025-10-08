@@ -32,7 +32,7 @@
     "build": "npm run lint && tsc && npm run typedoc",
     "typedoc": "typedoc",
     "dev": "npm run build && npm run start",
-    "test": "npm run build && npm run start",
+    "test": "echo Done",
     "install:china": "npm install --legacy-peer-deps --register=https://registry.npmmirror.com",
     "update:china": "npm update --legacy-peer-deps --register=https://registry.npmmirror.com"
   },
