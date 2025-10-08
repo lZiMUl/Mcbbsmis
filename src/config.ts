@@ -1,6 +1,6 @@
 import { name, version } from '../package.json';
 import { join, resolve } from 'node:path';
-import { existsSync, readFileSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 
 import log4js, { Logger } from 'log4js';
 import { parse } from 'toml';
@@ -46,15 +46,25 @@ class Config {
     T extends keyof IGlobalConfig,
     V extends keyof IGlobalConfig[T]
   >(root: T, key: V): IGlobalConfig[T][V] {
-    if (!existsSync(Config.CONFIG_FILE_PATH)) InitUnit();
-
-    const CONFIG_CONTENT: IGlobalConfig = parse(
-      readFileSync(Config.CONFIG_FILE_PATH, {
-        encoding: 'utf-8',
-        flag: 'r'
-      })
+    Config.LOGGER.info(
+      `${Config.LANGUAGE.get('#6')}: ${root} => ${key as string}`
     );
-    return CONFIG_CONTENT[root][key];
+    try {
+      const CONFIG_CONTENT: IGlobalConfig = parse(
+        readFileSync(Config.CONFIG_FILE_PATH, {
+          encoding: 'utf-8',
+          flag: 'r'
+        })
+      );
+
+      const data: IGlobalConfig[T][V] = CONFIG_CONTENT[root][key];
+      if (data === void 0) throw new Error('');
+      return data;
+    } catch (e) {
+      Config.LOGGER.error(Config.LANGUAGE.get('#7'));
+      InitUnit(true);
+      return this.get(root, key);
+    }
   }
 }
 

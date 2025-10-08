@@ -3,7 +3,7 @@
   "name": "Bili Sender",
   "readme": "README.md",
   "entryPoints": [
-    "./src/*.ts"
+    "./src/"
   ],
   "out": "./docs",
   "includeVersion": true,

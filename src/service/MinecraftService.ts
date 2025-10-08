@@ -3,6 +3,7 @@ import ICommandResult from '../interface/ICommandResult';
 import { WebSocket } from 'ws';
 
 class MinecraftService {
+  public readonly player: string = Config.get('xbox', 'username');
   private static readonly REGEXP: string = `(${(
     Config.get('global', 'identifier') || '$'
   ).replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')})([\\w\\u4e00-\\u9fa5]+)\\s*(.*)`;
@@ -41,14 +42,12 @@ class MinecraftService {
   }
 
   public sendActionBar(content: string): void {
-    this.sendCommand(
-      `title ${Config.get('xbox', 'username')} actionbar ${content}`
-    );
+    this.sendCommand(`title ${this.player} actionbar ${content}`);
   }
 
   public sendMessage(content: string): void {
     this.sendCommand(
-      `tellraw ${Config.get('xbox', 'username')} ${JSON.stringify({
+      `tellraw ${this.player} ${JSON.stringify({
         rawtext: [
           { text: '§l§o§b(§l§o§3Mcbbsmis§l§o§b) §f' },
           { text: content }

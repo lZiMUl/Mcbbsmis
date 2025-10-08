@@ -33,10 +33,7 @@ class WebsocketService extends WebSocketServer {
   private readonly host: string;
   private readonly port: number;
 
-  private constructor(
-    host: string = Config.get('global', 'host'),
-    port: number = Config.get('global', 'port')
-  ) {
+  private constructor(host: string, port: number) {
     super({ host, port });
     this.host = host;
     this.port = port;
@@ -45,7 +42,10 @@ class WebsocketService extends WebSocketServer {
 
   public static create(): WebsocketService {
     if (!WebsocketService.websocketService) {
-      WebsocketService.websocketService = new WebsocketService();
+      WebsocketService.websocketService = new WebsocketService(
+        Config.get('global', 'host'),
+        Config.get('global', 'port')
+      );
     }
     return WebsocketService.websocketService;
   }
@@ -92,7 +92,7 @@ class WebsocketService extends WebSocketServer {
 
       const { KeepLiveWS } = await this.tinyBiliWs;
 
-      const client = new KeepLiveWS(Config.get('bilibili', 'roomid'), {
+      const client = new KeepLiveWS(this.roomId, {
         headers: {
           Cookie: this.auth.get(Config.APP_UUID)
         },
@@ -128,7 +128,7 @@ class WebsocketService extends WebSocketServer {
 
       biliBiliService.addService<ILike>(
         Event.LIKE_INFO_V3_CLICK,
-        ({ uname, like_text }: ILike) => {
+        ({ uname, like_text }: ILike): void => {
           Config.LOGGER.info(`[${uname}]: ${like_text}`);
           this.minecraft?.sendMessage(
             `§9Like §b[§c${uname}§b]§d: §g${like_text}`
@@ -184,7 +184,7 @@ class WebsocketService extends WebSocketServer {
     switch (type) {
       case 'chat':
         {
-          if (sender === Config.get('xbox', 'username')) {
+          if (sender === this.minecraft?.player) {
             const { identifier, command, content }: ICommandResult =
               MinecraftService.parseCommand(message);
             if (identifier === (Config.get('global', 'identifier') || '$')) {

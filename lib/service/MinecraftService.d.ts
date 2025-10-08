@@ -1,6 +1,7 @@
 import ICommandResult from '../interface/ICommandResult';
 import { WebSocket } from 'ws';
 declare class MinecraftService {
+    readonly player: string;
     private static readonly REGEXP;
     private socket;
     constructor(socket: InstanceType<typeof WebSocket.WebSocket>);

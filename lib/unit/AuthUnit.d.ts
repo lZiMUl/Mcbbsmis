@@ -11,7 +11,7 @@ declare class AuthUnit extends Cookie {
     private static AuthUnit;
     private headers;
     private constructor();
-    static create(username?: string): AuthUnit;
+    static create(username: string): AuthUnit;
     private getUser;
 }
 export default AuthUnit;

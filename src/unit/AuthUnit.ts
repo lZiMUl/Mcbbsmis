@@ -17,9 +17,9 @@ class Cookie {
 
   public constructor(path: string = './config/cookies/') {
     this.path = join(resolve(), path);
+    if (!existsSync(this.path)) mkdirSync(this.path, { recursive: true });
   }
   public has(username: string): boolean {
-    mkdirSync(this.path, { recursive: true });
     return existsSync(join(this.path, `./${username}.txt`));
   }
 
@@ -60,7 +60,7 @@ class AuthUnit extends Cookie {
     this.getUser(username);
   }
 
-  public static create(username: string = Config.APP_UUID): AuthUnit {
+  public static create(username: string): AuthUnit {
     if (!AuthUnit.AuthUnit) {
       AuthUnit.AuthUnit = new AuthUnit(username);
     }

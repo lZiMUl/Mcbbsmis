@@ -1,9 +1,9 @@
 import EventEmitter from 'node:events';
+import { createHash } from 'node:crypto';
 import { KeepLiveWS } from 'tiny-bilibili-ws';
 
 import { Event } from '../enum/ListenerEnum';
 import { IGift } from '../interface/IListenerResult';
-import { encode } from 'node:punycode';
 
 class BiliBiliService extends EventEmitter {
   private static GiftHashMap = new Map();
@@ -89,7 +89,9 @@ class BiliBiliService extends EventEmitter {
     cb: ({ uname, action, giftName, num }: T) => void,
     { uname, action, giftName, num }: T
   ) {
-    const key = encode(`${uname}|${action}|${giftName}|${num}`);
+    const key: string = createHash('MD5')
+      .update(`${uname}|${action}|${giftName}|${num}`)
+      .digest('hex');
     if (!BiliBiliService.GiftHashMap.has(key)) {
       BiliBiliService.GiftHashMap.set(
         key,
@@ -102,7 +104,7 @@ class BiliBiliService extends EventEmitter {
               giftName,
               num: BiliBiliService.GiftHashMap.get(`${key}num`) as number
             } as T),
-          2
+          1.2
         )
       );
     }

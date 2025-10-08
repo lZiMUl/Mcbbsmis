@@ -1,11 +1,11 @@
 <string key="#-1">This feature is under development</string>
-<string key="#0">Project Starting...</string>
+<string key="#0">Project starting...</string>
 <string key="#1">Configuration file not found</string>
 <string key="#2">Initializing configuration file</string>
 <string key="#3">Checking for updates</string>
 <string key="#4">New version found</string>
 <string key="#5">Update check failed</string>
-<string key="#6">Fetching configuration</string>
+<string key="#6">Loading configuration</string>
 <string key="#7">Parsing configuration</string>
 <string key="#8">Starting service</string>
 <string key="#9">No login detected</string>
@@ -21,8 +21,8 @@
 <string key="#19">Connected to the game client</string>
 <string key="#20">Invalid command</string>
 <string key="#21">Failed to generate login QR code</string>
-<string key="#22">Connection successful. Listening to the live room comments</string>
+<string key="#22">Connection successful. Listening to the live chat</string>
 <string key="#23">Please check the README document</string>
 <string key="#24">Loading...</string>
-<string key="#25">View</string>
-<string key="#26">Online</string>
+<string key="#25">Viewers</string>
+<string key="#26">Online users</string>
