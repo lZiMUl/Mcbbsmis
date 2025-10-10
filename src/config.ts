@@ -63,9 +63,9 @@ class Config {
       );
 
       const data: IGlobalConfig[T][V] = CONFIG_CONTENT[root][key];
-      if (data === void 0) throw new Error('');
-      return data;
-    } catch (err: unknown) {
+      if (data) return data;
+      throw new Error();
+    } catch (e) {
       Config.LOGGER.error(Config.LANGUAGE.get('#7'));
       InitUnit(true);
       return this.get(root, key);
