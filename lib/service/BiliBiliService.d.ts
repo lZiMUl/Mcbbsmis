@@ -8,7 +8,6 @@ declare class BiliBiliService extends EventEmitter {
     constructor(socket: KeepLiveWS);
     addService<T>(event: LiveEventEnum, cb: (data: T) => void, status?: boolean): void;
     giftDebounce<T extends ISendGift>(cb: ({ uname, action, giftName, num }: T) => void, { uname, action, giftName, num }: T): void;
-    private debounce;
 }
 export default BiliBiliService;
 //# sourceMappingURL=BiliBiliService.d.ts.map

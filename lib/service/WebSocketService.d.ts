@@ -13,7 +13,6 @@ declare class WebsocketService extends WebSocketServer {
     private constructor();
     static create(): WebsocketService;
     core(): Promise<void>;
-    private parseEventResult;
 }
 export default WebsocketService;
 //# sourceMappingURL=WebSocketService.d.ts.map

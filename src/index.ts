@@ -23,3 +23,6 @@ update().finally((): void => {
   InitUnit();
   App();
 });
+
+export default App;
+export { Config, update, WebsocketService, InitUnit, AuthUnit };

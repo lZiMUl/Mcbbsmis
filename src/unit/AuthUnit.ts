@@ -124,7 +124,7 @@ class AuthUnit extends Cookie {
             }
           }
         }, 2000);
-      } catch (err) {
+      } catch (err: unknown) {
         Config.LOGGER.error(Config.LANGUAGE.get('#21'));
         super.delete(username);
         process.exit(0);

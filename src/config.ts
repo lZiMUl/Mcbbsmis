@@ -36,7 +36,7 @@ class Config {
 
   // Update Config
   public static readonly UPDATE_URL: string =
-    'https://projects.lzimul.com/mcbbsmis/update_info';
+    'https://projects.lzimul.com/Mcbbsmis/update_info';
 
   // i18n Config
   public static readonly LANGUAGE: LanguageUnit = new LanguageUnit(
@@ -65,7 +65,7 @@ class Config {
       const data: IGlobalConfig[T][V] = CONFIG_CONTENT[root][key];
       if (data === void 0) throw new Error('');
       return data;
-    } catch (e) {
+    } catch (err: unknown) {
       Config.LOGGER.error(Config.LANGUAGE.get('#7'));
       InitUnit(true);
       return this.get(root, key);

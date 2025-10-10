@@ -1,23 +1,26 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import semver from 'semver';
 
 import { version as localVersion } from '../../package.json';
 import Config from '../config';
 
+interface VersionResult {
+  version: string;
+}
+
 async function UpdateUnit(): Promise<void> {
   try {
-    const { data } = await axios({
+    const { data }: AxiosResponse<VersionResult> = await axios<VersionResult>({
       url: Config.UPDATE_URL,
       method: 'GET',
       timeout: 50000
     });
 
-    const { version: remoteVersion } = JSON.parse(data);
-
+    const { version: remoteVersion }: VersionResult = data;
     if (semver.gt(remoteVersion, localVersion)) {
-      Config.LOGGER.info(Config.LANGUAGE.get('#4'));
+      Config.LOGGER.warn(Config.LANGUAGE.get('#4'));
     }
-  } catch (e) {
+  } catch (err: unknown) {
     Config.LOGGER.error(Config.LANGUAGE.get('#5'));
   }
 }

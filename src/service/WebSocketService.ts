@@ -2,9 +2,7 @@ import BiliSender, { IConfig } from 'bili-sender';
 import { RawData, Server, WebSocket, WebSocketServer } from 'ws';
 import Config from '../config';
 import AuthUnit from '../unit/AuthUnit';
-import IEventResult from '../interface/IEventResult';
 import MinecraftService from './MinecraftService';
-import ICommandResult from '../interface/ICommandResult';
 import BiliBiliService from './BiliBiliService';
 import { LiveEventEnum } from '../enum/LiveEventEnum';
 import {
@@ -18,6 +16,7 @@ import {
   IViewCount
 } from '../interface/IListenerResult';
 import TickerService from './TickerService';
+import BaseUnit from '../unit/BaseUnit';
 
 class WebsocketService extends WebSocketServer {
   private static websocketService: WebsocketService;
@@ -25,16 +24,15 @@ class WebsocketService extends WebSocketServer {
   private readonly userConfig: IConfig = {
     Cookie: this.auth.get(Config.APP_UUID)
   };
-  private readonly roomId: number = Config.get('bilibili', 'roomid');
+  private readonly roomId: number = Config.get('bilibili', 'roomid') || 9329583;
   private readonly bili: BiliSender = new BiliSender(
     this.roomId,
     this.userConfig
   );
   private readonly tinyBiliWs = import('tiny-bilibili-ws');
   private minecraft: MinecraftService | undefined;
-  private tickerService: TickerService<string | number> = new TickerService<
-    string | number
-  >();
+  private tickerService: TickerService<string | number | null> =
+    new TickerService<string | number | null>();
   private readonly host: string;
   private readonly port: number;
 
@@ -48,8 +46,8 @@ class WebsocketService extends WebSocketServer {
   public static create(): WebsocketService {
     if (!WebsocketService.websocketService) {
       WebsocketService.websocketService = new WebsocketService(
-        Config.get('global', 'host'),
-        Config.get('global', 'port')
+        Config.get('global', 'host') || '0.0.0.0',
+        Config.get('global', 'port') || 5700
       );
     }
     return WebsocketService.websocketService;
@@ -57,20 +55,36 @@ class WebsocketService extends WebSocketServer {
 
   public async core(): Promise<void> {
     try {
+      super.addListener(
+        'connection',
+        (socket: InstanceType<typeof WebSocket.WebSocket>): void => {
+          Config.LOGGER.info(Config.LANGUAGE.get('#22'));
+          this.minecraft = new MinecraftService(socket);
+          this.minecraft?.sendMessage(
+            `§9Status §a${Config.LANGUAGE.get('#22')}`
+          );
+          socket.addListener('message', (rawData: RawData): void => {
+            this.minecraft?.parseEventResult(rawData.toString(), this.bili);
+          });
+        }
+      );
+
       const [
-        loading,
+        loadingText,
         joinText,
         followText,
         shareText,
         viewText,
-        onlineText
+        onlineText,
+        likeText
       ]: Array<string> = [
         Config.LANGUAGE.get('#24'),
         Config.LANGUAGE.get('#27'),
         Config.LANGUAGE.get('#28'),
         Config.LANGUAGE.get('#29'),
         Config.LANGUAGE.get('#25'),
-        Config.LANGUAGE.get('#26')
+        Config.LANGUAGE.get('#26'),
+        Config.LANGUAGE.get('#30')
       ];
       const [
         joinStatus,
@@ -82,61 +96,15 @@ class WebsocketService extends WebSocketServer {
         danmakuStatus,
         giftStatus
       ]: Array<boolean> = [
-        Config.get('options', 'join'),
-        Config.get('options', 'follow'),
-        Config.get('options', 'share'),
-        Config.get('options', 'view'),
-        Config.get('options', 'online'),
-        Config.get('options', 'like'),
-        Config.get('options', 'danmaku'),
-        Config.get('options', 'gift')
+        Config.get('options', 'join') || false,
+        Config.get('options', 'follow') || false,
+        Config.get('options', 'share') || false,
+        Config.get('options', 'view') || false,
+        Config.get('options', 'online') || false,
+        Config.get('options', 'like') || true,
+        Config.get('options', 'danmaku') || true,
+        Config.get('options', 'gift') || true
       ];
-
-      super.addListener(
-        'connection',
-        (socket: InstanceType<typeof WebSocket.WebSocket>): void => {
-          Config.LOGGER.info(Config.LANGUAGE.get('#22'));
-          this.minecraft = new MinecraftService(socket);
-          this.minecraft?.sendMessage(
-            `§9Status §a${Config.LANGUAGE.get('#22')}`
-          );
-
-          this.tickerService.tick((): void => {
-            const ActionBar: Array<string> = [];
-
-            const joinUser: string | null = this.tickerService.getData<string>(
-              LiveEventEnum.USER_JOIN
-            );
-            if (joinStatus && joinUser) {
-              ActionBar.push(
-                `§f${joinText.replaceAll('%s', `§b[§c${joinUser}§b]§f`)}`
-              );
-            }
-
-            if (viewStatus)
-              ActionBar.push(
-                `§f${viewText}§d: §b[§f${
-                  this.tickerService.getData<number>(
-                    LiveEventEnum.VIEW_COUNT
-                  ) || loading
-                }§b]`
-              );
-            if (onlineStatus)
-              ActionBar.push(
-                `§f${onlineText}§d: §b[§f${
-                  this.tickerService.getData<number>(
-                    LiveEventEnum.ONLINE_COUNT
-                  ) || loading
-                }§b]`
-              );
-            if (ActionBar.length)
-              this.minecraft?.sendActionBar(ActionBar.join(' §g| '));
-          }, 0.45);
-          socket.addListener('message', (rawData: RawData): void => {
-            this.parseEventResult(rawData.toString());
-          });
-        }
-      );
 
       const { KeepLiveWS } = await this.tinyBiliWs;
 
@@ -144,8 +112,38 @@ class WebsocketService extends WebSocketServer {
         headers: {
           Cookie: this.auth.get(Config.APP_UUID)
         },
-        uid: Config.get('bilibili', 'userid')
+        uid: Config.get('bilibili', 'userid') || 291883246
       });
+
+      this.tickerService.tick((): void => {
+        const ActionBar: Array<string> = [];
+        const joinUser: string | null = this.tickerService.getData<string>(
+          LiveEventEnum.USER_JOIN
+        );
+
+        if (joinStatus && joinUser) {
+          ActionBar.push(
+            `§f${joinText.replaceAll('%s', `§b[§c${joinUser}§b]§f`)}`
+          );
+        }
+
+        if (viewStatus)
+          ActionBar.push(
+            `§f${viewText}§d: §b[§f${
+              this.tickerService.getData<number>(LiveEventEnum.VIEW_COUNT) ||
+              loadingText
+            }§b]`
+          );
+        if (onlineStatus)
+          ActionBar.push(
+            `§f${onlineText}§d: §b[§f${
+              this.tickerService.getData<number>(LiveEventEnum.ONLINE_COUNT) ||
+              loadingText
+            }§b]`
+          );
+        if (ActionBar.length)
+          this.minecraft?.sendActionBar(ActionBar.join(' §g| '));
+      }, 0.45);
 
       Config.LOGGER.info(Config.LANGUAGE.get('#16'));
       await client.runWhenConnected();
@@ -155,12 +153,18 @@ class WebsocketService extends WebSocketServer {
       );
 
       const biliBiliService: BiliBiliService = new BiliBiliService(client);
-
+      const hideUserJoin: (data: null) => void = BaseUnit.debounce(
+        (data: null): void => {
+          this.tickerService.setData(LiveEventEnum.USER_JOIN, data);
+        },
+        10
+      );
       biliBiliService.addService<IUserJoin>(
         LiveEventEnum.USER_JOIN,
         ({ uname }: IUserJoin): void => {
           Config.LOGGER.info(`${joinText.replaceAll('%s', `[${uname}]`)}`);
           this.tickerService.setData(LiveEventEnum.USER_JOIN, uname);
+          hideUserJoin(null);
         },
         joinStatus
       );
@@ -201,20 +205,20 @@ class WebsocketService extends WebSocketServer {
 
       biliBiliService.addService<IUserLike>(
         LiveEventEnum.USER_LIKE,
-        ({ uname, like_text }: IUserLike): void => {
-          Config.LOGGER.info(`[${uname}]: ${like_text}`);
+        ({ uname }: IUserLike): void => {
+          Config.LOGGER.info(`[${uname}]: ${likeText}`);
           this.minecraft?.sendMessage(
-            `§9Like §b[§c${uname}§b]§d: §5${like_text}`
+            `§9Like §b[§c${uname}§b]§d: §5${likeText}`
           );
         },
         likeStatus
       );
       biliBiliService.addService<ISendDanmaku>(
         LiveEventEnum.SEND_DANMAKU,
-        ({ username, danmu }: ISendDanmaku): void => {
-          Config.LOGGER.info(`[${username}]: ${danmu}`);
+        ({ uname, danmu }: ISendDanmaku): void => {
+          Config.LOGGER.info(`[${uname}]: ${danmu}`);
           this.minecraft?.sendMessage(
-            `§9Barrage §b[§c${username}§b]§d: §b${danmu}`
+            `§9Danmaku §b[§c${uname}§b]§d: §b${danmu}`
           );
         },
         danmakuStatus
@@ -239,49 +243,7 @@ class WebsocketService extends WebSocketServer {
         (event: string): Server =>
           super.addListener(event, (): boolean => client.close())
       );
-    } catch (err) {}
-  }
-
-  private parseEventResult(rawData: string): void {
-    const {
-      body: { message, sender, type }
-    }: IEventResult = JSON.parse(rawData);
-
-    switch (type) {
-      case 'chat':
-        {
-          if (sender === this.minecraft?.player) {
-            const { identifier, command, content }: ICommandResult =
-              MinecraftService.parseCommand(message);
-            if (identifier === (Config.get('global', 'identifier') || '$')) {
-              switch (command) {
-                case 'help':
-                  {
-                    this.minecraft?.sendMessage(
-                      `§9Helper §a${Config.LANGUAGE.get('#23')}`
-                    );
-                  }
-                  break;
-                case 'send':
-                  {
-                    this.bili.send(content);
-                  }
-                  break;
-
-                case 'config': {
-                  this.minecraft?.sendMessage(Config.LANGUAGE.get('#-1'));
-                  break;
-                }
-
-                default: {
-                  this.minecraft?.sendMessage(Config.LANGUAGE.get('#20'));
-                }
-              }
-            }
-          }
-        }
-        break;
-    }
+    } catch (err: unknown) {}
   }
 }
 

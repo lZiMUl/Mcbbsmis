@@ -1,23 +1,26 @@
+import { WebSocket } from 'ws';
+import BiliSender from 'bili-sender';
 import Config from '../config';
 import ICommandResult from '../interface/ICommandResult';
-import { WebSocket } from 'ws';
+import IEventResult from '../interface/IEventResult';
 
 class MinecraftService {
-  private static readonly REGEXP: string = `(${(
-    Config.get('global', 'identifier') || '$'
-  ).replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')})([\\w\\u4e00-\\u9fa5]+)\\s*(.*)`;
-  public readonly player: string = Config.get('xbox', 'username');
+  private readonly identifier: string =
+    Config.get('global', 'identifier') || '$';
+  private readonly identifierRegExp: string = `(${this.identifier.replace(
+    /[-/\\^$*+?.()|[\]{}]/g,
+    '\\$&'
+  )})([\\w\\u4e00-\\u9fa5]+)\\s*(.*)`;
+  public readonly player: string = Config.get('xbox', 'username') || 'lZiMUl';
   private socket: WebSocket;
 
-  public constructor(socket: InstanceType<typeof WebSocket.WebSocket>) {
+  public constructor(socket: InstanceType<typeof WebSocket>) {
     this.socket = socket;
     this.subscribe('PlayerMessage');
   }
 
-  public static parseCommand(message: string): ICommandResult {
-    const data: RegExpMatchArray | null = message.match(
-      MinecraftService.REGEXP
-    );
+  public parseCommand(message: string): ICommandResult {
+    const data: RegExpMatchArray | null = message.match(this.identifierRegExp);
     return {
       identifier: data?.at(1) as string,
       command: data?.at(2) as string,
@@ -74,6 +77,48 @@ class MinecraftService {
         }
       })
     );
+  }
+
+  public parseEventResult(rawData: string, bili: BiliSender): void {
+    const {
+      body: { message, sender, type }
+    }: IEventResult = JSON.parse(rawData);
+
+    switch (type) {
+      case 'chat':
+        {
+          if (sender === this.player) {
+            const { identifier, command, content }: ICommandResult =
+              this.parseCommand(message);
+            if (identifier === this.identifier) {
+              switch (command) {
+                case 'help':
+                  {
+                    this.sendMessage(
+                      `§9Helper §a${Config.LANGUAGE.get('#23')}`
+                    );
+                  }
+                  break;
+                case 'send':
+                  {
+                    bili?.send(content);
+                  }
+                  break;
+
+                case 'config': {
+                  this.sendMessage(Config.LANGUAGE.get('#-1'));
+                  break;
+                }
+
+                default: {
+                  this.sendMessage(Config.LANGUAGE.get('#20'));
+                }
+              }
+            }
+          }
+        }
+        break;
+    }
   }
 }
 

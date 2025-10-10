@@ -14,14 +14,11 @@ interface IOnlineCount {
     count: number;
 }
 interface IUserLike extends IUserBase {
-    like_text: string;
 }
-interface ISendDanmaku {
+interface ISendDanmaku extends IUserBase {
     danmu: string;
-    username: string;
 }
-interface ISendGift {
-    uname: string;
+interface ISendGift extends IUserBase {
     action: string;
     giftName: string;
     num: number;
