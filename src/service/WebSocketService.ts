@@ -6,14 +6,16 @@ import IEventResult from '../interface/IEventResult';
 import MinecraftService from './MinecraftService';
 import ICommandResult from '../interface/ICommandResult';
 import BiliBiliService from './BiliBiliService';
-import { Event } from '../enum/ListenerEnum';
+import { LiveEventEnum } from '../enum/LiveEventEnum';
 import {
-  WATCH,
-  ONLINE,
-  ILike,
-  IDanmu,
-  IGift,
-  Share
+  IOnlineCount,
+  ISendDanmaku,
+  ISendGift,
+  IUserFollow,
+  IUserJoin,
+  IUserLike,
+  IUserShare,
+  IViewCount
 } from '../interface/IListenerResult';
 import TickerService from './TickerService';
 
@@ -30,6 +32,9 @@ class WebsocketService extends WebSocketServer {
   );
   private readonly tinyBiliWs = import('tiny-bilibili-ws');
   private minecraft: MinecraftService | undefined;
+  private tickerService: TickerService<string | number> = new TickerService<
+    string | number
+  >();
   private readonly host: string;
   private readonly port: number;
 
@@ -52,33 +57,76 @@ class WebsocketService extends WebSocketServer {
 
   public async core(): Promise<void> {
     try {
+      const [
+        loading,
+        joinText,
+        followText,
+        shareText,
+        viewText,
+        onlineText
+      ]: Array<string> = [
+        Config.LANGUAGE.get('#24'),
+        Config.LANGUAGE.get('#27'),
+        Config.LANGUAGE.get('#28'),
+        Config.LANGUAGE.get('#29'),
+        Config.LANGUAGE.get('#25'),
+        Config.LANGUAGE.get('#26')
+      ];
+      const [
+        joinStatus,
+        followStatus,
+        shareStatus,
+        viewStatus,
+        onlineStatus,
+        likeStatus,
+        danmakuStatus,
+        giftStatus
+      ]: Array<boolean> = [
+        Config.get('options', 'join'),
+        Config.get('options', 'follow'),
+        Config.get('options', 'share'),
+        Config.get('options', 'view'),
+        Config.get('options', 'online'),
+        Config.get('options', 'like'),
+        Config.get('options', 'danmaku'),
+        Config.get('options', 'gift')
+      ];
+
       super.addListener(
         'connection',
         (socket: InstanceType<typeof WebSocket.WebSocket>): void => {
           Config.LOGGER.info(Config.LANGUAGE.get('#22'));
           this.minecraft = new MinecraftService(socket);
           this.minecraft?.sendMessage(
-            `§9Connect Status §a${Config.LANGUAGE.get('#22')}`
+            `§9Status §a${Config.LANGUAGE.get('#22')}`
           );
-          const [watchStatus, onlineStatus]: Array<boolean> = [
-            Config.get('options', 'watch'),
-            Config.get('options', 'online')
-          ];
-          tickerService.tick((): void => {
+
+          this.tickerService.tick((): void => {
             const ActionBar: Array<string> = [];
 
-            if (watchStatus)
+            const joinUser: string | null = this.tickerService.getData<string>(
+              LiveEventEnum.USER_JOIN
+            );
+            if (joinStatus && joinUser) {
               ActionBar.push(
-                `§f${Config.LANGUAGE.get('#25')}§d: §b[§f${
-                  tickerService.getData<number>(Event.WATCHED_CHANGE) ||
-                  Config.LANGUAGE.get('#24')
+                `§f${joinText.replaceAll('%s', `§b[§c${joinUser}§b]§f`)}`
+              );
+            }
+
+            if (viewStatus)
+              ActionBar.push(
+                `§f${viewText}§d: §b[§f${
+                  this.tickerService.getData<number>(
+                    LiveEventEnum.VIEW_COUNT
+                  ) || loading
                 }§b]`
               );
             if (onlineStatus)
               ActionBar.push(
-                `§f${Config.LANGUAGE.get('#26')}§d: §b[§f${
-                  tickerService.getData<number>(Event.ONLINE_RANK_COUNT) ||
-                  Config.LANGUAGE.get('#24')
+                `§f${onlineText}§d: §b[§f${
+                  this.tickerService.getData<number>(
+                    LiveEventEnum.ONLINE_COUNT
+                  ) || loading
                 }§b]`
               );
             if (ActionBar.length)
@@ -107,50 +155,75 @@ class WebsocketService extends WebSocketServer {
       );
 
       const biliBiliService: BiliBiliService = new BiliBiliService(client);
-      type dataType = string | number;
-      const tickerService: TickerService<dataType> =
-        new TickerService<dataType>();
 
-      biliBiliService.addService<WATCH>(
-        Event.WATCHED_CHANGE,
-        ({ num }: WATCH): void => {
-          tickerService.setData(Event.WATCHED_CHANGE, num);
+      biliBiliService.addService<IUserJoin>(
+        LiveEventEnum.USER_JOIN,
+        ({ uname }: IUserJoin): void => {
+          Config.LOGGER.info(`${joinText.replaceAll('%s', `[${uname}]`)}`);
+          this.tickerService.setData(LiveEventEnum.USER_JOIN, uname);
         },
-        Config.get('options', 'watch')
+        joinStatus
       );
-      biliBiliService.addService<ONLINE>(
-        Event.ONLINE_RANK_COUNT,
-        ({ count }: ONLINE): void => {
-          tickerService.setData(Event.ONLINE_RANK_COUNT, count);
+      biliBiliService.addService<IUserFollow>(
+        LiveEventEnum.USER_FOLLOW,
+        ({ uname }: IUserFollow): void => {
+          Config.LOGGER.info(`[${uname}]: ${followText}`);
+          this.minecraft?.sendMessage(
+            `§9Follow §b[§c${uname}§b]§d: §g${followText}`
+          );
         },
-        Config.get('options', 'online')
+        followStatus
+      );
+      biliBiliService.addService<IUserShare>(
+        LiveEventEnum.USER_SHARE,
+        ({ uname }: IUserShare): void => {
+          Config.LOGGER.info(`[${uname}]: ${shareText}`);
+          this.minecraft?.sendMessage(
+            `§9Share §b[§c${uname}§b]§d: §v${shareText}`
+          );
+        },
+        shareStatus
+      );
+      biliBiliService.addService<IViewCount>(
+        LiveEventEnum.VIEW_COUNT,
+        ({ num }: IViewCount): void => {
+          this.tickerService.setData(LiveEventEnum.VIEW_COUNT, num);
+        },
+        viewStatus
+      );
+      biliBiliService.addService<IOnlineCount>(
+        LiveEventEnum.ONLINE_COUNT,
+        ({ count }: IOnlineCount): void => {
+          this.tickerService.setData(LiveEventEnum.ONLINE_COUNT, count);
+        },
+        onlineStatus
       );
 
-      biliBiliService.addService<ILike>(
-        Event.LIKE_INFO_V3_CLICK,
-        ({ uname, like_text }: ILike): void => {
+      biliBiliService.addService<IUserLike>(
+        LiveEventEnum.USER_LIKE,
+        ({ uname, like_text }: IUserLike): void => {
           Config.LOGGER.info(`[${uname}]: ${like_text}`);
           this.minecraft?.sendMessage(
-            `§9Like §b[§c${uname}§b]§d: §g${like_text}`
+            `§9Like §b[§c${uname}§b]§d: §5${like_text}`
           );
         },
-        Config.get('options', 'like')
+        likeStatus
       );
-      biliBiliService.addService<IDanmu>(
-        Event.DANMU_MSG,
-        ({ username, danmu }: IDanmu): void => {
+      biliBiliService.addService<ISendDanmaku>(
+        LiveEventEnum.SEND_DANMAKU,
+        ({ username, danmu }: ISendDanmaku): void => {
           Config.LOGGER.info(`[${username}]: ${danmu}`);
           this.minecraft?.sendMessage(
-            `§9Barrage §b[§c${username}§b]§d: §6${danmu}`
+            `§9Barrage §b[§c${username}§b]§d: §b${danmu}`
           );
         },
-        Config.get('options', 'danmu')
+        danmakuStatus
       );
-      biliBiliService.addService<IGift>(
-        Event.SEND_GIFT,
-        ({ uname, action, giftName, num }: IGift): void => {
+      biliBiliService.addService<ISendGift>(
+        LiveEventEnum.SEND_GIFT,
+        ({ uname, action, giftName, num }: ISendGift): void => {
           biliBiliService.giftDebounce(
-            ({ uname, action, giftName, num }: IGift): void => {
+            ({ uname, action, giftName, num }: ISendGift): void => {
               Config.LOGGER.info(`[${uname}]: ${action} ${giftName} * ${num}`);
               this.minecraft?.sendMessage(
                 `§9Gift §b[§c${uname}§b]§d: §6${action} §b${giftName} §6* §a${num}`
@@ -159,14 +232,7 @@ class WebsocketService extends WebSocketServer {
             { uname, action, giftName, num }
           );
         },
-        Config.get('options', 'gift')
-      );
-      biliBiliService.addService(
-        Event.DM_INTERACTION,
-        ({ suffix_text }: Share): void => {
-          tickerService.setData(Event.DM_INTERACTION, suffix_text);
-        },
-        Config.get('options', 'share')
+        giftStatus
       );
 
       ['error', 'close', 'wsClientError'].forEach(

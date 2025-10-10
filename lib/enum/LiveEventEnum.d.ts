@@ -1,0 +1,12 @@
+declare enum LiveEventEnum {
+    USER_JOIN = "USER_JOIN",
+    USER_FOLLOW = "USER_FOLLOW",
+    USER_SHARE = "USER_SHARE",
+    VIEW_COUNT = "VIEW_COUNT",
+    ONLINE_COUNT = "ONLINE_COUNT",
+    USER_LIKE = "USER_LIKE",
+    SEND_DANMAKU = "SEND_DANMAKU",
+    SEND_GIFT = "SEND_GIFT"
+}
+export { LiveEventEnum };
+//# sourceMappingURL=LiveEventEnum.d.ts.map

@@ -1,35 +1,30 @@
-interface ILike {
+interface IUserBase {
     uname: string;
+}
+interface IUserJoin extends IUserBase {
+}
+interface IUserFollow extends IUserBase {
+}
+interface IUserShare extends IUserBase {
+}
+interface IViewCount {
+    num: number;
+}
+interface IOnlineCount {
+    count: number;
+}
+interface IUserLike extends IUserBase {
     like_text: string;
 }
-interface IDanmu {
+interface ISendDanmaku {
     danmu: string;
     username: string;
 }
-interface IGift {
+interface ISendGift {
     uname: string;
     action: string;
     giftName: string;
     num: number;
 }
-interface Share {
-    fade_duration: number;
-    cnt: number;
-    card_appear_interval: number;
-    suffix_text: string;
-    reset_cnt: number;
-    display_flag: number;
-}
-interface ONLINE {
-    count: number;
-    count_text: string;
-    online_count: string;
-    online_count_text: string;
-}
-interface WATCH {
-    num: number;
-    text_small: string;
-    text_large: string;
-}
-export type { ONLINE, WATCH, ILike, IDanmu, IGift, Share };
+export type { IUserJoin, IUserFollow, IUserShare, IViewCount, IOnlineCount, IUserLike, ISendDanmaku, ISendGift };
 //# sourceMappingURL=IListenerResult.d.ts.map

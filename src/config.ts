@@ -28,6 +28,11 @@ class Config {
     Config.CONFIG_PATH,
     'default.toml'
   );
+  public static readonly PROTO_PATH: string = join(Config.ROOT_PATH, 'proto');
+  public static readonly PROTO_FILE_PATH: string = join(
+    Config.PROTO_PATH,
+    'InteractWordV2.proto'
+  );
 
   // Update Config
   public static readonly UPDATE_URL: string =

@@ -7,6 +7,7 @@ declare class WebsocketService extends WebSocketServer {
     private readonly bili;
     private readonly tinyBiliWs;
     private minecraft;
+    private tickerService;
     private readonly host;
     private readonly port;
     private constructor();

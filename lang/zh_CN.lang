@@ -22,7 +22,10 @@
 <string key="#20">非法命令</string>
 <string key="#21">生成登录二维码失败</string>
 <string key="#22">连接成功 正在监听直播间弹幕</string>
-<string key="#23">请查看README文档</string>
+<string key="#23">请查看 README 文档</string>
 <string key="#24">加载中...</string>
 <string key="#25">观看人数</string>
 <string key="#26">在线人数</string>
+<string key="#27">欢迎 %s 进入直播间</string>
+<string key="#28">关注了直播间</string>
+<string key="#29">分享了直播间</string>

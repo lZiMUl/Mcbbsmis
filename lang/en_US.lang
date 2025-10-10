@@ -26,3 +26,6 @@
 <string key="#24">Loading...</string>
 <string key="#25">Viewers</string>
 <string key="#26">Online users</string>
+<string key="#27">Welcome %s to the live room</string>
+<string key="#28">Followed the live room</string>
+<string key="#29">Shared the live room</string>

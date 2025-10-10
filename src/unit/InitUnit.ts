@@ -34,10 +34,16 @@ identifier = '$'
 # ==============================
 [options]
 # Show welcome message on startup
-welcome = false
+join = false
+
+# Listen to share/interaction events
+follow = false
+
+# Listen to share room events
+share = false
 
 # Show viewer count
-watch = false
+view = false
 
 # Show online count
 online = false
@@ -45,14 +51,11 @@ online = false
 # Listen to like events
 like = true
 
-# Listen to chat messages (danmu)
-danmu = true
+# Listen to chat messages (danmaku)
+danmaku = true
 
 # Listen to gift events
 gift = true
-
-# Listen to share/interaction events
-share = false
 
 # ==============================
 # BiliBili Settings

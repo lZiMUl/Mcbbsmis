@@ -1,94 +1,128 @@
 import EventEmitter from 'node:events';
+import protobuf from 'protobufjs';
 import { createHash } from 'node:crypto';
-import { KeepLiveWS } from 'tiny-bilibili-ws';
+import {
+  DANMU_MSG,
+  KeepLiveWS,
+  LIKE_INFO_V3_CLICK,
+  Message,
+  ONLINE_RANK_COUNT,
+  SEND_GIFT,
+  WATCHED_CHANGE
+} from 'tiny-bilibili-ws';
 
-import { Event } from '../enum/ListenerEnum';
-import { IGift } from '../interface/IListenerResult';
+import { LiveEventEnum } from '../enum/LiveEventEnum';
+import { ISendGift } from '../interface/IListenerResult';
+import Config from '../config';
 
 class BiliBiliService extends EventEmitter {
-  private static GiftHashMap = new Map();
+  private static GiftHashMap: Map<string, any> = new Map<string, any>();
+  private readonly InteractWordV2 = protobuf
+    .loadSync(Config.PROTO_FILE_PATH)
+    .lookupType('InteractWordV2');
+
   public constructor(socket: KeepLiveWS) {
     super();
 
-    socket.addListener(
-      Event.DM_INTERACTION,
-      ({
-        data: {
-          data: { data }
+    socket.addListener('msg', ({ data }) => {
+      switch (data.cmd) {
+        case 'INTERACT_WORD_V2': {
+          const { msgType, uname } = this.InteractWordV2?.decode(
+            Buffer.from(data.data.pb, 'base64')
+          ).toJSON() as {
+            msgType: 'MSG_ENTER_ROOM' | 'MSG_FOLLOW' | 'MSG_SHARE_ROOM';
+            uname: string;
+          };
+
+          switch (msgType) {
+            case 'MSG_ENTER_ROOM':
+              {
+                super.emit(LiveEventEnum.USER_JOIN, { uname });
+              }
+              break;
+
+            case 'MSG_FOLLOW':
+              {
+                super.emit(LiveEventEnum.USER_FOLLOW, { uname });
+              }
+              break;
+            case 'MSG_SHARE_ROOM':
+              {
+                super.emit(LiveEventEnum.USER_SHARE, { uname });
+              }
+              break;
+          }
         }
-      }): void => {
-        super.emit(Event.DM_INTERACTION, {
-          suffix_text: JSON.parse(data)
-        });
       }
-    );
+    });
+
     socket.addListener(
-      Event.WATCHED_CHANGE,
+      'WATCHED_CHANGE',
       ({
         data: {
           data: { num }
         }
-      }): void => {
-        super.emit(Event.WATCHED_CHANGE, { num });
+      }: Message<WATCHED_CHANGE>): void => {
+        super.emit(LiveEventEnum.VIEW_COUNT, { num });
       }
     );
     socket.addListener(
-      Event.ONLINE_RANK_COUNT,
+      'ONLINE_RANK_COUNT',
       ({
         data: {
           data: { count }
         }
-      }): void => {
-        super.emit(Event.ONLINE_RANK_COUNT, { count });
+      }: Message<ONLINE_RANK_COUNT>): void => {
+        super.emit(LiveEventEnum.ONLINE_COUNT, { count });
       }
     );
     socket.addListener(
-      Event.LIKE_INFO_V3_CLICK,
+      'LIKE_INFO_V3_CLICK',
       ({
         data: {
           data: { uname, like_text }
         }
-      }): void => {
-        super.emit(Event.LIKE_INFO_V3_CLICK, {
+      }: Message<LIKE_INFO_V3_CLICK>): void => {
+        super.emit(LiveEventEnum.USER_LIKE, {
           uname,
           like_text
         });
       }
     );
-    socket.addListener(Event.DANMU_MSG, ({ data }): void => {
+    socket.addListener('DANMU_MSG', ({ data }: Message<DANMU_MSG>): void => {
       const [danmu, username]: Array<string> = [
         data.info.at(1),
         data.info.at(2).at(1)
       ];
-      super.emit(Event.DANMU_MSG, {
+      super.emit(LiveEventEnum.SEND_DANMAKU, {
         danmu,
         username
       });
     });
     socket.addListener(
-      Event.SEND_GIFT,
+      'SEND_GIFT',
       ({
         data: {
           data: { uname, action, giftName, num }
         }
-      }): void => {
-        super.emit(Event.SEND_GIFT, { uname, action, giftName, num });
+      }: Message<SEND_GIFT>): void => {
+        super.emit(LiveEventEnum.SEND_GIFT, { uname, action, giftName, num });
       }
     );
   }
 
   public addService<T>(
-    event: Event,
+    event: LiveEventEnum,
     cb: (data: T) => void,
     status: boolean = false
   ): void {
     if (status) super.addListener(event, cb);
   }
 
-  public giftDebounce<T extends IGift>(
+  public giftDebounce<T extends ISendGift>(
     cb: ({ uname, action, giftName, num }: T) => void,
     { uname, action, giftName, num }: T
-  ) {
+  ): void {
     const key: string = createHash('MD5')
       .update(`${uname}|${action}|${giftName}|${num}`)
       .digest('hex');
@@ -97,7 +131,7 @@ class BiliBiliService extends EventEmitter {
         key,
         this.debounce(
           key,
-          ({ uname, action, giftName }: IGift): void =>
+          ({ uname, action, giftName }: ISendGift): void =>
             cb({
               uname,
               action,
@@ -116,13 +150,13 @@ class BiliBiliService extends EventEmitter {
   }
   private debounce<T>(
     key: string,
-    cb: { (data: IGift): void; (data: T): void },
+    cb: { (data: ISendGift): void; (data: T): void },
     delay: number = 1
   ): (arg: T) => void {
     let time: NodeJS.Timeout;
     return function (data: T): void {
       clearTimeout(time);
-      time = setTimeout(() => {
+      time = setTimeout((): void => {
         cb(data);
         BiliBiliService.GiftHashMap.delete(key);
         BiliBiliService.GiftHashMap.delete(`${key}num`);

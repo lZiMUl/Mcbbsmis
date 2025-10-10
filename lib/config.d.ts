@@ -8,6 +8,8 @@ declare class Config {
     static readonly ROOT_PATH: string;
     static readonly CONFIG_PATH: string;
     static readonly CONFIG_FILE_PATH: string;
+    static readonly PROTO_PATH: string;
+    static readonly PROTO_FILE_PATH: string;
     static readonly UPDATE_URL: string;
     static readonly LANGUAGE: LanguageUnit;
     static readonly LOGGER: Logger;

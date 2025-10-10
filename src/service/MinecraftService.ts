@@ -3,10 +3,10 @@ import ICommandResult from '../interface/ICommandResult';
 import { WebSocket } from 'ws';
 
 class MinecraftService {
-  public readonly player: string = Config.get('xbox', 'username');
   private static readonly REGEXP: string = `(${(
     Config.get('global', 'identifier') || '$'
   ).replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')})([\\w\\u4e00-\\u9fa5]+)\\s*(.*)`;
+  public readonly player: string = Config.get('xbox', 'username');
   private socket: WebSocket;
 
   public constructor(socket: InstanceType<typeof WebSocket.WebSocket>) {

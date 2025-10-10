@@ -1,4 +1,5 @@
 import LanguageEnum from '../enum/LanguageEnum';
+type toggle = boolean;
 interface IGlobalConfig {
     global: {
         host: string;
@@ -7,13 +8,14 @@ interface IGlobalConfig {
         identifier: string;
     };
     options: {
-        welcome: boolean;
-        watch: boolean;
-        online: boolean;
-        like: boolean;
-        danmu: boolean;
-        gift: boolean;
-        share: boolean;
+        join: toggle;
+        follow: toggle;
+        share: toggle;
+        view: toggle;
+        online: toggle;
+        like: toggle;
+        danmaku: toggle;
+        gift: toggle;
     };
     bilibili: {
         roomid: number;

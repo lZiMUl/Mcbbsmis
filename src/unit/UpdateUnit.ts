@@ -1,4 +1,7 @@
 import axios from 'axios';
+import semver from 'semver';
+
+import { version as localVersion } from '../../package.json';
 import Config from '../config';
 
 async function UpdateUnit(): Promise<void> {
@@ -9,11 +12,13 @@ async function UpdateUnit(): Promise<void> {
       timeout: 50000
     });
 
-    const { code } = JSON.parse(data);
-    if (code === 200) {
+    const { version: remoteVersion } = JSON.parse(data);
+
+    if (semver.gt(remoteVersion, localVersion)) {
       Config.LOGGER.info(Config.LANGUAGE.get('#4'));
     }
-  } catch (e) {}
-  Config.LOGGER.error(Config.LANGUAGE.get('#5'));
+  } catch (e) {
+    Config.LOGGER.error(Config.LANGUAGE.get('#5'));
+  }
 }
 export default UpdateUnit;
