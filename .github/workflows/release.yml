@@ -1,0 +1,86 @@
+  name: Release
+
+  on:
+    push:
+      branches:
+        - release/*
+
+  jobs:
+    build-and-release:
+      runs-on: ubuntu-latest
+      environment: release
+      env:
+        GIT_USER_NAME: ${{ vars.GIT_USER_NAME }}
+        GIT_USER_EMAIL: ${{ vars.GIT_USER_EMAIL }}
+        GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+        GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
+      steps:
+        - name: Checkout repository
+          uses: actions/checkout@v4
+
+        - name: Setup Node.js
+          uses: actions/setup-node@v4
+          with:
+            node-version: '20'
+
+        - name: Install dependencies
+          run: npm ci
+
+        - name: Build project
+          run: npm run build
+
+        - name: Run tests
+          run: npm test
+
+        - name: Configure git user
+          run: git config user.name "${GIT_USER_NAME}"
+
+        - name: Configure git email
+          run: git config user.email "${GIT_USER_EMAIL}"
+
+        - name: Extract version
+          id: version
+          run: echo "version=${GITHUB_REF#refs/heads/release/}" >> $GITHUB_OUTPUT
+
+        - name: Import GPG key
+          run: |
+            echo "$GPG_PRIVATE_KEY" | gpg --batch --import
+            echo "use-agent" >> ~/.gnupg/gpg.conf
+            echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
+
+        - name: Get GPG key ID
+          id: key_id
+          run: |
+            KEY_ID=$(gpg --list-secret-keys --with-colons | awk -F':' '/^sec/ {print $5}')
+            echo "key_id=$KEY_ID" >> $GITHUB_OUTPUT
+
+        - name: Create signed tag
+          run: git tag -s v${{steps.version.outputs.version}} -m "Release v${{steps.version.outputs.version}}" --local-user ${{ steps.key_id.outputs.key_id }} --passphrase "$GPG_PASSPHRASE"
+
+        - name: Push tag
+          run: git push origin v${{steps.version.outputs.version}}
+
+        - name: Create release
+          id: create_release
+          uses: actions/create-release@v1
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+            tag_name: v${{steps.version.outputs.version}}
+            release_name: Release v${{steps.version.outputs.version}}
+            draft: false
+            prerelease: false
+
+        - name: Zip Selected Files and Folders
+          run: zip -r ./release.zip ./build ./lang ./node_modules ./proto ./LICENSE package.json ./package-lock.json ./README.md ./SECURITY.md -x "./.git/*"
+
+        - name: Upload release assets
+          uses: actions/upload-release-asset@v1
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+            upload_url: ${{ steps.create_release.outputs.upload_url }}
+            asset_path: ./release.zip
+            asset_name: "Release v${{steps.version.outputs.version}}.zip"
+            asset_content_type: application/zip
