@@ -77,11 +77,7 @@ jobs:
         run: |
           git tag -s v${{ steps.version.outputs.version }} \
             -m "Release v${{ steps.version.outputs.version }}" \
-            --local-user ${{ steps.key.outputs.id }} \
-            --batch \
-            --yes \
-            --pinentry-mode loopback \
-            --passphrase-fd 0 <<< "$GPG_PASSPHRASE"
+            --local-user ${{ steps.key.outputs.id }}
 
       - name: Push tag
         run: git push origin v${{ steps.version.outputs.version }}
