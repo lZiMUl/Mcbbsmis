@@ -55,8 +55,11 @@
             KEY_ID=$(gpg --list-secret-keys --with-colons | awk -F':' '/^sec/ {print $5}')
             echo "key_id=$KEY_ID" >> $GITHUB_OUTPUT
 
+        - name: Configure Git GPG
+          run: git config gpg.program "gpg --batch --yes --pinentry-mode loopback --passphrase $GPG_PASSPHRASE"
+
         - name: Create signed tag
-          run: git tag -s v${{steps.version.outputs.version}} -m "Release v${{steps.version.outputs.version}}" --local-user ${{ steps.key_id.outputs.key_id }} --passphrase "$GPG_PASSPHRASE"
+          run: git tag -s v${{steps.version.outputs.version}} -m "Release v${{steps.version.outputs.version}}" --local-user ${{ steps.key_id.outputs.key_id }}
 
         - name: Push tag
           run: git push origin v${{steps.version.outputs.version}}
