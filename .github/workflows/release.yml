@@ -80,7 +80,7 @@ jobs:
             --yes \
             --pinentry-mode loopback \
             --passphrase-fd 0 \
-            -u ${{ steps.key_id.outputs.key_id }} \
+            -u ${{ steps.key.outputs.id }} \
             -s -b -o /dev/null
           git tag -s v${{ steps.version.outputs.version }} \
             -m "Release v${{ steps.version.outputs.version }}" \
