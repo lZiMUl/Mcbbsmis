@@ -10,7 +10,7 @@
       runs-on: ubuntu-latest
       environment: release
       permissions:
-        contents: read
+        contents: write
       env:
         GIT_USER_NAME: ${{ vars.GIT_USER_NAME }}
         GIT_USER_EMAIL: ${{ vars.GIT_USER_EMAIL }}
@@ -42,7 +42,7 @@
           run: git config user.email "${GIT_USER_EMAIL}"
 
         - name: Set remote repository URL
-          run: git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          run: git remote set-url origin https://x-access-token:${{ secrets.GH_RELEASE_TOKEN }}@github.com/${{ github.repository }}.git
 
         - name: Extract version
           id: version
@@ -75,7 +75,7 @@
           id: create_release
           uses: actions/create-release@v1
           env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            GITHUB_TOKEN: ${{ secrets.GH_RELEASE_TOKEN }}
           with:
             tag_name: v${{ steps.version.outputs.version }}
             release_name: Release v${{ steps.version.outputs.version }}
@@ -88,7 +88,7 @@
         - name: Upload release assets
           uses: actions/upload-release-asset@v1
           env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            GITHUB_TOKEN: ${{ secrets.GH_RELEASE_TOKEN }}
           with:
             upload_url: ${{ steps.create_release.outputs.upload_url }}
             asset_path: ./release.zip
