@@ -58,10 +58,12 @@
             echo "key_id=$KEY_ID" >> $GITHUB_OUTPUT
 
         - name: Configure Git GPG
-          run: git config gpg.program "gpg --batch --yes --pinentry-mode loopback --passphrase $GPG_PASSPHRASE"
+          run: git config gpg.program gpg
 
         - name: Create signed tag
-          run: git tag -s v${{steps.version.outputs.version}} -m "Release v${{steps.version.outputs.version}}" --local-user ${{ steps.key_id.outputs.key_id }}
+          run: |
+            echo "$GPG_PASSPHRASE" | gpg --batch --yes --pinentry-mode loopback --passphrase-fd 0 -u ${{ steps.key_id.outputs.key_id }} -s -b -o /dev/null
+            git tag -s v${{steps.version.outputs.version}} -m "Release v${{steps.version.outputs.version}}" --local-user ${{ steps.key_id.outputs.key_id }}
 
         - name: Push tag
           run: git push origin v${{steps.version.outputs.version}}
