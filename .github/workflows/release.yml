@@ -41,6 +41,9 @@
         - name: Configure git email
           run: git config user.email "${GIT_USER_EMAIL}"
 
+        - name: Set remote repository URL
+          run: git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+
         - name: Extract version
           id: version
           run: echo "version=${GITHUB_REF#refs/heads/release/}" >> $GITHUB_OUTPUT
@@ -63,10 +66,10 @@
         - name: Create signed tag
           run: |
             echo "$GPG_PASSPHRASE" | gpg --batch --yes --pinentry-mode loopback --passphrase-fd 0 -u ${{ steps.key_id.outputs.key_id }} -s -b -o /dev/null
-            git tag -s v${{steps.version.outputs.version}} -m "Release v${{steps.version.outputs.version}}" --local-user ${{ steps.key_id.outputs.key_id }}
+            git tag -s v${{ steps.version.outputs.version }} -m "Release v${{ steps.version.outputs.version }}" --local-user ${{ steps.key_id.outputs.key_id }}
 
         - name: Push tag
-          run: git push origin v${{steps.version.outputs.version}}
+          run: git push origin v${{ steps.version.outputs.version }}
 
         - name: Create release
           id: create_release
@@ -74,8 +77,8 @@
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           with:
-            tag_name: v${{steps.version.outputs.version}}
-            release_name: Release v${{steps.version.outputs.version}}
+            tag_name: v${{ steps.version.outputs.version }}
+            release_name: Release v${{ steps.version.outputs.version }}
             draft: false
             prerelease: false
 
@@ -89,5 +92,5 @@
           with:
             upload_url: ${{ steps.create_release.outputs.upload_url }}
             asset_path: ./release.zip
-            asset_name: "Release v${{steps.version.outputs.version}}.zip"
+            asset_name: "Release v${{ steps.version.outputs.version }}.zip"
             asset_content_type: application/zip
