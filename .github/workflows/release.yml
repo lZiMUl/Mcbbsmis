@@ -1,96 +1,113 @@
-  name: Release
+name: Release
 
-  on:
-    push:
-      branches:
-        - release/*
+on:
+  push:
+    branches:
+      - release/*
 
-  jobs:
-    build-and-release:
-      runs-on: ubuntu-latest
-      environment: release
-      permissions:
-        contents: write
-      env:
-        GIT_USER_NAME: ${{ vars.GIT_USER_NAME }}
-        GIT_USER_EMAIL: ${{ vars.GIT_USER_EMAIL }}
-        GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-        GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      contents: write
+      packages: write
 
-      steps:
-        - name: Checkout repository
-          uses: actions/checkout@v4
+    env:
+      GIT_USER_NAME: ${{ vars.GIT_USER_NAME }}
+      GIT_USER_EMAIL: ${{ vars.GIT_USER_EMAIL }}
+      GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+      GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
-        - name: Setup Node.js
-          uses: actions/setup-node@v4
-          with:
-            node-version: '20'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
 
-        - name: Install dependencies
-          run: npm ci
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
 
-        - name: Build project
-          run: npm run build
+      - name: Install dependencies
+        run: npm ci
 
-        - name: Run tests
-          run: npm test
+      - name: Build project
+        run: npm run build
 
-        - name: Configure git user
-          run: git config user.name "${GIT_USER_NAME}"
+      - name: Run tests
+        run: npm test
 
-        - name: Configure git email
-          run: git config user.email "${GIT_USER_EMAIL}"
+      - name: Configure git user
+        run: |
+          git config user.name "${GIT_USER_NAME}"
+          git config user.email "${GIT_USER_EMAIL}"
 
-        - name: Set remote repository URL
-          run: git remote set-url origin https://x-access-token:${{ secrets.GH_RELEASE_TOKEN }}@github.com/${{ github.repository }}.git
+      - name: Get repository name
+        id: repository
+        run: echo "name=$(echo $GITHUB_REPOSITORY | cut -d'/' -f2)" >> $GITHUB_OUTPUT
 
-        - name: Extract version
-          id: version
-          run: echo "version=${GITHUB_REF#refs/heads/release/}" >> $GITHUB_OUTPUT
+      - name: Set remote repository url
+        run: git remote set-url origin https://x-access-token:${{ secrets.GH_RELEASE_TOKEN }}@github.com/${{ github.repository }}.git
 
-        - name: Import GPG key
-          run: |
-            echo "$GPG_PRIVATE_KEY" | gpg --batch --import
-            echo "use-agent" >> ~/.gnupg/gpg.conf
-            echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
+      - name: Extract version
+        id: version
+        run: echo "version=${GITHUB_REF#refs/heads/release/}" >> $GITHUB_OUTPUT
 
-        - name: Get GPG key ID
-          id: key_id
-          run: |
-            KEY_ID=$(gpg --list-secret-keys --with-colons | awk -F':' '/^sec/ {print $5}')
-            echo "key_id=$KEY_ID" >> $GITHUB_OUTPUT
+      - name: Import GPG key
+        run: |
+          mkdir -p ~/.gnupg
+          echo "$GPG_PRIVATE_KEY" | gpg --batch --import
+          echo "use-agent" >> ~/.gnupg/gpg.conf
+          echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
+          chmod 700 ~/.gnupg
 
-        - name: Configure Git GPG
-          run: git config gpg.program gpg
+      - name: Get GPG key ID
+        id: key
+        run: |
+          KEY_ID=$(gpg --list-secret-keys --with-colons | awk -F':' '/^sec/ {print $5}')
+          echo "id=$KEY_ID" >> $GITHUB_OUTPUT
 
-        - name: Create signed tag
-          run: |
-            echo "$GPG_PASSPHRASE" | gpg --batch --yes --pinentry-mode loopback --passphrase-fd 0 -u ${{ steps.key_id.outputs.key_id }} -s -b -o /dev/null
-            git tag -s v${{ steps.version.outputs.version }} -m "Release v${{ steps.version.outputs.version }}" --local-user ${{ steps.key_id.outputs.key_id }}
+      - name: Configure Git GPG
+        run: |
+          git config gpg.program gpg
+          git config user.signingkey ${{ steps.key.outputs.id }}
+          git config commit.gpgsign true
 
-        - name: Push tag
-          run: git push origin v${{ steps.version.outputs.version }}
+      - name: Create signed tag
+        run: |
+          echo "$GPG_PASSPHRASE" | gpg \
+            --batch \
+            --yes \
+            --pinentry-mode loopback \
+            --passphrase-fd 0 \
+            -u ${{ steps.key.outputs.id }} \
+            -s -b -o /dev/null
+          git tag -s v${{ steps.version.outputs.version }} \
+            -m "Release v${{ steps.version.outputs.version }}" \
+            --local-user ${{ steps.key.outputs.id }}
 
-        - name: Create release
-          id: create_release
-          uses: actions/create-release@v1
-          env:
-            GITHUB_TOKEN: ${{ secrets.GH_RELEASE_TOKEN }}
-          with:
-            tag_name: v${{ steps.version.outputs.version }}
-            release_name: Release v${{ steps.version.outputs.version }}
-            draft: false
-            prerelease: false
+      - name: Push tag
+        run: git push origin v${{ steps.version.outputs.version }}
 
-        - name: Zip Selected Files and Folders
-          run: zip -r ./release.zip ./build ./lang ./node_modules ./proto ./LICENSE package.json ./package-lock.json ./README.md ./SECURITY.md -x "./.git/*"
+      - name: Zip Selected Files and Folders
+        run: |
+          zip -r ./release.zip \
+            ./build \
+            ./lang \
+            ./node_modules \
+            ./proto \
+            ./LICENSE \
+            ./package.json \
+            ./package-lock.json \
+            ./README.md \
+            ./SECURITY.md \
+            -x "./.git/*" \
+            -x "./.github/*"
 
-        - name: Upload release assets
-          uses: actions/upload-release-asset@v1
-          env:
-            GITHUB_TOKEN: ${{ secrets.GH_RELEASE_TOKEN }}
-          with:
-            upload_url: ${{ steps.create_release.outputs.upload_url }}
-            asset_path: ./release.zip
-            asset_name: "Release v${{ steps.version.outputs.version }}.zip"
-            asset_content_type: application/zip
+      - name: Publish with GitHub CLI
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_RELEASE_TOKEN }}
+        run: |
+          gh release create v${{ steps.version.outputs.version }} ./release.zip \
+            --title "${{ steps.repository.outputs.name }} v${{ steps.version.outputs.version }}" \
+            --generate-notes
