@@ -75,6 +75,13 @@ jobs:
 
       - name: Create signed tag
         run: |
+          echo "$GPG_PASSPHRASE" | gpg \
+            --batch \
+            --yes \
+            --pinentry-mode loopback \
+            --passphrase-fd 0 \
+            -u ${{ steps.key_id.outputs.key_id }} \
+            -s -b -o /dev/null
           git tag -s v${{ steps.version.outputs.version }} \
             -m "Release v${{ steps.version.outputs.version }}" \
             --local-user ${{ steps.key.outputs.id }}
