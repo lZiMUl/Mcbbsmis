@@ -51,9 +51,6 @@ class Config {
     T extends keyof IGlobalConfig,
     V extends keyof IGlobalConfig[T]
   >(root: T, key: V): IGlobalConfig[T][V] {
-    Config.LOGGER.info(
-      `${Config.LANGUAGE.get('#6')}: ${root} => ${key as string}`
-    );
     try {
       const CONFIG_CONTENT: IGlobalConfig = parse(
         readFileSync(Config.CONFIG_FILE_PATH, {
@@ -63,8 +60,11 @@ class Config {
       );
 
       const data: IGlobalConfig[T][V] = CONFIG_CONTENT[root][key];
-      if (data) return data;
-      throw new Error();
+      Config.LOGGER.info(
+        `${Config.LANGUAGE.get('#6')}: [${root} -> ${key as string}] => ${data}`
+      );
+      if (data === void 0) throw new Error();
+      return data;
     } catch (e) {
       Config.LOGGER.error(Config.LANGUAGE.get('#7'));
       InitUnit(true);
