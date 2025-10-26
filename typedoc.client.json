@@ -1,0 +1,9 @@
+{
+  "entryPoints": [
+    "./src/client/ts"
+  ],
+  "out": "./docs/client",
+  "readme": "README.md",
+  "name": "Mcbbsmis Client",
+  "tsconfig": "./tsconfig.client.json"
+}
