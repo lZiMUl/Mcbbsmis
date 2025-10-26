@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "target": "ESNext",
+    "lib": [
+      "ESNext"
+    ],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "rootDir": "./src/server",
+    "declarationDir": "./lib/server",
+    "outDir": "./build",
+    "importHelpers": true
+  },
+  "include": [
+    "./src/server/**/*"
+  ]
+}

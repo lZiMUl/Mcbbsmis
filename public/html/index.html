@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mcbbsmis Config Panel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="../css/index.css">
+    <script type="module" src="../js/language.js"></script>
+    <script type="module" src="../js/index.js"></script>
+</head>
+<body>
+<h1>Mcbbsmis Configuration Panel</h1>
+<form action="/api/save" method="post">
+    <div class="card">
+        <h2>🌍 Global Settings</h2>
+        <div class="grid-2">
+            <div>
+                <label for="host">Host</label>
+                <input id="host" name="host" type="text" placeholder="e.g. 127.0.0.1">
+            </div>
+            <div>
+                <label for="port">Port</label>
+                <input id="port" name="port" type="number" placeholder="e.g. 8080">
+            </div>
+            <div>
+                <label for="language">Language</label>
+                <select id="language" name="language">
+                    <option value="">Loading...</option>
+                </select>
+                <div id="lang-error" class="error" style="display:none;">Failed to load languages.</div>
+            </div>
+            <div>
+                <label for="identifier">Identifier</label>
+                <input id="identifier" name="identifier" type="text" placeholder="Instance ID" maxlength="1">
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>⚙️ Feature Options</h2>
+        <div class="checkbox-group">
+            <label class="checkbox"><input type="checkbox" name="join"> Join</label>
+            <label class="checkbox"><input type="checkbox" name="follow"> Follow</label>
+            <label class="checkbox"><input type="checkbox" name="share"> Share</label>
+            <label class="checkbox"><input type="checkbox" name="view"> View</label>
+            <label class="checkbox"><input type="checkbox" name="online"> Online</label>
+            <label class="checkbox"><input type="checkbox" name="like"> Like</label>
+            <label class="checkbox"><input type="checkbox" name="danmaku"> Danmaku</label>
+            <label class="checkbox"><input type="checkbox" name="gift"> Gift</label>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>🎬 Bilibili Profile</h2>
+        <div class="grid-2" id="bilibili-fields">
+            <div>
+                <label for="roomid">Room ID</label>
+                <input id="roomid" name="roomid" type="text" placeholder="Live room ID">
+            </div>
+            <div>
+                <label for="bili_userid">User ID</label>
+                <input id="bili_userid" name="userid" type="text" placeholder="Bilibili user ID">
+            </div>
+            <div>
+                <label for="bili_username">Username</label>
+                <input id="bili_username" name="username_bili" type="text" placeholder="Bilibili username">
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>🎮 Xbox</h2>
+        <label for="xbox_username">Username</label>
+        <input id="xbox_username" name="username_xbox" type="text" placeholder="Xbox username">
+    </div>
+
+    <button class="submit-btn" type="submit">💾 Save Configuration</button>
+    <button id="start" class="submit-btn" type="button" style="display: none">Start Mcbbsmis Service</button>
+</form>
+</body>
+</html>
