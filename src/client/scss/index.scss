@@ -1,0 +1,181 @@
+@use "sass:color";
+
+// 🌈 变量定义
+$font-family: "Inter", system-ui, sans-serif;
+$color-bg: #f3f4f6;
+$color-text: #111827;
+$color-card-bg: #fff;
+$color-border: #d1d5db;
+$color-accent: #2563eb;
+$color-accent-dark: #1e40af;
+$color-error: #dc2626;
+
+// 🌍 全局样式
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: $font-family;
+  background: $color-bg;
+  margin: 0;
+  padding: 2rem;
+  color: $color-text;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: color.adjust($color-text, $lightness: -10%);
+}
+
+// 🧾 表单布局
+form {
+  max-width: 900px;
+  margin: auto;
+  display: grid;
+  gap: 1.5rem;
+}
+
+// 🧩 卡片样式
+.card {
+  background: $color-card-bg;
+  border-radius: 14px;
+  padding: 1.5rem 2rem;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.1);
+  }
+
+  h2 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: $color-accent;
+    border-left: 4px solid $color-accent;
+    padding-left: 0.5rem;
+  }
+}
+
+// 🏷️ 表单控件
+label {
+  font-weight: 500;
+  display: block;
+  margin-top: 0.8rem;
+  margin-bottom: 0.3rem;
+}
+
+input,
+select {
+  &.text,
+  &.number,
+  &[type="text"],
+  &[type="number"] {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid $color-border;
+    border-radius: 8px;
+    background-color: #f9fafb;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    font-size: 0.95rem;
+
+    &:focus {
+      border-color: $color-accent;
+      box-shadow: 0 0 0 3px rgba($color-accent, 0.2);
+      outline: none;
+    }
+  }
+}
+
+// 🧱 网格布局
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 2rem;
+}
+
+// ✅ 复选框
+.checkbox-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.75rem 1rem;
+  margin-top: 0.5rem;
+
+  .checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: $color-accent;
+    cursor: pointer;
+  }
+}
+
+// 🚀 提交按钮
+.submit-btn {
+  display: block;
+  width: 100%;
+  background: $color-accent;
+  color: white;
+  border: none;
+  padding: 0.9rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover {
+    background: $color-accent-dark;
+  }
+}
+
+// ⚠️ 错误提示
+.error {
+  color: $color-error;
+  font-size: 0.9rem;
+  margin-top: 0.3rem;
+}
+
+// 🏷️ 下拉框美化
+select {
+  width: 100%;
+  padding: 0.6rem 1rem;
+  border: 1px solid $color-border;
+  border-radius: 8px;
+  background-color: #f9fafb;
+  font-size: 0.95rem;
+  cursor: pointer;
+  appearance: none; // 移除浏览器默认样式
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &:focus {
+    border-color: $color-accent;
+    box-shadow: 0 0 0 3px rgba($color-accent, 0.2);
+    outline: none;
+  }
+
+  // 添加自定义箭头
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='7' viewBox='0 0 12 7' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%236B7280' stroke-width='2'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.8rem center;
+  background-size: 12px 7px;
+}
+
+// 包裹容器（可选，保证箭头不被覆盖）
+.select-wrapper {
+  position: relative;
+
+  select {
+    width: 100%;
+    padding-right: 2.5rem; // 留出箭头空间
+  }
+}
