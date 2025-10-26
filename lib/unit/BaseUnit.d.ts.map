@@ -1,1 +1,0 @@
-{"version":3,"file":"BaseUnit.d.ts","sourceRoot":"","sources":["../../src/unit/BaseUnit.ts"],"names":[],"mappings":"AAAA,cAAM,QAAQ;WACE,QAAQ,CAAC,CAAC,EACtB,EAAE,EAAE,CAAC,IAAI,EAAE,CAAC,KAAK,IAAI,EACrB,KAAK,EAAE,MAAM,GACZ,CAAC,IAAI,CAAC,EAAE,CAAC,KAAK,IAAI;CAOtB;AAED,eAAe,QAAQ,CAAC"}

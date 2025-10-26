@@ -1,0 +1,19 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "target": "ESNext",
+    "lib": [
+      "ESNext",
+      "DOM"
+    ],
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "rootDir": "./src/client/ts",
+    "declarationDir": "./lib/client",
+    "outDir": "./public/js",
+    "importHelpers": false
+  },
+  "include": [
+    "./src/client/ts/**/*"
+  ]
+}
