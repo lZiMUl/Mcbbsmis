@@ -1,6 +1,6 @@
 import EventEmitter from 'node:events';
-import protobuf, { Type } from 'protobufjs';
 import { createHash } from 'node:crypto';
+import protobuf, { Type } from 'protobufjs';
 import {
   DANMU_MSG,
   KeepLiveWS,

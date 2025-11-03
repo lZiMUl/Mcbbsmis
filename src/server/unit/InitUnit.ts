@@ -1,83 +1,26 @@
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import Config from '../config';
+import BaseUnit from './BaseUnit';
+import LanguageEnum from '../enum/LanguageEnum';
 
-const INIT_CONFIG_CONTENT: string = `# ==============================
-# Mcbbsmis Configs File
-# Author Info:
-# GitHub: Mcbbsmis
-# Npm: Mcbbsmis
-# BiliBili: lZiMUl
-# ==============================
-
-# ==============================
-# Global Settings
-# ==============================
-[global]
-# Host address to listen on. Default '0.0.0.0' means all network interfaces.
-host = '0.0.0.0'
-
-# Port to listen on.
-port = 5700
-
-# Program language. Options:
-# en_US (default) - English
-# ru_RU          - Russian
-# zh_CN          - Simplified Chinese
-# zh_TW          - Traditional Chinese (Taiwan)
-language = 'en_US'
-
-# Command identifier used for in-game commands.
-identifier = '$'
-
-# ==============================
-# Options - Feature Toggles
-# ==============================
-[options]
-# Show welcome message on startup
-join = false
-
-# Listen to share/interaction events
-follow = false
-
-# Listen to share room events
-share = false
-
-# Show viewer count
-view = false
-
-# Show online count
-online = false
-
-# Listen to like events
-like = true
-
-# Listen to chat messages (danmaku)
-danmaku = true
-
-# Listen to gift events
-gift = true
-
-# ==============================
-# BiliBili Settings
-# ==============================
-[bilibili] 
-# Live room ID
-roomid = 9329583
-
-# BiliBili user ID
-userid = 291883246
-
-# BiliBili username
-username = 'lZiMUl' 
-
-# ==============================
-# Client Settings
-# ==============================
-[xbox]
-# Game client username (used to identify commands)
-username = 'lZiMUl'
-
-`;
+const INIT_CONFIG_CONTENT: string = BaseUnit.ConfigurationTemplate({
+  host: '0.0.0.0',
+  port: 5700,
+  language: LanguageEnum.EN_US,
+  identifier: '$',
+  join: false,
+  follow: false,
+  share: false,
+  view: false,
+  online: false,
+  like: true,
+  danmaku: true,
+  gift: true,
+  roomid: 9329583,
+  userid: 291883246,
+  username_bili: 'lZiMUl',
+  username_xbox: 'lZiMUl'
+});
 
 function InitUnit(force: boolean = false): void {
   if (!existsSync(Config.CONFIG_PATH))

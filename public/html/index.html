@@ -9,73 +9,72 @@
     <script type="module" src="../js/index.js"></script>
 </head>
 <body>
-<h1>Mcbbsmis Configuration Panel</h1>
+<h1 id="title"></h1>
 <form action="/api/save" method="post">
     <div class="card">
-        <h2>🌍 Global Settings</h2>
+        <h2 id="globalSettings"></h2>
         <div class="grid-2">
             <div>
-                <label for="host">Host</label>
-                <input id="host" name="host" type="text" placeholder="e.g. 127.0.0.1">
+                <label id="host" for="host-input"></label>
+                <input id="host-input" name="host" type="text" placeholder="e.g. 127.0.0.1">
             </div>
             <div>
-                <label for="port">Port</label>
-                <input id="port" name="port" type="number" placeholder="e.g. 8080">
+                <label id="port" for="port-input"></label>
+                <input id="port-input" name="port" type="number" placeholder="e.g. 8080">
             </div>
             <div>
-                <label for="language">Language</label>
-                <select id="language" name="language">
+                <label id="language" for="language-select"></label>
+                <select id="language-select" name="language">
                     <option value="">Loading...</option>
                 </select>
                 <div id="lang-error" class="error" style="display:none;">Failed to load languages.</div>
             </div>
             <div>
-                <label for="identifier">Identifier</label>
-                <input id="identifier" name="identifier" type="text" placeholder="Instance ID" maxlength="1">
+                <label id="identifier" for="identifier-input"></label>
+                <input id="identifier-input" name="identifier" type="text" placeholder="Instance ID" maxlength="1">
             </div>
         </div>
     </div>
 
     <div class="card">
-        <h2>⚙️ Feature Options</h2>
+        <h2 id="listenToEvents"></h2>
         <div class="checkbox-group">
-            <label class="checkbox"><input type="checkbox" name="join"> Join</label>
-            <label class="checkbox"><input type="checkbox" name="follow"> Follow</label>
-            <label class="checkbox"><input type="checkbox" name="share"> Share</label>
-            <label class="checkbox"><input type="checkbox" name="view"> View</label>
-            <label class="checkbox"><input type="checkbox" name="online"> Online</label>
-            <label class="checkbox"><input type="checkbox" name="like"> Like</label>
-            <label class="checkbox"><input type="checkbox" name="danmaku"> Danmaku</label>
-            <label class="checkbox"><input type="checkbox" name="gift"> Gift</label>
+            <label id="join" class="checkbox"></label>
+            <label id="follow" class="checkbox"></label>
+            <label id="share" class="checkbox"></label>
+            <label id="view" class="checkbox"></label>
+            <label id="online" class="checkbox"></label>
+            <label id="like" class="checkbox"></label>
+            <label id="danmaku" class="checkbox"></label>
+            <label id="gift" class="checkbox"></label>
         </div>
     </div>
 
     <div class="card">
-        <h2>🎬 Bilibili Profile</h2>
+        <h2 id="bilibiliProfile"></h2>
         <div class="grid-2" id="bilibili-fields">
             <div>
-                <label for="roomid">Room ID</label>
-                <input id="roomid" name="roomid" type="text" placeholder="Live room ID">
+                <label id="bili-roomid" for="roomid-input"></label>
+                <input id="roomid-input" name="roomid" type="number" placeholder="Live room ID">
             </div>
             <div>
-                <label for="bili_userid">User ID</label>
-                <input id="bili_userid" name="userid" type="text" placeholder="Bilibili user ID">
+                <label id="bili-userid" for="bili_userid-input"></label>
+                <input id="bili_userid-input" name="userid" type="number" placeholder="Bilibili user ID">
             </div>
             <div>
-                <label for="bili_username">Username</label>
-                <input id="bili_username" name="username_bili" type="text" placeholder="Bilibili username">
+                <label id="bili-username" for="bili_username-input"></label>
+                <input id="bili_username-input" name="username_bili" type="text" placeholder="Bilibili username">
             </div>
         </div>
     </div>
 
     <div class="card">
         <h2>🎮 Xbox</h2>
-        <label for="xbox_username">Username</label>
-        <input id="xbox_username" name="username_xbox" type="text" placeholder="Xbox username">
+        <label id="xbox-username" for="xbox_username-input"></label>
+        <input id="xbox_username-input" name="username_xbox" type="text" placeholder="Xbox username">
     </div>
 
-    <button class="submit-btn" type="submit">💾 Save Configuration</button>
-    <button id="start" class="submit-btn" type="button" style="display: none">Start Mcbbsmis Service</button>
+    <button id="save-configuration" class="submit-btn" type="submit"></button>
 </form>
 </body>
 </html>

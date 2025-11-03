@@ -2,9 +2,6 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "target": "ESNext",
-    "lib": [
-      "ESNext"
-    ],
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "rootDir": "./src/server",

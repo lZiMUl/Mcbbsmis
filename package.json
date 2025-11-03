@@ -1,7 +1,7 @@
 {
   "name": "mcbbsmis",
   "description": "Minecraft Connect Bind BiliBili Sync Message Interaction Service",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "author": {
     "name": "lZiMUl",
     "email": "lZiMUl@lzimul.com",
@@ -27,7 +27,8 @@
   "typings": "./lib/index.d.ts",
   "license": "MIT",
   "scripts": {
-    "start": "node . && npm run start",
+    "start": "node .",
+    "config": "node . --configure-panel && npm run start",
     "lint": "npx eslint --fix",
     "build": "npm run lint && npm run build:css && npm run build:client && npm run build:server",
     "build:css": "npx sass ./src/client/scss:public/css",
@@ -73,9 +74,11 @@
     "@koa/router": "^14.0.0",
     "axios": "^1.12.2",
     "bili-sender": "^1.1.0",
+    "commander": "^14.0.2",
     "koa": "^3.0.3",
     "koa-static": "^5.0.0",
     "log4js": "^6.9.1",
+    "open": "^10.2.0",
     "protobufjs": "^7.5.4",
     "qrcode-terminal": "^0.12.0",
     "semver": "^7.7.3",

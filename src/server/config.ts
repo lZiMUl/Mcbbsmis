@@ -48,19 +48,32 @@ class Config {
   public static readonly LOGGER: Logger = log4js.getLogger(Config.APP_NAME);
   public static readonly LOGGER_CONFIG: 'info' = (Config.LOGGER.level = 'info');
 
+  public static CONFIG_CONTENT: IGlobalConfig;
+
+  public static reload(): void {
+    Config.LANGUAGE.reload();
+    Config.CONFIG_CONTENT = parse(
+      readFileSync(Config.CONFIG_FILE_PATH, {
+        encoding: 'utf-8',
+        flag: 'r'
+      })
+    );
+  }
+
   public static get<
     T extends keyof IGlobalConfig,
     V extends keyof IGlobalConfig[T]
   >(root: T, key: V): IGlobalConfig[T][V] {
     try {
-      const CONFIG_CONTENT: IGlobalConfig = parse(
-        readFileSync(Config.CONFIG_FILE_PATH, {
-          encoding: 'utf-8',
-          flag: 'r'
-        })
-      );
-
-      const data: IGlobalConfig[T][V] = CONFIG_CONTENT[root][key];
+      if (!Config.CONFIG_CONTENT) {
+        Config.CONFIG_CONTENT = parse(
+          readFileSync(Config.CONFIG_FILE_PATH, {
+            encoding: 'utf-8',
+            flag: 'r'
+          })
+        );
+      }
+      const data: IGlobalConfig[T][V] = Config.CONFIG_CONTENT[root][key];
       Config.LOGGER.info(
         `${Config.LANGUAGE.get('#6')}: [${root} -> ${key as string}] => ${data}`
       );

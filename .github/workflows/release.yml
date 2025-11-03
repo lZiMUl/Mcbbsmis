@@ -96,6 +96,7 @@ jobs:
             ./lang \
             ./node_modules \
             ./proto \
+            ./public \
             ./LICENSE \
             ./package.json \
             ./package-lock.json \

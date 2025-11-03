@@ -1,4 +1,5 @@
 import Router from '@koa/router';
+import LanguageEnum from '../../enum/LanguageEnum';
 
 const router: Router = new Router({
   prefix: '/language'
@@ -9,20 +10,32 @@ router.get('/', async ctx => {
   ctx.type = 'application/json';
   ctx.body = JSON.stringify([
     {
-      code: 'en_US',
+      code: LanguageEnum.EN_US,
       name: 'English'
     },
     {
-      code: 'ru_RU',
+      code: LanguageEnum.RU_RU,
       name: 'русский язык'
     },
     {
-      code: 'zh_CN',
+      code: LanguageEnum.ZH_CN,
       name: '简体中文'
     },
     {
-      code: 'zh_TW',
+      code: LanguageEnum.ZH_TW,
       name: '繁體中文'
+    },
+    {
+      code: LanguageEnum.JA_JP,
+      name: '日本語'
+    },
+    {
+      code: LanguageEnum.FR_FR,
+      name: 'Français'
+    },
+    {
+      code: LanguageEnum.DE_DE,
+      name: 'Deutsch'
     }
   ]);
 });

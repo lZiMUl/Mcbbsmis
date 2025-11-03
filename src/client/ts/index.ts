@@ -1,30 +1,94 @@
 document.addEventListener('DOMContentLoaded', async function (): Promise<void> {
   try {
+    const localeResponse: Response = await fetch(
+      new Request('/api/locale', {
+        method: 'GET'
+      })
+    );
+    if (!localeResponse.ok) throw new Error('HTTP ' + localeResponse.status);
+    const data = await localeResponse.json();
+
     const configResponse: Response = await fetch(
       new Request('/api/config', { method: 'GET' })
     );
     if (!configResponse.ok) throw new Error('Failed to fetch config');
     const config = await configResponse.json();
 
-    setInterval(async (): Promise<void> => {
-      try {
-        await fetch(
-          new Request('/api/status/web', {
-            method: 'GET'
-          })
-        );
-      } catch (e) {
-        window.location.reload();
-      }
-    }, 5 * 1000);
+    const features = config.options || {};
+
+    [
+      'title',
+      'globalSettings',
+      'host',
+      'port',
+      'language',
+      'identifier',
+      'listenToEvents',
+      'join',
+      'follow',
+      'share',
+      'view',
+      'online',
+      'like',
+      'danmaku',
+      'gift',
+      'bilibiliProfile',
+      'bili-roomid',
+      'bili-userid',
+      'bili-username',
+      'xbox-username',
+      'save-configuration'
+    ]
+      .map(id => document.getElementById(id))
+      .forEach(item => {
+        console.info(item);
+        if (item)
+          switch (item.id) {
+            case 'title':
+              item.innerText = `Mcbbsmis ${data[item.id]}`;
+              break;
+            case 'globalSettings':
+              item.innerText = `🌍 ${data[item.id]}`;
+              break;
+            case 'event':
+              item.innerText = `⚙️ ${data[item.id]}`;
+              break;
+            case 'join':
+            case 'follow':
+            case 'share':
+            case 'view':
+            case 'online':
+            case 'like':
+            case 'danmaku':
+            case 'gift':
+              // Feature options
+              const checkbox = document.createElement('input');
+              checkbox.setAttribute('type', 'checkbox');
+              checkbox.setAttribute('name', item.id);
+              if (features[item.id]) checkbox.setAttribute('checked', '');
+              item.appendChild(checkbox);
+              item.append(data[item.id]);
+              break;
+            case 'bilibiliProfile':
+              item.innerText = `🎬 Bilibili ${data[item.id]}`;
+              break;
+            case 'save-configuration':
+              item.innerText = `💾 ${data[item.id]}`;
+              break;
+            default:
+              item.innerText = data[item.id];
+          }
+      });
 
     // Global
-    (document.getElementById('host') as HTMLInputElement).value = config.host;
-    (document.getElementById('port') as HTMLInputElement).value = config.port;
-    (document.getElementById('language') as HTMLSelectElement).value =
+    (document.getElementById('host-input') as HTMLInputElement).value =
+      config.host;
+    (document.getElementById('port-input') as HTMLInputElement).value =
+      config.port;
+    (document.getElementById('language-select') as HTMLSelectElement).value =
       config.language;
     const identifierInput = document.getElementById(
-      'identifier'
+      'identifier-input'
     ) as HTMLInputElement;
     identifierInput.value = config.identifier;
     identifierInput.addEventListener('input', (): void => {
@@ -33,58 +97,24 @@ document.addEventListener('DOMContentLoaded', async function (): Promise<void> {
       }
     });
 
-    // Feature options
-    const features = config.options || {};
-    Object.keys(features).forEach((key: string): void => {
-      const checkbox = document.querySelector(
-        `input[type="checkbox"][name="${key}"]`
-      ) as HTMLInputElement;
-      if (checkbox) checkbox.checked = features[key];
-    });
-
     // Bilibili
     if (config.bilibili) {
-      (document.getElementById('roomid') as HTMLInputElement).value =
+      (document.getElementById('roomid-input') as HTMLInputElement).value =
         config.bilibili.roomid;
-      (document.getElementById('bili_userid') as HTMLInputElement).value =
+      (document.getElementById('bili_userid-input') as HTMLInputElement).value =
         config.bilibili.userid;
-      (document.getElementById('bili_username') as HTMLInputElement).value =
-        config.bilibili.username;
+      (
+        document.getElementById('bili_username-input') as HTMLInputElement
+      ).value = config.bilibili.username;
     }
 
     // Xbox
     if (config.xbox) {
-      (document.getElementById('xbox_username') as HTMLInputElement).value =
-        config.xbox.username;
+      (
+        document.getElementById('xbox_username-input') as HTMLInputElement
+      ).value = config.xbox.username;
     }
-
-    const startBtn = document.getElementById('start') as HTMLButtonElement;
-    const statusResponse: Response = await fetch(
-      new Request('/api/status', {
-        method: 'GET'
-      })
-    );
-    if (!statusResponse.ok) throw new Error('Failed to fetch status');
-    const { status } = await statusResponse.json();
-
-    if (status === 'running') {
-      startBtn.style.display = 'none';
-    } else if (status === 'stopping') {
-      startBtn.style.display = 'block';
-    } else {
-      startBtn.style.display = 'none';
-    }
-    startBtn.addEventListener('click', async (): Promise<void> => {
-      const startResponse: Response = await fetch(
-        new Request('/api/start', {
-          method: 'GET'
-        })
-      );
-      if (startResponse.ok) startBtn.style.display = 'none';
-    });
   } catch (err) {
     console.error('Error loading config:', err);
-    const langError = document.getElementById('lang-error');
-    if (langError) langError.style.display = 'block';
   }
 });

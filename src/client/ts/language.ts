@@ -2,7 +2,7 @@ import ILanguage from './interface/ILanguage';
 
 document.addEventListener('DOMContentLoaded', async function () {
   const select: HTMLElement = document.getElementById(
-    'language'
+    'language-select'
   ) as HTMLElement;
   const error: HTMLElement = document.getElementById(
     'lang-error'
@@ -26,7 +26,6 @@ document.addEventListener('DOMContentLoaded', async function () {
       select.appendChild(opt);
     });
   } catch (err) {
-    console.error('Failed to load languages:', err);
     select.innerHTML = '<option value="">Select language</option>';
     error.style.display = 'block';
   }

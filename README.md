@@ -33,8 +33,7 @@
 * 3.终端输入以下命令来启动 Mcbbsmis 服务。
     * 3.1 第一次启动
   ```bash
-  npm run install:china
-  npm run build
+  npm run config
   npm run start
   ```
     * 3.2 以后启动

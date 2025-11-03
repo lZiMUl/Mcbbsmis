@@ -5,8 +5,7 @@ import index from './index';
 import config from './api/config';
 import languages from './api/language';
 import save from './api/save';
-import start from './api/start';
-import status from './api/status';
+import locale from './api/locale';
 
 const router: Router = new Router({
   prefix: '/api'
@@ -18,8 +17,7 @@ function mountRouters(
   router.use(config.routes()).use(config.allowedMethods());
   router.use(languages.routes()).use(languages.allowedMethods());
   router.use(save.routes()).use(save.allowedMethods());
-  router.use(start.routes()).use(start.allowedMethods());
-  router.use(status.routes()).use(status.allowedMethods());
+  router.use(locale.routes()).use(locale.allowedMethods());
 
   webService.use(index.routes()).use(index.allowedMethods());
   webService.use(router.routes()).use(router.allowedMethods());
