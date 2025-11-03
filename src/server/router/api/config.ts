@@ -1,5 +1,5 @@
 import Router from '@koa/router';
-import { Config } from '../../index';
+import Config from '../../config';
 
 const router: Router = new Router({
   prefix: '/config'

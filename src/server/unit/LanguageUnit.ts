@@ -35,21 +35,32 @@ class LanguageConfig {
 
 class LanguageUnit {
   private static DEFAULT_LANG: LanguageEnum = LanguageEnum.EN_US;
-  public readonly regExp: RegExp = /<string key="([^"]+)">([^<]+)<\/string>/;
+  public readonly regExp: RegExp =
+    /<string\s+key="#(\d+)">\s*([\s\S]*?)\s*<\/string>/g;
   private readonly language: Map<string, string> = new Map<string, string>();
+  private readonly rootPath: string;
 
   public constructor(rootPath: string) {
-    this.readFile(rootPath)
-      .split('\n')
-      .forEach((item: string): void => {
-        const data: RegExpMatchArray | null = item.match(this.regExp);
+    this.rootPath = rootPath;
+    this.load(rootPath);
+  }
+
+  private load(path: string): void {
+    this.readFile(path)
+      .matchAll(this.regExp)
+      ?.forEach((data: RegExpExecArray): void => {
         if (data) {
           const [_, key, value]: RegExpMatchArray = data;
-          if (!this.language.has(key)) {
-            this.language.set(key, value);
+          const trimmedKey: string = `#${key}`;
+          if (!this.language.has(trimmedKey)) {
+            this.language.set(trimmedKey, value);
           }
         }
       });
+  }
+
+  public reload(): void {
+    this.load(this.rootPath);
   }
 
   public get(key: string): string {

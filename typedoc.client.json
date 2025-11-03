@@ -1,9 +1,14 @@
 {
   "entryPoints": [
-    "./src/client/ts"
+    "./src/client/ts/**/*.ts"
   ],
   "out": "./docs/client",
   "readme": "README.md",
   "name": "Mcbbsmis Client",
-  "tsconfig": "./tsconfig.client.json"
+  "tsconfig": "./tsconfig.client.json",
+  "gitRemote": "Mcbbsmis",
+  "gitRevision": "main",
+  "excludePrivate": true,
+  "excludeInternal": true,
+  "categorizeByGroup": true
 }

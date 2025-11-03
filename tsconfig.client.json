@@ -2,10 +2,6 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "target": "ESNext",
-    "lib": [
-      "ESNext",
-      "DOM"
-    ],
     "module": "ESNext",
     "moduleResolution": "Node",
     "rootDir": "./src/client/ts",

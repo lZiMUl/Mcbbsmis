@@ -20,6 +20,8 @@ async function UpdateUnit(): Promise<void> {
     const { version: remoteVersion }: VersionResult = data;
     if (semver.gt(remoteVersion, localVersion)) {
       Config.LOGGER.warn(Config.LANGUAGE.get('#4'));
+    } else {
+      Config.LOGGER.info(Config.LANGUAGE.get('#31'));
     }
   } catch (err: unknown) {
     Config.LOGGER.error(Config.LANGUAGE.get('#5'));

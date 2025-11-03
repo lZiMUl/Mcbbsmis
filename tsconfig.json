@@ -1,5 +1,9 @@
 {
   "compilerOptions": {
+    "lib": [
+      "ESNext",
+      "DOM"
+    ],
     "incremental": true,
     "composite": true,
     "tsBuildInfoFile": "tsconfig.tsbuildinfo",

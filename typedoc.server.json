@@ -1,9 +1,14 @@
 {
   "entryPoints": [
-    "./src/server"
+    "./src/server/**/*.ts"
   ],
   "out": "./docs/server/",
   "readme": "README.md",
   "name": "Mcbbsmis Server",
-  "tsconfig": "./tsconfig.server.json"
+  "tsconfig": "./tsconfig.server.json",
+  "gitRemote": "Mcbbsmis",
+  "gitRevision": "main",
+  "excludePrivate": true,
+  "excludeInternal": true,
+  "categorizeByGroup": true
 }
