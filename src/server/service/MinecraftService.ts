@@ -5,13 +5,12 @@ import ICommandResult from '../interface/ICommandResult';
 import IEventResult from '../interface/IEventResult';
 
 class MinecraftService {
-  private readonly identifier: string =
-    Config.get('global', 'identifier') || '$';
+  private readonly identifier: string = Config.get('global', 'identifier');
   private readonly identifierRegExp: string = `(${this.identifier.replace(
     /[-/\\^$*+?.()|[\]{}]/g,
     '\\$&'
   )})([\\w\\u4e00-\\u9fa5]+)\\s*(.*)`;
-  public readonly player: string = Config.get('xbox', 'username') || 'lZiMUl';
+  public readonly player: string = Config.get('xbox', 'username');
   private socket: WebSocket;
 
   public constructor(socket: InstanceType<typeof WebSocket>) {

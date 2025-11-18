@@ -28,8 +28,8 @@ function App(): void {
     const options: OptionValues = program.opts();
     if (options.configurePanel) {
       const [host, port] = [
-        Config.get('global', 'host') || '0.0.0.0',
-        (Config.get('global', 'port') || 5700) + 1
+        Config.get('global', 'host'),
+        Config.get('global', 'port') + 1
       ];
       WebService.listen(
         {
@@ -52,5 +52,6 @@ function App(): void {
 update().finally((): void => {
   Config.LOGGER.info(Config.LANGUAGE.get('#8'));
   InitUnit();
-  App();
 });
+
+export default App;

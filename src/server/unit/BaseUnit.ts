@@ -1,5 +1,4 @@
 import IConfigurationTemplate from '../interface/IConfigurationTemplate';
-import LanguageEnum from '../enum/LanguageEnum';
 
 class BaseUnit {
   public static debounce<T>(
@@ -14,22 +13,22 @@ class BaseUnit {
   }
 
   public static ConfigurationTemplate({
-    host = '0.0.0.0',
-    port = 5700,
-    language = LanguageEnum.EN_US,
-    identifier = '$',
-    join = false,
-    follow = false,
-    share = false,
-    view = false,
-    online = false,
-    like = false,
-    danmaku = false,
-    gift = false,
-    roomid = 9329583,
-    userid = 291883246,
-    username_bili = 'lZiMUl',
-    username_xbox = 'lZiMUl'
+    host,
+    port,
+    language,
+    identifier,
+    join,
+    follow,
+    share,
+    view,
+    online,
+    like,
+    danmaku,
+    gift,
+    roomid,
+    userid,
+    username_bili,
+    username_xbox
   }: IConfigurationTemplate): string {
     return `# ==============================
 # Mcbbsmis Configs File

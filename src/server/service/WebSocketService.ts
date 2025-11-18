@@ -24,7 +24,7 @@ class WebsocketService extends WebSocketServer {
   private readonly userConfig: IConfig = {
     Cookie: this.auth.get(Config.APP_UUID)
   };
-  private readonly roomId: number = Config.get('bilibili', 'roomid') || 9329583;
+  private readonly roomId: number = Config.get('bilibili', 'roomid');
   private readonly bili: BiliSender = new BiliSender(
     this.roomId,
     this.userConfig
@@ -46,8 +46,8 @@ class WebsocketService extends WebSocketServer {
   public static create(): WebsocketService {
     if (!WebsocketService.websocketService) {
       WebsocketService.websocketService = new WebsocketService(
-        Config.get('global', 'host') || '0.0.0.0',
-        Config.get('global', 'port') || 5700
+        Config.get('global', 'host'),
+        Config.get('global', 'port')
       );
     }
     return WebsocketService.websocketService;
@@ -96,14 +96,14 @@ class WebsocketService extends WebSocketServer {
         danmakuStatus,
         giftStatus
       ]: Array<boolean> = [
-        Config.get('options', 'join') || false,
-        Config.get('options', 'follow') || false,
-        Config.get('options', 'share') || false,
-        Config.get('options', 'view') || false,
-        Config.get('options', 'online') || false,
-        Config.get('options', 'like') || true,
-        Config.get('options', 'danmaku') || true,
-        Config.get('options', 'gift') || true
+        Config.get('options', 'join'),
+        Config.get('options', 'follow'),
+        Config.get('options', 'share'),
+        Config.get('options', 'view'),
+        Config.get('options', 'online'),
+        Config.get('options', 'like'),
+        Config.get('options', 'danmaku'),
+        Config.get('options', 'gift')
       ];
 
       const { KeepLiveWS } = await this.tinyBiliWs;
@@ -112,7 +112,7 @@ class WebsocketService extends WebSocketServer {
         headers: {
           Cookie: this.auth.get(Config.APP_UUID)
         },
-        uid: Config.get('bilibili', 'userid') || 291883246
+        uid: Config.get('bilibili', 'userid')
       });
 
       this.tickerService.tick((): void => {
