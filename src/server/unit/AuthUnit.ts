@@ -16,7 +16,7 @@ class Cookie {
   private readonly path: string;
 
   public constructor(path: string = './config/cookies/') {
-    this.path = join(resolve(), path);
+    this.path = join(resolve('.'), path);
     if (!existsSync(this.path)) mkdirSync(this.path, { recursive: true });
   }
   public has(username: string): boolean {

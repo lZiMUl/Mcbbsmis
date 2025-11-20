@@ -12,18 +12,9 @@ function saveFile(path: string, data: string): void {
   });
 }
 
-function InitUnit(force: boolean | any = false): void {
+function InitUnit(force: boolean = false): void {
   if (!existsSync(Config.CONFIG_PATH))
     mkdirSync(Config.CONFIG_PATH, { recursive: true });
-  const configExists: boolean = existsSync(Config.CONFIG_FILE_PATH);
-  if (!configExists) {
-    Config.LOGGER.warn(Config.LANGUAGE.get('#1'));
-    Config.LOGGER.info(Config.LANGUAGE.get('#2'));
-    OptionsUnit().then((result: IOptionsG): void => {
-      saveFile(Config.CONFIG_FILE_PATH, BaseUnit.ConfigurationTemplate(result));
-      App();
-    });
-  }
   if (force) {
     Config.LOGGER.info(Config.LANGUAGE.get('#2'));
     saveFile(
@@ -48,10 +39,31 @@ function InitUnit(force: boolean | any = false): void {
       })
     );
     App();
+    return;
   }
-  if (configExists) {
-    App();
+  const configExists: boolean = existsSync(Config.CONFIG_FILE_PATH);
+  if (!configExists) {
+    Config.LOGGER.warn(Config.LANGUAGE.get('#1'));
+    Config.LOGGER.info(Config.LANGUAGE.get('#2'));
+    OptionsUnit().then((result: IOptionsG | void): void => {
+      if (result) {
+        saveFile(
+          Config.CONFIG_FILE_PATH,
+          BaseUnit.ConfigurationTemplate(result)
+        );
+        Config.LOGGER.info(
+          '✅ Configuration completed. Please restart the project to take effect.'
+        );
+        Config.LOGGER.info(
+          'The program will exit automatically in 2 seconds...\n'
+        );
+        setTimeout((): never => process.exit(0), 2 * 1000);
+      }
+    });
+    return;
   }
+
+  App();
 }
 
 export default InitUnit;

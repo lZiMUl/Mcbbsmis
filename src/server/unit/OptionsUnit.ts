@@ -1,6 +1,7 @@
 // @ts-ignore
 import { input, number, select, checkbox, confirm } from '@inquirer/prompts';
 import LanguageEnum from '../enum/LanguageEnum';
+import Config from '../config';
 
 interface IOptions {
   join: boolean;
@@ -42,118 +43,146 @@ function OptionsG(data: Array<keyof IOptions>): IOptions {
   return options;
 }
 
-async function OptionsUnit(): Promise<IOptionsG> {
-  const language: LanguageEnum = await select({
-    message: 'Languages: ',
-    choices: [
-      {
-        name: 'English',
-        value: LanguageEnum.EN_US
-      },
-      {
-        name: 'русский язык',
-        value: LanguageEnum.RU_RU
-      },
-      {
-        name: '简体中文',
-        value: LanguageEnum.ZH_CN
-      },
-      {
-        name: '繁體中文',
-        value: LanguageEnum.ZH_TW
-      },
-      {
-        name: '日本語',
-        value: LanguageEnum.JA_JP
-      },
-      {
-        name: 'Français',
-        value: LanguageEnum.FR_FR
-      },
-      {
-        name: 'Deutsch',
-        value: LanguageEnum.DE_DE
-      }
-    ]
-  });
+const max: number = 3;
 
-  const [
-    host,
-    port,
-    identifier,
-    roomid,
-    userid,
-    username_bili,
-    username_xbox
-  ]: [string, number, string, number, number, string, string] = [
-    await input({ message: 'Host: ', default: '0.0.0.0' }),
-    (await number({ message: 'Port: ', default: 5700 })) as number,
-    await input({
-      message: 'Command Identifier: ',
-      default: '$',
-      pattern: /[-/\\^$*+?.()|[\]{}]/g,
-      patternError: 'Identifier length 1 only'
-    }),
-    (await number({
-      message: 'BiliBili Room Number: ',
-      required: true,
-      default: 9329583
-    })) as number,
-    (await number({
-      message: 'BiliBili UserID: ',
-      required: true,
-      default: 291883246
-    })) as number,
-    await input({
-      message: 'BiliBili Username: ',
-      required: true,
-      default: 'lZiMUl'
-    }),
-    await input({
-      message: 'Minecraft Username: ',
-      required: true,
-      default: 'lZiMUl'
-    })
-  ];
+type TLogSeparator = (title: string, i?: number | undefined) => void;
 
-  const options: IOptions = OptionsG(
-    await checkbox({
-      message: 'Listen Events: ',
-      choices: [
-        { name: 'Join', value: 'join' },
-        { name: 'Follow', value: 'follow' },
-        { name: 'Share', value: 'share' },
-        { name: 'View', value: 'view' },
-        { name: 'Online', value: 'online' },
-        { name: 'Like', value: 'like', checked: true },
-        { name: 'Danmaku', value: 'danmaku', checked: true },
-        { name: 'Gift', value: 'gift', checked: true }
-      ]
-    })
-  );
-
-  if (!(await confirm({ message: 'Continue?' }))) {
-    await OptionsUnit();
-  }
-
-  return {
-    host,
-    port,
-    language,
-    identifier,
-    join: options.join,
-    follow: options.follow,
-    share: options.share,
-    view: options.view,
-    online: options.online,
-    like: options.like,
-    danmaku: options.danmaku,
-    gift: options.gift,
-    roomid,
-    userid,
-    username_bili,
-    username_xbox
+function logSeparator(max: number): TLogSeparator {
+  return function (title: string, i?: number): void {
+    Config.LOGGER.info(
+      `\n──────────────  ${title} ${i ? `[${i}/${max}] ` : ''} ──────────────\n`
+    );
   };
+}
+
+const retryBar: TLogSeparator = logSeparator(max);
+const stepBar: TLogSeparator = logSeparator(4);
+
+async function OptionsUnit(i: number = 1): Promise<IOptionsG | void> {
+  try {
+    if (i > max) {
+      Config.LOGGER.warn('Too many failed attempts. Exiting.');
+      process.exit(0);
+    }
+
+    retryBar('Retry Bar', i);
+    // Language
+    stepBar('Choose Language', 1);
+    const language: LanguageEnum = await select({
+      message: 'Language: ',
+      choices: [
+        {
+          name: 'English',
+          value: LanguageEnum.EN_US
+        },
+        {
+          name: 'русский язык',
+          value: LanguageEnum.RU_RU
+        },
+        {
+          name: '简体中文',
+          value: LanguageEnum.ZH_CN
+        },
+        {
+          name: '繁體中文',
+          value: LanguageEnum.ZH_TW
+        },
+        {
+          name: '日本語',
+          value: LanguageEnum.JA_JP
+        },
+        {
+          name: 'Français',
+          value: LanguageEnum.FR_FR
+        },
+        {
+          name: 'Deutsch',
+          value: LanguageEnum.DE_DE
+        }
+      ]
+    });
+
+    // Configure
+    stepBar('Next: Configure Host/Port/User', 2);
+    const [
+      host,
+      port,
+      identifier,
+      roomid,
+      userid,
+      username_bili,
+      username_xbox
+    ]: [string, number, string, number, number, string, string] = [
+      await input({ message: 'Host: ', default: '0.0.0.0', required: true }),
+      await number({ message: 'Port: ', default: 5700, required: true }),
+      await input({
+        message: 'Command Identifier: ',
+        default: '$',
+        required: true,
+        pattern: /^[!-/:-@[-`{-~]$/,
+        patternError: 'Identifier must be exactly 1 ASCII symbol character'
+      }),
+      await number({
+        message: 'BiliBili Room Number: ',
+        default: 9329583,
+        required: true
+      }),
+      await number({
+        message: 'BiliBili UserID: ',
+        default: 291883246,
+        required: true
+      }),
+      await input({
+        message: 'BiliBili Username: ',
+        default: 'lZiMUl',
+        required: true
+      }),
+      await input({
+        message: 'Minecraft Username: ',
+        default: 'lZiMUl',
+        required: true
+      })
+    ];
+
+    // Events
+    stepBar('Next: Select Listen Events', 3);
+    const options: IOptions = OptionsG(
+      await checkbox({
+        message: 'Listen Events: ',
+        choices: [
+          { name: 'Join', value: 'join' },
+          { name: 'Follow', value: 'follow' },
+          { name: 'Share', value: 'share' },
+          { name: 'View', value: 'view' },
+          { name: 'Online', value: 'online' },
+          { name: 'Like', value: 'like', checked: true },
+          { name: 'Danmaku', value: 'danmaku', checked: true },
+          { name: 'Gift', value: 'gift', checked: true }
+        ],
+        required: true
+      })
+    );
+
+    // Continue
+    stepBar('Final Step: Is the current configuration correct?', 4);
+    if (!(await confirm({ message: 'Continue?', default: false }))) {
+      return await OptionsUnit(i + 1);
+    }
+
+    return {
+      host,
+      port,
+      language,
+      identifier,
+      roomid,
+      userid,
+      username_bili,
+      username_xbox,
+      ...options
+    };
+  } catch (err) {
+    Config.LOGGER.warn('Project was forcibly stopped by the user.');
+  }
 }
 
 export default OptionsUnit;
