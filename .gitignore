@@ -1,6 +1,7 @@
 /.git
 /build
 /config
+/docs
 /lib
 /node_modules
 /public/css
