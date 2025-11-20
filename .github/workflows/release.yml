@@ -95,11 +95,13 @@ jobs:
         id: changelog
         run: |
           echo "Generating changelog..."
-          echo "changelog<<EOF" >> $GITHUB_OUTPUT
-          git log $(git describe --tags --abbrev=0 2>/dev/null)..HEAD \
-            --pretty=format:"- %s (%an)" || echo "Initial release"
-          echo "" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          {
+            echo "changelog<<EOF"
+            git log $(git describe --tags --abbrev=0 2>/dev/null)..HEAD \
+              --pretty=format:"- %s (%an)" || echo "- Initial release"
+            echo "EOF"
+          } >> $GITHUB_OUTPUT
+
 
       - name: Zip Selected Files and Folders
         id: zip
