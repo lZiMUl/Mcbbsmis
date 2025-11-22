@@ -1,4 +1,4 @@
-enum LiveEventEnum {
+enum ELiveEvent {
   USER_JOIN = 'USER_JOIN',
   USER_FOLLOW = 'USER_FOLLOW',
   USER_SHARE = 'USER_SHARE',
@@ -9,4 +9,4 @@ enum LiveEventEnum {
   SEND_GIFT = 'SEND_GIFT'
 }
 
-export { LiveEventEnum };
+export { ELiveEvent };

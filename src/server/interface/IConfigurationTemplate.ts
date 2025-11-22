@@ -1,9 +1,9 @@
-import LanguageEnum from '../enum/LanguageEnum';
+import ELanguage from '../enum/ELanguage';
 
 interface IConfigurationTemplate {
   host: string;
   port: number;
-  language: LanguageEnum;
+  language: ELanguage;
   identifier: string;
   join: boolean;
   follow: boolean;

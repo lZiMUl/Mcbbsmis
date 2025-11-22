@@ -1,4 +1,4 @@
-import LanguageEnum from '../enum/LanguageEnum';
+import ELanguage from '../enum/ELanguage';
 
 type toggle = boolean;
 
@@ -6,7 +6,7 @@ interface IGlobalConfig {
   global: {
     host: string;
     port: number;
-    language: LanguageEnum;
+    language: ELanguage;
     identifier: string;
   };
   options: {

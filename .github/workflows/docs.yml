@@ -7,6 +7,8 @@ on:
 jobs:
   typedoc:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
@@ -16,7 +18,6 @@ jobs:
       - run: npm run typedoc:client
       - run: npm run typedoc:server
       - name: Deploy to gh-pages
-        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs

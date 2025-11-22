@@ -1,4 +1,9 @@
 import IConfigurationTemplate from '../interface/IConfigurationTemplate';
+import Config from '../config';
+import IProfileTemplate, { IProfile } from '../interface/IProfileTemplate';
+import { writeFileSync } from 'node:fs';
+
+type TLogSeparator = (title: string, i?: number | undefined) => void;
 
 class BaseUnit {
   public static debounce<T>(
@@ -10,6 +15,24 @@ class BaseUnit {
       clearTimeout(time);
       time = setTimeout((): void => cb(data as T), delay * 1000);
     };
+  }
+
+  public static ProfileTemplate({
+    lastUsed,
+    profiles
+  }: IProfileTemplate): string {
+    return JSON.stringify(
+      {
+        lastUsed,
+        profiles: [
+          ...profiles.map((data: IProfile): IProfile => {
+            return { ...data, createTime: new Date().getTime() };
+          })
+        ]
+      },
+      null,
+      2
+    );
   }
 
   public static ConfigurationTemplate({
@@ -108,6 +131,22 @@ username = "${username_xbox}"
 
 `;
   }
+
+  public static logSeparator(max: number): TLogSeparator {
+    return function (title: string, i?: number): void {
+      Config.LOGGER.info(
+        `\n──────────────  ${title} ${i ? `[${i}/${max}] ` : ''} ──────────────\n`
+      );
+    };
+  }
+
+  public static saveFile(path: string, data: string): void {
+    writeFileSync(path, data, {
+      encoding: 'utf-8',
+      flag: 'w'
+    });
+  }
 }
 
 export default BaseUnit;
+export type { TLogSeparator };

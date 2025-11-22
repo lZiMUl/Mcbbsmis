@@ -91,17 +91,24 @@ jobs:
       - name: Push tag
         run: git push origin v${{ steps.version.outputs.version }}
 
-      - name: Generate changelog
+      - name: Extract changelog for current or latest version
         id: changelog
         run: |
-          echo "Generating changelog..."
-          {
-            echo "changelog<<EOF"
-            git log $(git describe --tags --abbrev=0 2>/dev/null)..HEAD \
-              --pretty=format:"- %s (%an)" || echo "- Initial release"
-            echo "EOF"
-          } >> $GITHUB_OUTPUT
-
+          VERSION=$(node -p "require('./package.json').version")
+          if grep -q "## \[$VERSION\]" CHANGELOG.md; then
+          SELECTED_VERSION="$VERSION"
+          else
+          SELECTED_VERSION=$(grep -Eo '^## \[[0-9]+\.[0-9]+\.[0-9]+([-+][A-Za-z0-9.-]+)?\]' CHANGELOG.md | head -n 1 | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+([-+][A-Za-z0-9.-]+)?')
+          fi
+          echo "Using version: $SELECTED_VERSION"
+          changelog=$(awk -v ver="$SELECTED_VERSION" '
+          $0 ~ ("## \\[" ver "\\]") {flag=1; next} 
+          /^## \[/ && flag {flag=0} 
+          flag
+          ' CHANGELOG.md)
+          echo "changelog<<EOF_CHANGLOG" >> $GITHUB_OUTPUT
+          echo "$changelog" >> $GITHUB_OUTPUT
+          echo "EOF_CHANGLOG" >> $GITHUB_OUTPUT
 
       - name: Zip Selected Files and Folders
         id: zip

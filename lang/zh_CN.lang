@@ -10,7 +10,7 @@
 <string key="#8">正在启动服务</string>
 <string key="#9">未检测到登录</string>
 <string key="#10">正在生成登录二维码</string>
-<string key="#11">请使用手机客户端扫码登</string>
+<string key="#11">请使用手机客户端扫码登录</string>
 <string key="#12">已扫码, 请确认</string>
 <string key="#13">已成功登录</string>
 <string key="#14">未知操作状态代码</string>
