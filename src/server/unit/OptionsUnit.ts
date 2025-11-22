@@ -1,7 +1,8 @@
 // @ts-ignore
 import { input, number, select, checkbox, confirm } from '@inquirer/prompts';
-import LanguageEnum from '../enum/LanguageEnum';
+import ELanguage from '../enum/ELanguage';
 import Config from '../config';
+import BaseUnit, { TLogSeparator } from './BaseUnit';
 
 interface IOptions {
   join: boolean;
@@ -17,7 +18,7 @@ interface IOptions {
 interface IOptionsG extends IOptions {
   host: string;
   port: number;
-  language: LanguageEnum;
+  language: ELanguage;
   identifier: string;
   roomid: number;
   userid: number;
@@ -45,18 +46,8 @@ function OptionsG(data: Array<keyof IOptions>): IOptions {
 
 const max: number = 3;
 
-type TLogSeparator = (title: string, i?: number | undefined) => void;
-
-function logSeparator(max: number): TLogSeparator {
-  return function (title: string, i?: number): void {
-    Config.LOGGER.info(
-      `\n──────────────  ${title} ${i ? `[${i}/${max}] ` : ''} ──────────────\n`
-    );
-  };
-}
-
-const retryBar: TLogSeparator = logSeparator(max);
-const stepBar: TLogSeparator = logSeparator(4);
+const retryBar: TLogSeparator = BaseUnit.logSeparator(max);
+const stepBar: TLogSeparator = BaseUnit.logSeparator(4);
 
 async function OptionsUnit(i: number = 1): Promise<IOptionsG | void> {
   try {
@@ -68,36 +59,36 @@ async function OptionsUnit(i: number = 1): Promise<IOptionsG | void> {
     retryBar('Retry Bar', i);
     // Language
     stepBar('Choose Language', 1);
-    const language: LanguageEnum = await select({
+    const language: ELanguage = await select({
       message: 'Language: ',
       choices: [
         {
           name: 'English',
-          value: LanguageEnum.EN_US
+          value: ELanguage.EN_US
         },
         {
           name: 'русский язык',
-          value: LanguageEnum.RU_RU
+          value: ELanguage.RU_RU
         },
         {
           name: '简体中文',
-          value: LanguageEnum.ZH_CN
+          value: ELanguage.ZH_CN
         },
         {
           name: '繁體中文',
-          value: LanguageEnum.ZH_TW
+          value: ELanguage.ZH_TW
         },
         {
           name: '日本語',
-          value: LanguageEnum.JA_JP
+          value: ELanguage.JA_JP
         },
         {
           name: 'Français',
-          value: LanguageEnum.FR_FR
+          value: ELanguage.FR_FR
         },
         {
           name: 'Deutsch',
-          value: LanguageEnum.DE_DE
+          value: ELanguage.DE_DE
         }
       ]
     });
@@ -180,7 +171,7 @@ async function OptionsUnit(i: number = 1): Promise<IOptionsG | void> {
       username_xbox,
       ...options
     };
-  } catch (err) {
+  } catch (error) {
     Config.LOGGER.warn('Project was forcibly stopped by the user.');
   }
 }

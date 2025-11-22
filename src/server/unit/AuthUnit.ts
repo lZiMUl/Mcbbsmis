@@ -1,4 +1,4 @@
-import { join, resolve } from 'node:path';
+import { join } from 'node:path';
 import {
   existsSync,
   mkdirSync,
@@ -15,30 +15,30 @@ import Config from '../config';
 class Cookie {
   private readonly path: string;
 
-  public constructor(path: string = './config/cookies/') {
-    this.path = join(resolve('.'), path);
+  public constructor(path: string = Config.COOKIES_DIR_PATH) {
+    this.path = path;
     if (!existsSync(this.path)) mkdirSync(this.path, { recursive: true });
   }
-  public has(username: string): boolean {
-    return existsSync(join(this.path, `./${username}.txt`));
+  public has(uuid: string): boolean {
+    return existsSync(join(this.path, `./${uuid}.txt`));
   }
 
-  public get(username: string): string {
-    return readFileSync(join(this.path, `./${username}.txt`), {
+  public get(uuid: string): string {
+    return readFileSync(join(this.path, `./${uuid}.txt`), {
       encoding: 'utf-8',
       flag: 'r'
     });
   }
 
-  public set(username: string, cookie: string): void {
-    writeFileSync(join(this.path, `./${username}.txt`), cookie, {
+  public set(uuid: string, cookie: string): void {
+    writeFileSync(join(this.path, `./${uuid}.txt`), cookie, {
       encoding: 'utf-8',
       flag: 'w'
     });
   }
 
-  public delete(username: string): void {
-    rmSync(join(this.path, `./${username}.txt`), {
+  public delete(uuid: string): void {
+    rmSync(join(this.path, `./${uuid}.txt`), {
       force: true,
       retryDelay: 1000
     });
@@ -55,20 +55,20 @@ class AuthUnit extends Cookie {
     Referer: 'https://www.bilibili.com'
   });
 
-  private constructor(username: string) {
+  private constructor(uuid: string) {
     super();
-    this.getUser(username);
+    this.getUser(uuid);
   }
 
-  public static create(username: string): AuthUnit {
+  public static create(uuid: string): AuthUnit {
     if (!AuthUnit.AuthUnit) {
-      AuthUnit.AuthUnit = new AuthUnit(username);
+      AuthUnit.AuthUnit = new AuthUnit(uuid);
     }
     return AuthUnit.AuthUnit;
   }
 
-  private async getUser(username: string): Promise<void> {
-    if (!super.has(username)) {
+  private async getUser(uuid: string): Promise<void> {
+    if (!super.has(uuid)) {
       Config.LOGGER.warn(Config.LANGUAGE.get('#9'));
       try {
         const {
@@ -98,7 +98,7 @@ class AuthUnit extends Cookie {
               {
                 Config.LOGGER.info(Config.LANGUAGE.get('#13'));
                 super.set(
-                  username,
+                  uuid,
                   Reflect.get(data.headers, 'set-cookie')?.join('; ') as string
                 );
                 clearInterval(checkLogin);
@@ -119,14 +119,14 @@ class AuthUnit extends Cookie {
 
             default: {
               Config.LOGGER.error(`${Config.LANGUAGE.get('#14')} ${code}`);
-              super.delete(username);
+              super.delete(uuid);
               process.exit(0);
             }
           }
         }, 2000);
       } catch (err: unknown) {
         Config.LOGGER.error(Config.LANGUAGE.get('#21'));
-        super.delete(username);
+        super.delete(uuid);
         process.exit(0);
       }
     }

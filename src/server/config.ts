@@ -3,12 +3,13 @@ import { name, version } from '../package.json';
 import { join, resolve } from 'node:path';
 import { readFileSync } from 'node:fs';
 
-import log4js, { Logger } from 'log4js';
+import log4js, { Log4js, Logger } from 'log4js';
 import { parse } from 'toml';
 
 import LanguageUnit from './unit/LanguageUnit';
 import IGlobalConfig from './interface/IGlobalConfig';
 import InitUnit from './unit/InitUnit';
+import ProfileManager from './unit/ProfileManagerUnit';
 
 class Config {
   // App Config
@@ -24,15 +25,30 @@ class Config {
 
   // Path Config
   public static readonly ROOT_PATH: string = resolve('.');
-  public static readonly CONFIG_PATH: string = join(Config.ROOT_PATH, 'config');
-  public static readonly CONFIG_FILE_PATH: string = join(
-    Config.CONFIG_PATH,
-    'default.toml'
+  public static readonly CONFIG_ROOT_PATH: string = join(
+    Config.ROOT_PATH,
+    'config'
+  );
+  public static readonly PROFILES_FILE_PATH: string = join(
+    Config.CONFIG_ROOT_PATH,
+    'profiles.json'
+  );
+  public static readonly PROFILES_DIR_PATH: string = join(
+    Config.CONFIG_ROOT_PATH,
+    'profiles'
+  );
+  public static readonly COOKIES_DIR_PATH: string = join(
+    Config.CONFIG_ROOT_PATH,
+    'cookies'
   );
   public static readonly PROTO_PATH: string = join(Config.ROOT_PATH, 'proto');
   public static readonly PROTO_FILE_PATH: string = join(
     Config.PROTO_PATH,
     'InteractWordV2.proto'
+  );
+
+  static readonly ProfileManager: ProfileManager = ProfileManager.create(
+    Config.PROFILES_FILE_PATH
   );
 
   // Update Config
@@ -45,19 +61,57 @@ class Config {
   );
 
   //log4js Config
+  public static readonly Log4js: Log4js = log4js.configure({
+    appenders: {
+      console: { type: 'console' },
+      [Config.APP_NAME]: {
+        type: 'dateFile',
+        filename: `./logs/${Config.APP_NAME}`,
+        pattern: '-yyyy-MM-dd-HH-mm-ss.log',
+        alwaysIncludePattern: true
+      },
+
+      [`${Config.APP_NAME}-Filter`]: {
+        type: 'logLevelFilter',
+        appender: Config.APP_NAME,
+        level: 'trace',
+        maxLevel: 'fatal'
+      }
+    },
+    categories: {
+      default: {
+        appenders: ['console', `${Config.APP_NAME}-Filter`],
+        level: 'info'
+      },
+      [Config.APP_NAME]: {
+        appenders: ['console', `${Config.APP_NAME}-Filter`],
+        level: 'info'
+      }
+    }
+  });
   public static readonly LOGGER: Logger = log4js.getLogger(Config.APP_NAME);
-  public static readonly LOGGER_CONFIG: 'info' = (Config.LOGGER.level = 'info');
 
   public static CONFIG_CONTENT: IGlobalConfig;
 
-  public static reload(): void {
-    Config.LANGUAGE.reload();
-    Config.CONFIG_CONTENT = parse(
-      readFileSync(Config.CONFIG_FILE_PATH, {
-        encoding: 'utf-8',
-        flag: 'r'
-      })
+  public static get getProfilePath(): string {
+    return Config.ProfileManager.getFilePathById(
+      Config.ProfileManager.getLastUsed
     );
+  }
+
+  public static reload(): void {
+    try {
+      Config.LANGUAGE.reload();
+      Config.CONFIG_CONTENT = parse(
+        readFileSync(Config.getProfilePath, {
+          encoding: 'utf-8',
+          flag: 'r'
+        })
+      );
+    } catch (error) {
+      Config.LOGGER.error(Config.LANGUAGE.get('#7'));
+      InitUnit(true);
+    }
   }
 
   public static get<
@@ -66,12 +120,7 @@ class Config {
   >(root: T, key: V): IGlobalConfig[T][V] {
     try {
       if (!Config.CONFIG_CONTENT) {
-        Config.CONFIG_CONTENT = parse(
-          readFileSync(Config.CONFIG_FILE_PATH, {
-            encoding: 'utf-8',
-            flag: 'r'
-          })
-        );
+        Config.reload();
       }
       const data: IGlobalConfig[T][V] = Config.CONFIG_CONTENT[root][key];
       Config.LOGGER.info(
@@ -79,7 +128,7 @@ class Config {
       );
       if (data === void 0) throw new Error();
       return data;
-    } catch (e) {
+    } catch (error) {
       Config.LOGGER.error(Config.LANGUAGE.get('#7'));
       InitUnit(true);
       return this.get(root, key);

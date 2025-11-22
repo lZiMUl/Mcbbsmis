@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', async function () {
   const select: HTMLElement = document.getElementById(
     'language-select'
   ) as HTMLElement;
-  const error: HTMLElement = document.getElementById(
+  const errorElement: HTMLElement = document.getElementById(
     'lang-error'
   ) as HTMLElement;
 
@@ -25,8 +25,8 @@ document.addEventListener('DOMContentLoaded', async function () {
       opt.textContent = `${lang.name} (${lang.code})`;
       select.appendChild(opt);
     });
-  } catch (err) {
+  } catch (error) {
     select.innerHTML = '<option value="">Select language</option>';
-    error.style.display = 'block';
+    errorElement.style.display = 'block';
   }
 });

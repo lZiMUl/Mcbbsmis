@@ -4,7 +4,7 @@ import Config from '../config';
 import AuthUnit from '../unit/AuthUnit';
 import MinecraftService from './MinecraftService';
 import BiliBiliService from './BiliBiliService';
-import { LiveEventEnum } from '../enum/LiveEventEnum';
+import { ELiveEvent } from '../enum/ELiveEvent';
 import {
   IOnlineCount,
   ISendDanmaku,
@@ -118,7 +118,7 @@ class WebsocketService extends WebSocketServer {
       this.tickerService.tick((): void => {
         const ActionBar: Array<string> = [];
         const joinUser: string | null = this.tickerService.getData<string>(
-          LiveEventEnum.USER_JOIN
+          ELiveEvent.USER_JOIN
         );
 
         if (joinStatus && joinUser) {
@@ -130,14 +130,14 @@ class WebsocketService extends WebSocketServer {
         if (viewStatus)
           ActionBar.push(
             `§f${viewText}§d: §b[§f${
-              this.tickerService.getData<number>(LiveEventEnum.VIEW_COUNT) ||
+              this.tickerService.getData<number>(ELiveEvent.VIEW_COUNT) ||
               loadingText
             }§b]`
           );
         if (onlineStatus)
           ActionBar.push(
             `§f${onlineText}§d: §b[§f${
-              this.tickerService.getData<number>(LiveEventEnum.ONLINE_COUNT) ||
+              this.tickerService.getData<number>(ELiveEvent.ONLINE_COUNT) ||
               loadingText
             }§b]`
           );
@@ -155,21 +155,21 @@ class WebsocketService extends WebSocketServer {
       const biliBiliService: BiliBiliService = new BiliBiliService(client);
       const hideUserJoin: (data: null) => void = BaseUnit.debounce(
         (data: null): void => {
-          this.tickerService.setData(LiveEventEnum.USER_JOIN, data);
+          this.tickerService.setData(ELiveEvent.USER_JOIN, data);
         },
         10
       );
       biliBiliService.addService<IUserJoin>(
-        LiveEventEnum.USER_JOIN,
+        ELiveEvent.USER_JOIN,
         ({ uname }: IUserJoin): void => {
           Config.LOGGER.info(`${joinText.replace('%s', `[${uname}]`)}`);
-          this.tickerService.setData(LiveEventEnum.USER_JOIN, uname);
+          this.tickerService.setData(ELiveEvent.USER_JOIN, uname);
           hideUserJoin(null);
         },
         joinStatus
       );
       biliBiliService.addService<IUserFollow>(
-        LiveEventEnum.USER_FOLLOW,
+        ELiveEvent.USER_FOLLOW,
         ({ uname }: IUserFollow): void => {
           Config.LOGGER.info(`[${uname}]: ${followText}`);
           this.minecraft?.sendMessage(
@@ -179,7 +179,7 @@ class WebsocketService extends WebSocketServer {
         followStatus
       );
       biliBiliService.addService<IUserShare>(
-        LiveEventEnum.USER_SHARE,
+        ELiveEvent.USER_SHARE,
         ({ uname }: IUserShare): void => {
           Config.LOGGER.info(`[${uname}]: ${shareText}`);
           this.minecraft?.sendMessage(
@@ -189,22 +189,22 @@ class WebsocketService extends WebSocketServer {
         shareStatus
       );
       biliBiliService.addService<IViewCount>(
-        LiveEventEnum.VIEW_COUNT,
+        ELiveEvent.VIEW_COUNT,
         ({ num }: IViewCount): void => {
-          this.tickerService.setData(LiveEventEnum.VIEW_COUNT, num);
+          this.tickerService.setData(ELiveEvent.VIEW_COUNT, num);
         },
         viewStatus
       );
       biliBiliService.addService<IOnlineCount>(
-        LiveEventEnum.ONLINE_COUNT,
+        ELiveEvent.ONLINE_COUNT,
         ({ count }: IOnlineCount): void => {
-          this.tickerService.setData(LiveEventEnum.ONLINE_COUNT, count);
+          this.tickerService.setData(ELiveEvent.ONLINE_COUNT, count);
         },
         onlineStatus
       );
 
       biliBiliService.addService<IUserLike>(
-        LiveEventEnum.USER_LIKE,
+        ELiveEvent.USER_LIKE,
         ({ uname }: IUserLike): void => {
           Config.LOGGER.info(`[${uname}]: ${likeText}`);
           this.minecraft?.sendMessage(
@@ -214,7 +214,7 @@ class WebsocketService extends WebSocketServer {
         likeStatus
       );
       biliBiliService.addService<ISendDanmaku>(
-        LiveEventEnum.SEND_DANMAKU,
+        ELiveEvent.SEND_DANMAKU,
         ({
           uname,
           danmu,
@@ -233,7 +233,7 @@ class WebsocketService extends WebSocketServer {
         danmakuStatus
       );
       biliBiliService.addService<ISendGift>(
-        LiveEventEnum.SEND_GIFT,
+        ELiveEvent.SEND_GIFT,
         ({ uname, action, giftName, num }: ISendGift): void => {
           biliBiliService.giftDebounce(
             ({ uname, action, giftName, num }: ISendGift): void => {

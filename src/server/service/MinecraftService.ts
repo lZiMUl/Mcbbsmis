@@ -3,6 +3,7 @@ import BiliSender from 'bili-sender';
 import Config from '../config';
 import ICommandResult from '../interface/ICommandResult';
 import IEventResult from '../interface/IEventResult';
+import { faker } from '@faker-js/faker';
 
 class MinecraftService {
   private readonly identifier: string = Config.get('global', 'identifier');
@@ -34,7 +35,7 @@ class MinecraftService {
           eventName
         },
         header: {
-          requestId: Config.APP_UUID,
+          requestId: faker.string.uuid(),
           messagePurpose: 'subscribe',
           version: 1,
           messageType: 'commandRequest'
@@ -83,6 +84,7 @@ class MinecraftService {
       body: { message, sender, type }
     }: IEventResult = JSON.parse(rawData);
 
+    console.info(JSON.parse(rawData));
     switch (type) {
       case 'chat':
         {
