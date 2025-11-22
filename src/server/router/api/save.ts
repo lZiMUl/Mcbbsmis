@@ -46,7 +46,9 @@ router.post('/', async (ctx): Promise<void> => {
     )
   );
 
-  writeFileSync(Config.CONFIG_FILE_PATH, CONFIG_CONTENT, { encoding: 'utf-8' });
+  writeFileSync(Config.getProfilePath, CONFIG_CONTENT, {
+    encoding: 'utf-8'
+  });
   ctx.body = '<script>window.location.replace(window.location.origin)</script>';
   setTimeout((): never => process.exit(0), 2 * 1000);
 });

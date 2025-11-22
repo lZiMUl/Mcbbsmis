@@ -41,7 +41,6 @@ document.addEventListener('DOMContentLoaded', async function (): Promise<void> {
     ]
       .map(id => document.getElementById(id))
       .forEach(item => {
-        console.info(item);
         if (item)
           switch (item.id) {
             case 'title':
@@ -114,7 +113,7 @@ document.addEventListener('DOMContentLoaded', async function (): Promise<void> {
         document.getElementById('xbox_username-input') as HTMLInputElement
       ).value = config.xbox.username;
     }
-  } catch (err) {
-    console.error('Error loading config:', err);
+  } catch (error) {
+    console.error('Error loading config:', error);
   }
 });

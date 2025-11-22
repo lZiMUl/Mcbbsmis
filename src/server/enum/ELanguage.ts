@@ -1,4 +1,4 @@
-enum LanguageEnum {
+enum ELanguage {
   EN_US = 'en_US',
   RU_RU = 'ru_RU',
   ZH_CN = 'zh_CN',
@@ -8,4 +8,4 @@ enum LanguageEnum {
   DE_DE = 'de_DE'
 }
 
-export default LanguageEnum;
+export default ELanguage;
