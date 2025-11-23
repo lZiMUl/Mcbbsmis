@@ -84,7 +84,6 @@ class MinecraftService {
       body: { message, sender, type }
     }: IEventResult = JSON.parse(rawData);
 
-    console.info(JSON.parse(rawData));
     switch (type) {
       case 'chat':
         {
