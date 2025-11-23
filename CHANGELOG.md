@@ -13,3 +13,6 @@ refactor(app): optimize authentication polling and service startup
 
 ## [1.1.3] - 2025-11-23
 fix(logging): Illegal debug log output
+
+## [1.1.3] - 2025-11-24
+fix(logging): prevent rapid duplicate log file generation, normalize variable and method names
