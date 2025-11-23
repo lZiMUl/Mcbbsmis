@@ -8,6 +8,7 @@ import open from 'open';
 import LogoUnit from './unit/LogoUnit';
 import InitUnit from './unit/InitUnit';
 import { clearInterval, setInterval } from 'node:timers';
+import BaseUnit from './unit/BaseUnit';
 
 function App(uuid: string): void {
   const program: Command = new Command(Config.APP_NAME);
@@ -61,8 +62,12 @@ LogoUnit(`${Config.APP_NAME}`, 100, 100).then(() => {
   });
 });
 
-process.on('SIGINT', () => Config.Log4js.shutdown(() => process.exit(0)));
-process.on('SIGTERM', () => Config.Log4js.shutdown(() => process.exit(0)));
-process.on('beforeExit', () => Config.Log4js.shutdown());
+process.on('SIGINT', (): void =>
+  Config.LOG4JS.shutdown((): void => BaseUnit.exitWithMessage())
+);
+process.on('SIGTERM', (): void =>
+  Config.LOG4JS.shutdown((): void => BaseUnit.exitWithMessage())
+);
+process.on('beforeExit', (): void => Config.LOG4JS.shutdown());
 
 export default App;

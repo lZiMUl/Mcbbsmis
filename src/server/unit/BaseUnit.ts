@@ -17,7 +17,7 @@ class BaseUnit {
     };
   }
 
-  public static ProfileTemplate({
+  public static formatProfileTemplate({
     lastUsed,
     profiles
   }: IProfileTemplate): string {
@@ -35,7 +35,7 @@ class BaseUnit {
     );
   }
 
-  public static ConfigurationTemplate({
+  public static formatConfigurationTemplate({
     host,
     port,
     language,
@@ -132,7 +132,7 @@ username = "${username_xbox}"
 `;
   }
 
-  public static logSeparator(max: number): TLogSeparator {
+  public static createLogSeparator(max: number): TLogSeparator {
     return function (title: string, i?: number): void {
       Config.LOGGER.info(
         `\n──────────────  ${title} ${i ? `[${i}/${max}] ` : ''} ──────────────\n`
@@ -145,6 +145,29 @@ username = "${username_xbox}"
       encoding: 'utf-8',
       flag: 'w'
     });
+  }
+
+  public static exitWithMessage(message?: string, delay: number = 1): void {
+    if (message) {
+      Config.LOGGER.warn(message);
+    }
+    setTimeout((): never => process.exit(0), delay * 1000);
+  }
+
+  public static padZero(num: number): string {
+    return num.toString().padStart(2, '0');
+  }
+
+  public static getCurrentTimestamp(separator: string = '-'): string {
+    const now = new Date();
+    return [
+      now.getFullYear(),
+      BaseUnit.padZero(now.getMonth() + 1),
+      BaseUnit.padZero(now.getDate()),
+      BaseUnit.padZero(now.getHours()),
+      BaseUnit.padZero(now.getMinutes()),
+      BaseUnit.padZero(now.getSeconds())
+    ].join(separator);
   }
 }
 

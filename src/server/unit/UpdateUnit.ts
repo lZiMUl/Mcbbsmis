@@ -14,7 +14,7 @@ async function UpdateUnit(): Promise<void> {
     const { data }: AxiosResponse<VersionResult> = await axios<VersionResult>({
       url: Config.UPDATE_URL,
       method: 'GET',
-      timeout: 3000
+      timeout: 5000
     });
 
     const { version: remoteVersion }: VersionResult = data;

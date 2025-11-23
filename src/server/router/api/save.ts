@@ -40,7 +40,7 @@ router.post('/', async (ctx): Promise<void> => {
   ctx.status = 200;
   ctx.type = 'text/html';
 
-  const CONFIG_CONTENT: string = BaseUnit.ConfigurationTemplate(
+  const CONFIG_CONTENT: string = BaseUnit.formatConfigurationTemplate(
     normalizeConfig(
       ctx.request.body as BooleansToString<IConfigurationTemplate>
     )

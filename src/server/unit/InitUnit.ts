@@ -17,7 +17,7 @@ function InitUnit(force: boolean = false): void {
     Config.LOGGER.info(Config.LANGUAGE.get('#2'));
     BaseUnit.saveFile(
       Config.getProfilePath,
-      BaseUnit.ConfigurationTemplate({
+      BaseUnit.formatConfigurationTemplate({
         host: '0.0.0.0',
         port: 5700,
         language: ELanguage.EN_US,
