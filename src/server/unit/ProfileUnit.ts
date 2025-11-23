@@ -8,30 +8,31 @@ import App from '../index';
 import OptionsUnit, { IOptionsG } from './OptionsUnit';
 import ProfileManager from './ProfileManagerUnit';
 
-const stepBar: TLogSeparator = BaseUnit.logSeparator(0);
+const stepBar: TLogSeparator = BaseUnit.createLogSeparator(0);
 
-async function CreateProfileUnit() {
-  const profileManager: ProfileManager = ProfileManager.create();
-  const profileName: string = await input({
-    message: 'Create an Profile',
-    default: 'Default',
-    required: true
-  });
-  OptionsUnit().then((result: IOptionsG | void): void => {
-    if (result) {
-      BaseUnit.saveFile(
-        profileManager.buildProfilePath(profileName),
-        BaseUnit.ConfigurationTemplate(result)
-      );
-      Config.LOGGER.info(
-        '✅ Configuration completed. Please restart the project to take effect.'
-      );
-      Config.LOGGER.info(
-        'The program will exit automatically in 2 seconds...\n'
-      );
-      setTimeout((): never => process.exit(0), 2 * 1000);
-    }
-  });
+async function CreateProfileUnit(): Promise<void> {
+  try {
+    const profileManager: ProfileManager = ProfileManager.create();
+    const profileName: string = await input({
+      message: 'Create an Profile: ',
+      default: 'Default',
+      required: true
+    });
+    OptionsUnit().then((result: IOptionsG | void): void => {
+      if (result) {
+        BaseUnit.saveFile(
+          profileManager.buildProfilePath(profileName),
+          BaseUnit.formatConfigurationTemplate(result)
+        );
+        Config.LOGGER.info(
+          '✅ Configuration completed. Please restart the project to take effect.'
+        );
+        BaseUnit.exitWithMessage(Config.MESSAGE.AUTO_EXIT, 2);
+      }
+    });
+  } catch (error) {
+    BaseUnit.exitWithMessage(Config.MESSAGE.FORCE_EXIT);
+  }
 }
 
 function ProfileUnit(): void {
@@ -67,11 +68,11 @@ function ProfileUnit(): void {
           await SelectProfile(profileManager);
           break;
         case EMenu.EXIT:
-          process.exit(0);
+          BaseUnit.exitWithMessage();
           break;
       }
     } catch (error) {
-      Config.LOGGER.warn('Project was forcibly stopped by the user.');
+      BaseUnit.exitWithMessage(Config.MESSAGE.FORCE_EXIT);
     }
   });
 }
@@ -119,7 +120,7 @@ async function SelectProfile(profileManager: ProfileManager): Promise<void> {
         ProfileUnit();
     }
   } catch (error) {
-    Config.LOGGER.warn('Project was forcibly stopped by the user.');
+    BaseUnit.exitWithMessage(Config.MESSAGE.FORCE_EXIT);
   }
 }
 

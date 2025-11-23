@@ -30,7 +30,7 @@ class DataSever {
   public save(profileTemplate: IProfileTemplate): void {
     BaseUnit.saveFile(
       Config.PROFILES_FILE_PATH,
-      BaseUnit.ProfileTemplate(profileTemplate)
+      BaseUnit.formatProfileTemplate(profileTemplate)
     );
   }
 }

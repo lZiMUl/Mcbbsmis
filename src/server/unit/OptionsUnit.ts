@@ -46,14 +46,13 @@ function OptionsG(data: Array<keyof IOptions>): IOptions {
 
 const max: number = 3;
 
-const retryBar: TLogSeparator = BaseUnit.logSeparator(max);
-const stepBar: TLogSeparator = BaseUnit.logSeparator(4);
+const retryBar: TLogSeparator = BaseUnit.createLogSeparator(max);
+const stepBar: TLogSeparator = BaseUnit.createLogSeparator(4);
 
 async function OptionsUnit(i: number = 1): Promise<IOptionsG | void> {
   try {
     if (i > max) {
-      Config.LOGGER.warn('Too many failed attempts. Exiting.');
-      process.exit(0);
+      BaseUnit.exitWithMessage('Too many failed attempts. Exiting.');
     }
 
     retryBar('Retry Bar', i);
@@ -172,7 +171,7 @@ async function OptionsUnit(i: number = 1): Promise<IOptionsG | void> {
       ...options
     };
   } catch (error) {
-    Config.LOGGER.warn('Project was forcibly stopped by the user.');
+    BaseUnit.exitWithMessage(Config.MESSAGE.FORCE_EXIT);
   }
 }
 

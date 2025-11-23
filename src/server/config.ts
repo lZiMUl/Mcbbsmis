@@ -10,6 +10,7 @@ import LanguageUnit from './unit/LanguageUnit';
 import IGlobalConfig from './interface/IGlobalConfig';
 import InitUnit from './unit/InitUnit';
 import ProfileManager from './unit/ProfileManagerUnit';
+import BaseUnit from './unit/BaseUnit';
 
 class Config {
   // App Config
@@ -22,6 +23,8 @@ class Config {
   public static readonly APP_VERSION: string = version;
   public static readonly APP_UUID: string =
     '9f7eb9ce-6a2a-4267-8923-494fd42ded83';
+  public static readonly STARTUP_TIMESTAMP: string =
+    BaseUnit.getCurrentTimestamp();
 
   // Path Config
   public static readonly ROOT_PATH: string = resolve('.');
@@ -61,14 +64,16 @@ class Config {
   );
 
   //log4js Config
-  public static readonly Log4js: Log4js = log4js.configure({
+  public static readonly LOG4JS: Log4js = log4js.configure({
     appenders: {
       console: { type: 'console' },
       [Config.APP_NAME]: {
         type: 'dateFile',
-        filename: `./logs/${Config.APP_NAME}`,
-        pattern: '-yyyy-MM-dd-HH-mm-ss.log',
-        alwaysIncludePattern: true
+        filename: `./logs/${Config.APP_NAME}-${Config.STARTUP_TIMESTAMP}.log`,
+        keepFileExt: true,
+        maxLogSize: 10 * 1024 * 1024,
+        compress: true,
+        numBackups: 5
       },
 
       [`${Config.APP_NAME}-Filter`]: {
@@ -90,6 +95,14 @@ class Config {
     }
   });
   public static readonly LOGGER: Logger = log4js.getLogger(Config.APP_NAME);
+
+  private static readonly EXIT_MESSAGE = {
+    AUTO_EXIT: 'The program will exit automatically in 2 seconds...\n',
+    FORCE_EXIT: 'Project was forcibly stopped by the user.'
+  } as const;
+
+  public static readonly MESSAGE: typeof Config.EXIT_MESSAGE =
+    Config.EXIT_MESSAGE;
 
   public static CONFIG_CONTENT: IGlobalConfig;
 
