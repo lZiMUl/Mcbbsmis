@@ -11,6 +11,7 @@ import axios, { AxiosHeaders } from 'axios';
 import QrcodeTerminal from 'qrcode-terminal';
 
 import Config from '../config';
+import BaseUnit from './BaseUnit';
 
 class Cookie {
   private readonly path: string;
@@ -120,14 +121,14 @@ class AuthUnit extends Cookie {
             default: {
               Config.LOGGER.error(`${Config.LANGUAGE.get('#14')} ${code}`);
               super.delete(uuid);
-              process.exit(0);
+              BaseUnit.exitWithMessage();
             }
           }
         }, 2000);
       } catch (err: unknown) {
         Config.LOGGER.error(Config.LANGUAGE.get('#21'));
         super.delete(uuid);
-        process.exit(0);
+        BaseUnit.exitWithMessage();
       }
     }
   }
