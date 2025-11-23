@@ -11,15 +11,34 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: '22'
-      - run: npm install
-      - run: npm run typedoc:client
-      - run: npm run typedoc:server
+          node-version: 20
+          registry-url: https://registry.npmjs.org/
+
+      - name: Ensure latest npm
+        run: npm install -g npm@latest
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Client Docs
+        run: npm run typedoc:client
+
+      - name: Generate Server Docs
+        run: npm run typedoc:server
+
       - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
           publish_dir: ./docs
-          commit_message: "Update API docs"
+          user_name: 'Mcbbsmis[bot]'
+          user_email: 'Mcbbsmis[bot]@lzimul.com'
+          commit_message: ${{ github.event.head_commit.message }}
+          enable_jekyll: true
