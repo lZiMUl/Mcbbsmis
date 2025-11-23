@@ -15,4 +15,8 @@ refactor(app): optimize authentication polling and service startup
 fix(logging): Illegal debug log output
 
 ## [1.1.4] - 2025-11-24
-fix(logging): prevent rapid duplicate log file generation, normalize variable and method names
+fix(logging): prevent rapid duplicate log file generation, normalize variable and method names" -m "### Details
+
+- Prevents creation of multiple log files within a short interval by using a consistent startup timestamp.
+- Standardizes variable and method names: `padZero` → `padZero`, `getTimestamp` → `getCurrentTimestamp`, `logSeparator` → `createLogSeparator`, etc.
+- Improves readability and maintainability of logging and configuration utilities."
