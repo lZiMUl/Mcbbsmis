@@ -11,5 +11,5 @@ refactor(app): optimize authentication polling and service startup
 - Add flag to avoid multiple service instances
 - Simplify control flow and logging
 
-## [1.1.3] - 2025-11-24
+## [1.1.3] - 2025-11-23
 fix(logging): Illegal debug log output
