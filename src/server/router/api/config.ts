@@ -30,6 +30,10 @@ router.get('/', async ctx => {
     },
     xbox: {
       username: Config.get('xbox', 'username')
+    },
+    crossPlatform: {
+      geyser: Config.get('crossPlatform', 'geyser'),
+      floodgate: Config.get('crossPlatform', 'floodgate')
     }
   });
 });

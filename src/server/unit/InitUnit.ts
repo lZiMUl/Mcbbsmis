@@ -33,7 +33,9 @@ function InitUnit(force: boolean = false): void {
         roomid: 9329583,
         userid: 291883246,
         username_bili: 'lZiMUl',
-        username_xbox: 'lZiMUl'
+        username_xbox: 'lZiMUl',
+        geyser: false,
+        floodgate: false
       })
     );
     return;

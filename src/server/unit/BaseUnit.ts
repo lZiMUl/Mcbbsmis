@@ -51,7 +51,9 @@ class BaseUnit {
     roomid,
     userid,
     username_bili,
-    username_xbox
+    username_xbox,
+    geyser,
+    floodgate
   }: IConfigurationTemplate): string {
     return `# ==============================
 # Mcbbsmis Configs File
@@ -129,6 +131,14 @@ username = "${username_bili}"
 # Game client username (used to identify commands)
 username = "${username_xbox}"
 
+# ==============================
+# cross-platform Settings
+# ==============================
+[crossPlatform]
+# Geyser support
+geyser = ${geyser}
+# Floodgate support
+floodgate = ${floodgate}
 `;
   }
 
