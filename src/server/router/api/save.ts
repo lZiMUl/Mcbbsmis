@@ -32,7 +32,9 @@ function normalizeConfig(
     roomid: Number(body.roomid) || 9329583,
     userid: Number(body.userid) || 291883246,
     username_bili: body.username_bili || 'lZiMUl',
-    username_xbox: body.username_xbox || 'lZiMUl'
+    username_xbox: body.username_xbox || 'lZiMUl',
+    geyser: body.geyser === 'on' || false,
+    floodgate: body.floodgate === 'on' || false
   };
 }
 
