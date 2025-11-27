@@ -17,6 +17,8 @@ interface IConfigurationTemplate {
   userid: number;
   username_bili: string;
   username_xbox: string;
+  geyser: boolean;
+  floodgate: boolean;
 }
 
 export default IConfigurationTemplate;

@@ -11,7 +11,9 @@ class MinecraftService {
     /[-/\\^$*+?.()|[\]{}]/g,
     '\\$&'
   )})([\\w\\u4e00-\\u9fa5]+)\\s*(.*)`;
-  public readonly player: string = Config.get('xbox', 'username');
+  private player: string = Config.get('xbox', 'username');
+  private geyserSupport: boolean = Config.get('crossPlatform', 'geyser');
+  private floodgateSupport: boolean = Config.get('crossPlatform', 'floodgate');
   private socket: WebSocket;
 
   public constructor(socket: InstanceType<typeof WebSocket>) {
@@ -60,13 +62,17 @@ class MinecraftService {
   }
 
   public sendCommand(content: string): void {
+    const commandLine: string = `/${content.replace(new RegExp('^/', 'im'), '')}`;
     this.socket.send(
       JSON.stringify({
         body: {
           origin: {
             type: 'player'
           },
-          commandLine: `/${content.replace(new RegExp('^/', 'im'), '')}`,
+          commandLine:
+            this.geyserSupport && this.player.charAt(0) === '.'
+              ? commandLine.replaceAll('§', '&')
+              : commandLine,
           version: 1
         },
         header: {
@@ -77,6 +83,13 @@ class MinecraftService {
         }
       })
     );
+    if (
+      this.geyserSupport &&
+      this.floodgateSupport &&
+      this.player.charAt(0) !== '.'
+    ) {
+      this.player = `.${Config.get('xbox', 'username')}`;
+    }
   }
 
   public parseEventResult(rawData: string, bili: BiliSender): void {

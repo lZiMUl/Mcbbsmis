@@ -20,3 +20,15 @@ fix(logging): prevent rapid duplicate log file generation, normalize variable an
 - Prevents creation of multiple log files within a short interval by using a consistent startup timestamp.
 - Standardizes variable and method names: `padZero` → `padZero`, `getTimestamp` → `getCurrentTimestamp`, `logSeparator` → `createLogSeparator`, etc.
 - Improves readability and maintainability of logging and configuration utilities.
+
+## [1.1.5] - 2025-11-26
+feat(server): add support for Paper server environment
+
+Added compatibility layer for Paper-based Minecraft servers.
+This update ensures the platform runs correctly under Paper, improves API
+adaptation, and aligns behavior with Bukkit/Spigot implementations.
+
+- implemented Paper-specific environment detection
+- improved compatibility with Paper event handling
+- ensured configuration behaves consistently across Paper builds
+- prepared foundation for future cross-platform expansion
