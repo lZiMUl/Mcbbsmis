@@ -4,7 +4,7 @@ import ELanguage from '../enum/ELanguage';
 import Config from '../config';
 import BaseUnit, { TLogSeparator } from './BaseUnit';
 
-interface IOptions {
+interface IListenEventOptions {
   join: boolean;
   follow: boolean;
   share: boolean;
@@ -15,7 +15,12 @@ interface IOptions {
   gift: boolean;
 }
 
-interface IOptionsG extends IOptions {
+interface ICrossPlatformOptions {
+  geyser: boolean;
+  floodgate: boolean;
+}
+
+interface IOptionsGenerator extends IListenEventOptions, ICrossPlatformOptions {
   host: string;
   port: number;
   language: ELanguage;
@@ -24,10 +29,14 @@ interface IOptionsG extends IOptions {
   userid: number;
   username_bili: string;
   username_xbox: string;
+  geyser: boolean;
+  floodgate: boolean;
 }
 
-function OptionsG(data: Array<keyof IOptions>): IOptions {
-  const options: IOptions = {
+function EventOptionsGenerator(
+  data: Array<keyof IListenEventOptions>
+): IListenEventOptions {
+  const options: IListenEventOptions = {
     join: false,
     follow: false,
     share: false,
@@ -44,12 +53,26 @@ function OptionsG(data: Array<keyof IOptions>): IOptions {
   return options;
 }
 
+function CrossPlatformGenerator(
+  data: Array<keyof ICrossPlatformOptions>
+): ICrossPlatformOptions {
+  const options: ICrossPlatformOptions = {
+    geyser: false,
+    floodgate: false
+  };
+  for (const item of data) {
+    options[item] = true;
+  }
+
+  return options;
+}
+
 const max: number = 3;
 
 const retryBar: TLogSeparator = BaseUnit.createLogSeparator(max);
-const stepBar: TLogSeparator = BaseUnit.createLogSeparator(4);
+const stepBar: TLogSeparator = BaseUnit.createLogSeparator(5);
 
-async function OptionsUnit(i: number = 1): Promise<IOptionsG | void> {
+async function OptionsUnit(i: number = 1): Promise<IOptionsGenerator | void> {
   try {
     if (i > max) {
       BaseUnit.exitWithMessage('Too many failed attempts. Exiting.');
@@ -134,9 +157,9 @@ async function OptionsUnit(i: number = 1): Promise<IOptionsG | void> {
       })
     ];
 
-    // Events
+    // Listen Event Options
     stepBar('Next: Select Listen Events', 3);
-    const options: IOptions = OptionsG(
+    const listenEventOptions: IListenEventOptions = EventOptionsGenerator(
       await checkbox({
         message: 'Listen Events: ',
         choices: [
@@ -153,8 +176,21 @@ async function OptionsUnit(i: number = 1): Promise<IOptionsG | void> {
       })
     );
 
+    // Cross-Platform Options
+    stepBar('Next: Select Listen Events', 4);
+    const crossPlatformOptions: ICrossPlatformOptions = CrossPlatformGenerator(
+      await checkbox({
+        message: 'Cross-Platform: ',
+        choices: [
+          { name: 'Geyser', value: 'geyser' },
+          { name: 'Floodgate', value: 'floodgate' }
+        ],
+        required: true
+      })
+    );
+
     // Continue
-    stepBar('Final Step: Is the current configuration correct?', 4);
+    stepBar('Final Step: Is the current configuration correct?', 5);
     if (!(await confirm({ message: 'Continue?', default: false }))) {
       return await OptionsUnit(i + 1);
     }
@@ -168,7 +204,8 @@ async function OptionsUnit(i: number = 1): Promise<IOptionsG | void> {
       userid,
       username_bili,
       username_xbox,
-      ...options
+      ...listenEventOptions,
+      ...crossPlatformOptions
     };
   } catch (error) {
     BaseUnit.exitWithMessage(Config.MESSAGE.FORCE_EXIT);
@@ -176,4 +213,10 @@ async function OptionsUnit(i: number = 1): Promise<IOptionsG | void> {
 }
 
 export default OptionsUnit;
-export type { IOptions, IOptionsG };
+export type {
+  IOptionsGenerator,
+  IListenEventOptions,
+  ICrossPlatformOptions,
+  EventOptionsGenerator,
+  CrossPlatformGenerator
+};

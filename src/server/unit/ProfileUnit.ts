@@ -5,7 +5,7 @@ import { EMenu, ESelectProfileMenu } from '../enum/EMenu';
 import BaseUnit, { TLogSeparator } from './BaseUnit';
 import { IProfile } from '../interface/IProfileTemplate';
 import App from '../index';
-import OptionsUnit, { IOptionsG } from './OptionsUnit';
+import OptionsUnit, { IOptionsGenerator } from './OptionsUnit';
 import ProfileManager from './ProfileManagerUnit';
 
 const stepBar: TLogSeparator = BaseUnit.createLogSeparator(0);
@@ -18,7 +18,7 @@ async function CreateProfileUnit(): Promise<void> {
       default: 'Default',
       required: true
     });
-    OptionsUnit().then((result: IOptionsG | void): void => {
+    OptionsUnit().then((result: IOptionsGenerator | void): void => {
       if (result) {
         BaseUnit.saveFile(
           profileManager.buildProfilePath(profileName),

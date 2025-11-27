@@ -37,6 +37,8 @@ document.addEventListener('DOMContentLoaded', async function (): Promise<void> {
       'bili-userid',
       'bili-username',
       'xbox-username',
+      'geyser',
+      'floodgate',
       'save-configuration'
     ]
       .map(id => document.getElementById(id))
@@ -60,6 +62,8 @@ document.addEventListener('DOMContentLoaded', async function (): Promise<void> {
             case 'like':
             case 'danmaku':
             case 'gift':
+            case 'geyser':
+            case 'floodgate':
               // Feature options
               const checkbox = document.createElement('input');
               checkbox.setAttribute('type', 'checkbox');

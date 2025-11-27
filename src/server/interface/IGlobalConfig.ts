@@ -1,7 +1,5 @@
 import ELanguage from '../enum/ELanguage';
 
-type toggle = boolean;
-
 interface IGlobalConfig {
   global: {
     host: string;
@@ -10,14 +8,14 @@ interface IGlobalConfig {
     identifier: string;
   };
   options: {
-    join: toggle;
-    follow: toggle;
-    share: toggle;
-    view: toggle;
-    online: toggle;
-    like: toggle;
-    danmaku: toggle;
-    gift: toggle;
+    join: boolean;
+    follow: boolean;
+    share: boolean;
+    view: boolean;
+    online: boolean;
+    like: boolean;
+    danmaku: boolean;
+    gift: boolean;
   };
   bilibili: {
     roomid: number;
@@ -26,6 +24,10 @@ interface IGlobalConfig {
   };
   xbox: {
     username: string;
+  };
+  crossPlatform: {
+    geyser: boolean;
+    floodgate: boolean;
   };
 }
 
