@@ -184,8 +184,7 @@ async function OptionsUnit(i: number = 1): Promise<IOptionsGenerator | void> {
         choices: [
           { name: 'Geyser', value: 'geyser' },
           { name: 'Floodgate', value: 'floodgate' }
-        ],
-        required: true
+        ]
       })
     );
 
