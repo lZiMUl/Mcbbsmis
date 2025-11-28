@@ -32,3 +32,20 @@ adaptation, and aligns behavior with Bukkit/Spigot implementations.
 - improved compatibility with Paper event handling
 - ensured configuration behaves consistently across Paper builds
 - prepared foundation for future cross-platform expansion
+
+## [1.1.6] - 2025-11-28
+fix(cross-platform): resolve forced platform selection issue
+
+Previously, cross-platform mode could be unintentionally enabled/forced due to
+improper condition checks/config merge logic, causing the system to treat
+platform options as always active. This commit corrects the flag evaluation
+flow, ensuring platform selection only applies when explicitly enabled.
+
+### Fix details
+- Corrected boolean evaluation for geyser/floodgate flags
+- Refined config parser to avoid default "forced enable" behavior
+- Improved validation to ensure platform selection must be intentional
+- Prevented automatic activation when configuration is undefined
+
+This restores expected behavior where cross-platform support becomes active only
+when users choose to enable it.
