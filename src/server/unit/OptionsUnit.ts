@@ -177,7 +177,7 @@ async function OptionsUnit(i: number = 1): Promise<IOptionsGenerator | void> {
     );
 
     // Cross-Platform Options
-    stepBar('Next: Select Listen Events', 4);
+    stepBar('Next: Choose whether to enable cross-platform support', 4);
     const crossPlatformOptions: ICrossPlatformOptions = CrossPlatformGenerator(
       await checkbox({
         message: 'Cross-Platform: ',
@@ -190,7 +190,7 @@ async function OptionsUnit(i: number = 1): Promise<IOptionsGenerator | void> {
 
     // Continue
     stepBar('Final Step: Is the current configuration correct?', 5);
-    if (!(await confirm({ message: 'Continue?', default: false }))) {
+    if (!(await confirm({ message: 'Continue?', default: true }))) {
       return await OptionsUnit(i + 1);
     }
 
