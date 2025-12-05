@@ -37,6 +37,8 @@ document.addEventListener('DOMContentLoaded', async function (): Promise<void> {
       'bili-userid',
       'bili-username',
       'xbox-username',
+      'resourcePack',
+      'cross-platform',
       'geyser',
       'floodgate',
       'save-configuration'
@@ -51,7 +53,7 @@ document.addEventListener('DOMContentLoaded', async function (): Promise<void> {
             case 'globalSettings':
               item.innerText = `🌍 ${data[item.id]}`;
               break;
-            case 'event':
+            case 'listenToEvents':
               item.innerText = `⚙️ ${data[item.id]}`;
               break;
             case 'join':
@@ -62,10 +64,12 @@ document.addEventListener('DOMContentLoaded', async function (): Promise<void> {
             case 'like':
             case 'danmaku':
             case 'gift':
+            case 'resourcePack':
             case 'geyser':
             case 'floodgate':
               // Feature options
-              const checkbox = document.createElement('input');
+              const checkbox: HTMLInputElement =
+                document.createElement('input');
               checkbox.setAttribute('type', 'checkbox');
               checkbox.setAttribute('name', item.id);
               if (features[item.id]) checkbox.setAttribute('checked', '');
@@ -74,6 +78,9 @@ document.addEventListener('DOMContentLoaded', async function (): Promise<void> {
               break;
             case 'bilibiliProfile':
               item.innerText = `🎬 Bilibili ${data[item.id]}`;
+              break;
+            case 'cross-platform':
+              item.innerText = `🧩 ${data[item.id]}`;
               break;
             case 'save-configuration':
               item.innerText = `💾 ${data[item.id]}`;

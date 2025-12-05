@@ -50,4 +50,8 @@
 <string key="#30016">Numéro de salle</string>
 <string key="#30017">ID utilisateur</string>
 <string key="#30018">Nom d'utilisateur</string>
-<string key="#30019">Enregistrer la configuration</string>
+<string key="#30019">Support des packs de ressources</string>
+<string key="#30020">Multi-plateforme</string>
+<string key="#30021">Geyser</string>
+<string key="#30022">Floodgate</string>
+<string key="#30023">Enregistrer la configuration</string>

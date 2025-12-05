@@ -16,8 +16,18 @@ async function CreateProfileUnit(): Promise<void> {
     const profileName: string = await input({
       message: 'Create an Profile: ',
       default: 'Default',
-      required: true
+      required: true,
+      validate: (value: string): string | boolean => {
+        const exists = profileManager.getProfiles.some(
+          ({ name }: IProfile) => name === value
+        );
+
+        return exists
+          ? '⚠ The name already exists. Please use a different name.'
+          : true;
+      }
     });
+
     OptionsUnit().then((result: IOptionsGenerator | void): void => {
       if (result) {
         BaseUnit.saveFile(

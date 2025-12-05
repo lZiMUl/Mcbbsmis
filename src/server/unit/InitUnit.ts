@@ -34,6 +34,7 @@ function InitUnit(force: boolean = false): void {
         userid: 291883246,
         username_bili: 'lZiMUl',
         username_xbox: 'lZiMUl',
+        resourcePack: false,
         geyser: false,
         floodgate: false
       })

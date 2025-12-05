@@ -1,7 +1,7 @@
 {
   "name": "mcbbsmis",
   "description": "Minecraft Connect Bind BiliBili Sync Message Interaction Service",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "author": {
     "name": "lZiMUl",
     "email": "lZiMUl@lzimul.com",
@@ -53,6 +53,7 @@
   },
   "files": [
     "./build/",
+    "./data/",
     "./lang",
     "./lib/",
     "./proto",

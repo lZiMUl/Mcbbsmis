@@ -17,6 +17,7 @@ interface IConfigurationTemplate {
   userid: number;
   username_bili: string;
   username_xbox: string;
+  resourcePack: boolean;
   geyser: boolean;
   floodgate: boolean;
 }

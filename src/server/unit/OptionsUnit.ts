@@ -1,5 +1,5 @@
 // @ts-ignore
-import { input, number, select, checkbox, confirm } from '@inquirer/prompts';
+import { checkbox, confirm, input, number, select } from '@inquirer/prompts';
 import ELanguage from '../enum/ELanguage';
 import Config from '../config';
 import BaseUnit, { TLogSeparator } from './BaseUnit';
@@ -29,6 +29,7 @@ interface IOptionsGenerator extends IListenEventOptions, ICrossPlatformOptions {
   userid: number;
   username_bili: string;
   username_xbox: string;
+  resourcePack: boolean;
   geyser: boolean;
   floodgate: boolean;
 }
@@ -70,7 +71,7 @@ function CrossPlatformGenerator(
 const max: number = 3;
 
 const retryBar: TLogSeparator = BaseUnit.createLogSeparator(max);
-const stepBar: TLogSeparator = BaseUnit.createLogSeparator(5);
+const stepBar: TLogSeparator = BaseUnit.createLogSeparator(6);
 
 async function OptionsUnit(i: number = 1): Promise<IOptionsGenerator | void> {
   try {
@@ -132,8 +133,8 @@ async function OptionsUnit(i: number = 1): Promise<IOptionsGenerator | void> {
         message: 'Command Identifier: ',
         default: '$',
         required: true,
-        pattern: /^[!-/:-@[-`{-~]$/,
-        patternError: 'Identifier must be exactly 1 ASCII symbol character'
+        pattern: /^.$/,
+        patternError: 'Identifier must be exactly 1 character'
       }),
       await number({
         message: 'BiliBili Room Number: ',
@@ -176,8 +177,15 @@ async function OptionsUnit(i: number = 1): Promise<IOptionsGenerator | void> {
       })
     );
 
+    // Resource Pack Options
+    stepBar('Next: Choose whether to enable resource pack support', 4);
+    const resourcePackOptions: boolean = await confirm({
+      message: 'Enable resource pack support?',
+      default: false
+    });
+
     // Cross-Platform Options
-    stepBar('Next: Choose whether to enable cross-platform support', 4);
+    stepBar('Next: Choose whether to enable cross-platform support', 5);
     const crossPlatformOptions: ICrossPlatformOptions = CrossPlatformGenerator(
       await checkbox({
         message: 'Cross-Platform: ',
@@ -189,7 +197,7 @@ async function OptionsUnit(i: number = 1): Promise<IOptionsGenerator | void> {
     );
 
     // Continue
-    stepBar('Final Step: Is the current configuration correct?', 5);
+    stepBar('Final Step: Is the current configuration correct?', 6);
     if (!(await confirm({ message: 'Continue?', default: true }))) {
       return await OptionsUnit(i + 1);
     }
@@ -203,6 +211,7 @@ async function OptionsUnit(i: number = 1): Promise<IOptionsGenerator | void> {
       userid,
       username_bili,
       username_xbox,
+      resourcePack: resourcePackOptions,
       ...listenEventOptions,
       ...crossPlatformOptions
     };

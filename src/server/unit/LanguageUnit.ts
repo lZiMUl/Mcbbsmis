@@ -54,6 +54,16 @@ class LanguageUnit {
     this.load(rootPath);
   }
 
+  public reload(): void {
+    this.language = new Map<string, string>();
+    LanguageConfig.CONFIG_FILE_PATH = Config.getProfilePath;
+    this.load(this.rootPath);
+  }
+
+  public get(key: string): string {
+    return this.language.get(key) as string;
+  }
+
   private load(path: string): void {
     this.readFile(path)
       .matchAll(this.regExp)
@@ -66,16 +76,6 @@ class LanguageUnit {
           }
         }
       });
-  }
-
-  public reload(): void {
-    this.language = new Map<string, string>();
-    LanguageConfig.CONFIG_FILE_PATH = Config.getProfilePath;
-    this.load(this.rootPath);
-  }
-
-  public get(key: string): string {
-    return this.language.get(key) as string;
   }
 
   private tryReadFile(path: string, lang: ELanguage): string {

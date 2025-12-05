@@ -50,4 +50,8 @@
 <string key="#30016">Raumnummer</string>
 <string key="#30017">Benutzer-ID</string>
 <string key="#30018">Benutzername</string>
-<string key="#30019">Konfiguration speichern</string>
+<string key="#30019">Ressourcenpaket-Unterstützung</string>
+<string key="#30020">Plattformübergreifend</string>
+<string key="#30021">Geyser</string>
+<string key="#30022">Floodgate</string>
+<string key="#30023">Konfiguration speichern</string>
