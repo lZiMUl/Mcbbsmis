@@ -52,6 +52,7 @@ class BaseUnit {
     userid,
     username_bili,
     username_xbox,
+    resourcePack,
     geyser,
     floodgate
   }: IConfigurationTemplate): string {
@@ -130,6 +131,8 @@ username = "${username_bili}"
 [xbox]
 # Game client username (used to identify commands)
 username = "${username_xbox}"
+# Game client resource pack support
+resourcePack = ${resourcePack}
 
 # ==============================
 # cross-platform Settings

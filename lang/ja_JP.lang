@@ -50,4 +50,8 @@
 <string key="#30016">ルーム番号</string>
 <string key="#30017">ユーザーID</string>
 <string key="#30018">ユーザー名</string>
-<string key="#30019">設定を保存</string>
+<string key="#30019">リソースパックサポート</string>
+<string key="#30020">クロスプラットフォーム</string>
+<string key="#30021">Geyser</string>
+<string key="#30022">フラッドゲート</string>
+<string key="#30023">設定を保存</string>

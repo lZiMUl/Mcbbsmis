@@ -30,7 +30,11 @@ router.get('/', async ctx => {
     'bili-userid': Config.LANGUAGE.get('#30017'),
     'bili-username': Config.LANGUAGE.get('#30018'),
     'xbox-username': Config.LANGUAGE.get('#30018'),
-    'save-configuration': Config.LANGUAGE.get('#30019')
+    resourcePack: Config.LANGUAGE.get('#30019'),
+    'cross-platform': Config.LANGUAGE.get('#30020'),
+    geyser: Config.LANGUAGE.get('#30021'),
+    floodgate: Config.LANGUAGE.get('#30022'),
+    'save-configuration': Config.LANGUAGE.get('#30023')
   });
 });
 

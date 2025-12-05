@@ -21,7 +21,10 @@ router.get('/', async ctx => {
       online: Config.get('options', 'online'),
       like: Config.get('options', 'like'),
       danmaku: Config.get('options', 'danmaku'),
-      gift: Config.get('options', 'gift')
+      gift: Config.get('options', 'gift'),
+      resourcePack: Config.get('xbox', 'resourcePack'),
+      geyser: Config.get('crossPlatform', 'geyser'),
+      floodgate: Config.get('crossPlatform', 'floodgate')
     },
     bilibili: {
       roomid: Config.get('bilibili', 'roomid'),
@@ -30,10 +33,6 @@ router.get('/', async ctx => {
     },
     xbox: {
       username: Config.get('xbox', 'username')
-    },
-    crossPlatform: {
-      geyser: Config.get('crossPlatform', 'geyser'),
-      floodgate: Config.get('crossPlatform', 'floodgate')
     }
   });
 });

@@ -33,6 +33,7 @@ function normalizeConfig(
     userid: Number(body.userid) || 291883246,
     username_bili: body.username_bili || 'lZiMUl',
     username_xbox: body.username_xbox || 'lZiMUl',
+    resourcePack: body.resourcePack === 'on' || false,
     geyser: body.geyser === 'on' || false,
     floodgate: body.floodgate === 'on' || false
   };

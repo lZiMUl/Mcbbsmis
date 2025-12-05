@@ -24,6 +24,7 @@ interface IGlobalConfig {
   };
   xbox: {
     username: string;
+    resourcePack: boolean;
   };
   crossPlatform: {
     geyser: boolean;
