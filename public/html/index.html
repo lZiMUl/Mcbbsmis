@@ -1,88 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Mcbbsmis Config Panel</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="../css/index.css">
-    <script type="module" src="../js/language.js"></script>
-    <script type="module" src="../js/index.js"></script>
+  <meta charset="UTF-8">
+  <title>Mcbbsmis Config Panel</title>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <link href="../css/index.css" rel="stylesheet" type="text/css">
+  <script src="../js/language.js" type="module"></script>
+  <script src="../js/index.js" type="module"></script>
 </head>
 <body>
 <h1 id="title"></h1>
 <form action="/api/save" method="post">
-    <div class="card">
-        <h2 id="globalSettings"></h2>
-        <div class="grid-2">
-            <div>
-                <label id="host" for="host-input"></label>
-                <input id="host-input" name="host" type="text" placeholder="e.g. 127.0.0.1">
-            </div>
-            <div>
-                <label id="port" for="port-input"></label>
-                <input id="port-input" name="port" type="number" placeholder="e.g. 8080">
-            </div>
-            <div>
-                <label id="language" for="language-select"></label>
-                <select id="language-select" name="language">
-                    <option value="">Loading...</option>
-                </select>
-                <div id="lang-error" class="error" style="display:none;">Failed to load languages.</div>
-            </div>
-            <div>
-                <label id="identifier" for="identifier-input"></label>
-                <input id="identifier-input" name="identifier" type="text" placeholder="Instance ID" maxlength="1">
-            </div>
-        </div>
+  <div class="card">
+    <h2 id="globalSettings"></h2>
+    <div class="grid-2">
+      <div>
+        <label for="host-input" id="host"></label>
+        <input id="host-input" name="host" placeholder="e.g. 127.0.0.1" type="text">
+      </div>
+      <div>
+        <label for="port-input" id="port"></label>
+        <input id="port-input" name="port" placeholder="e.g. 8080" type="number">
+      </div>
+      <div>
+        <label for="language-select" id="language"></label>
+        <select id="language-select" name="language">
+          <option value="">Loading...</option>
+        </select>
+        <div class="error" id="lang-error" style="display:none;">Failed to load languages.</div>
+      </div>
+      <div>
+        <label for="identifier-input" id="identifier"></label>
+        <input id="identifier-input" maxlength="1" name="identifier" placeholder="Instance ID" type="text">
+      </div>
     </div>
+  </div>
 
-    <div class="card">
-        <h2 id="listenToEvents"></h2>
-        <div class="checkbox-group">
-            <label id="join" class="checkbox"></label>
-            <label id="follow" class="checkbox"></label>
-            <label id="share" class="checkbox"></label>
-            <label id="view" class="checkbox"></label>
-            <label id="online" class="checkbox"></label>
-            <label id="like" class="checkbox"></label>
-            <label id="danmaku" class="checkbox"></label>
-            <label id="gift" class="checkbox"></label>
-        </div>
+  <div class="card">
+    <h2 id="listenToEvents"></h2>
+    <div class="checkbox-group">
+      <label class="checkbox" id="join"></label>
+      <label class="checkbox" id="follow"></label>
+      <label class="checkbox" id="share"></label>
+      <label class="checkbox" id="view"></label>
+      <label class="checkbox" id="online"></label>
+      <label class="checkbox" id="like"></label>
+      <label class="checkbox" id="danmaku"></label>
+      <label class="checkbox" id="gift"></label>
     </div>
+  </div>
 
-    <div class="card">
-        <h2 id="bilibiliProfile"></h2>
-        <div class="grid-2" id="bilibili-fields">
-            <div>
-                <label id="bili-roomid" for="roomid-input"></label>
-                <input id="roomid-input" name="roomid" type="number" placeholder="Live room ID">
-            </div>
-            <div>
-                <label id="bili-userid" for="bili_userid-input"></label>
-                <input id="bili_userid-input" name="userid" type="number" placeholder="Bilibili user ID">
-            </div>
-            <div>
-                <label id="bili-username" for="bili_username-input"></label>
-                <input id="bili_username-input" name="username_bili" type="text" placeholder="Bilibili username">
-            </div>
-        </div>
+  <div class="card">
+    <h2 id="bilibiliProfile"></h2>
+    <div class="grid-2" id="bilibili-fields">
+      <div>
+        <label for="roomid-input" id="bili-roomid"></label>
+        <input id="roomid-input" name="roomid" placeholder="Live room ID" type="number">
+      </div>
+      <div>
+        <label for="bili_userid-input" id="bili-userid"></label>
+        <input id="bili_userid-input" name="userid" placeholder="Bilibili user ID" type="number">
+      </div>
+      <div>
+        <label for="bili_username-input" id="bili-username"></label>
+        <input id="bili_username-input" name="username_bili" placeholder="Bilibili username" type="text">
+      </div>
     </div>
+  </div>
 
-    <div class="card">
-        <h2>🎮 Xbox</h2>
-        <label id="xbox-username" for="xbox_username-input"></label>
-        <input id="xbox_username-input" name="username_xbox" type="text" placeholder="Xbox username">
+  <div class="card">
+    <h2>🎮 Xbox</h2>
+    <label for="xbox_username-input" id="xbox-username"></label>
+    <input id="xbox_username-input" name="username_xbox" placeholder="Xbox username" type="text">
+    <h2 id="resourcePackSupport"></h2>
+    <div class="checkbox-group">
+      <label class="checkbox" id="resourcePack"></label>
     </div>
+  </div>
 
   <div class="card">
     <h2 id="cross-platform"></h2>
     <div class="checkbox-group">
-      <label id="geyser" class="checkbox"></label>
-      <label id="floodgate" class="checkbox"></label>
+      <label class="checkbox" id="geyser"></label>
+      <label class="checkbox" id="floodgate"></label>
     </div>
   </div>
 
-    <button id="save-configuration" class="submit-btn" type="submit"></button>
+  <button class="submit-btn" id="save-configuration" type="submit"></button>
 </form>
 </body>
 </html>

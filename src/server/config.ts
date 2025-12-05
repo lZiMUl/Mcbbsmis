@@ -11,6 +11,7 @@ import IGlobalConfig from './interface/IGlobalConfig';
 import InitUnit from './unit/InitUnit';
 import ProfileManager from './unit/ProfileManagerUnit';
 import BaseUnit from './unit/BaseUnit';
+import EmojiUnit from './unit/EmojiUnit';
 
 class Config {
   // App Config
@@ -44,6 +45,15 @@ class Config {
     Config.CONFIG_ROOT_PATH,
     'cookies'
   );
+  public static readonly DATA_DIR_PATH: string = join(Config.ROOT_PATH, 'data');
+  public static readonly EMOJIS_FILE_PATH: string = join(
+    Config.DATA_DIR_PATH,
+    'emojis.json'
+  );
+  public static readonly EMOJIS: EmojiUnit = EmojiUnit.create(
+    Config.EMOJIS_FILE_PATH
+  );
+
   public static readonly PROTO_PATH: string = join(Config.ROOT_PATH, 'proto');
   public static readonly PROTO_FILE_PATH: string = join(
     Config.PROTO_PATH,
@@ -95,16 +105,13 @@ class Config {
     }
   });
   public static readonly LOGGER: Logger = log4js.getLogger(Config.APP_NAME);
-
+  public static CONFIG_CONTENT: IGlobalConfig;
   private static readonly EXIT_MESSAGE = {
     AUTO_EXIT: 'The program will exit automatically in 2 seconds...\n',
     FORCE_EXIT: 'Project was forcibly stopped by the user.'
   } as const;
-
   public static readonly MESSAGE: typeof Config.EXIT_MESSAGE =
     Config.EXIT_MESSAGE;
-
-  public static CONFIG_CONTENT: IGlobalConfig;
 
   public static get getProfilePath(): string {
     return Config.ProfileManager.getFilePathById(

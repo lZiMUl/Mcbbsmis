@@ -36,20 +36,36 @@ class DataSever {
 }
 
 class ProfileManager extends DataSever {
-  private static ProfileManager: ProfileManager;
+  private static INSTANCE: ProfileManager;
   private content: IProfileTemplate;
   private constructor(root: string) {
     super(root);
     this.content = super.load();
   }
 
+  public get getLastUsed(): string {
+    return this.content?.lastUsed ?? Config.APP_UUID;
+  }
+
+  public get getProfiles(): Array<IProfile> {
+    return (
+      this.content?.profiles ?? [
+        {
+          name: 'Default',
+          uuid: Config.APP_UUID,
+          createTime: new Date().getTime()
+        }
+      ]
+    );
+  }
+
   public static create(
     root: string = Config.PROFILES_FILE_PATH
   ): ProfileManager {
-    if (!ProfileManager.ProfileManager) {
-      ProfileManager.ProfileManager = new ProfileManager(root);
+    if (!ProfileManager.INSTANCE) {
+      ProfileManager.INSTANCE = new ProfileManager(root);
     }
-    return ProfileManager.ProfileManager;
+    return ProfileManager.INSTANCE;
   }
 
   public createProfile(name: string, uuid: string): void {
@@ -69,10 +85,6 @@ class ProfileManager extends DataSever {
     this.createProfile(profileName, uuid);
     this.setProfile(uuid);
     return join(this.root, `${uuid}.toml`);
-  }
-
-  public get getLastUsed(): string {
-    return this.content?.lastUsed ?? Config.APP_UUID;
   }
 
   public getNameById(uuid: string): string {
@@ -98,18 +110,6 @@ class ProfileManager extends DataSever {
     profileTemplate.lastUsed = uuid;
     this.content = profileTemplate;
     super.save(profileTemplate);
-  }
-
-  public get getProfiles(): Array<IProfile> {
-    return (
-      this.content?.profiles ?? [
-        {
-          name: 'Default',
-          uuid: Config.APP_UUID,
-          createTime: new Date().getTime()
-        }
-      ]
-    );
   }
 
   public delete(): void {

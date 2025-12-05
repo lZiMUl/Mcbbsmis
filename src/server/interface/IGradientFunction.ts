@@ -3,8 +3,10 @@ interface GradientOptions {
   hsvSpin?: 'short' | 'long';
 }
 interface GradientFunction {
-  (str: string): string;
   multiline: MultiLineGradientFunction;
+
+  (str: string): string;
+
   (str: string, opts?: GradientOptions): string;
 }
 interface MultiLineGradientFunction {

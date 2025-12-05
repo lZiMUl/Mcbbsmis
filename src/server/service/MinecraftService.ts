@@ -7,11 +7,9 @@ import { faker } from '@faker-js/faker';
 
 class MinecraftService {
   private readonly identifier: string = Config.get('global', 'identifier');
-  private readonly identifierRegExp: string = `(${this.identifier.replace(
-    /[-/\\^$*+?.()|[\]{}]/g,
-    '\\$&'
-  )})([\\w\\u4e00-\\u9fa5]+)\\s*(.*)`;
+  private readonly identifierRegExp: RegExp = new RegExp('(.)(\\S+)\\s(.*)');
   private player: string = Config.get('xbox', 'username');
+  private readonly resourcePack: boolean = Config.get('xbox', 'resourcePack');
   private geyserSupport: boolean = Config.get('crossPlatform', 'geyser');
   private floodgateSupport: boolean = Config.get('crossPlatform', 'floodgate');
   private socket: WebSocket;
@@ -114,7 +112,15 @@ class MinecraftService {
                   break;
                 case 'send':
                   {
-                    bili?.send(content);
+                    bili?.send(
+                      this.resourcePack
+                        ? content.replace(
+                            /[\uEF00-\uEF51]/g,
+                            (code: string): string =>
+                              Config.EMOJIS.getNameByCode(code)
+                          )
+                        : content
+                    );
                   }
                   break;
 

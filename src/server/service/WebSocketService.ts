@@ -19,12 +19,13 @@ import TickerService from './TickerService';
 import BaseUnit from '../unit/BaseUnit';
 
 class WebsocketService extends WebSocketServer {
-  private static websocketService: WebsocketService;
+  private static INSTANCE: WebsocketService;
   private readonly auth: AuthUnit = AuthUnit.create(Config.APP_UUID);
   private readonly userConfig: IConfig = {
     Cookie: this.auth.get(Config.APP_UUID)
   };
   private readonly roomId: number = Config.get('bilibili', 'roomid');
+  private readonly resourcePack: boolean = Config.get('xbox', 'resourcePack');
   private readonly bili: BiliSender = new BiliSender(
     this.roomId,
     this.userConfig
@@ -44,13 +45,13 @@ class WebsocketService extends WebSocketServer {
   }
 
   public static create(): WebsocketService {
-    if (!WebsocketService.websocketService) {
-      WebsocketService.websocketService = new WebsocketService(
+    if (!WebsocketService.INSTANCE) {
+      WebsocketService.INSTANCE = new WebsocketService(
         Config.get('global', 'host'),
         Config.get('global', 'port')
       );
     }
-    return WebsocketService.websocketService;
+    return WebsocketService.INSTANCE;
   }
 
   public async core(): Promise<void> {
@@ -213,6 +214,7 @@ class WebsocketService extends WebSocketServer {
         },
         likeStatus
       );
+
       biliBiliService.addService<ISendDanmaku>(
         ELiveEvent.SEND_DANMAKU,
         ({
@@ -226,8 +228,15 @@ class WebsocketService extends WebSocketServer {
             ? `§6(${medalName} ${medalLevel}) `
             : '';
           Config.LOGGER.info(`[${medal.replace('§6', '')}${uname}]: ${danmu}`);
+
           this.minecraft?.sendMessage(
-            `§9Danmaku §b[${medal}§c${uname}§b]§d: §b${danmu}`
+            `§9Danmaku §b[${medal}§c${uname}§b]§d: §b${
+              this.resourcePack
+                ? danmu.replace(/\[([^\]]+)\]/g, (name: string): string =>
+                    Config.EMOJIS.getCodeByName(name)
+                  )
+                : danmu
+            }`
           );
         },
         danmakuStatus

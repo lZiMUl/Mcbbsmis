@@ -50,4 +50,8 @@
 <string key="#30016">房間號</string>
 <string key="#30017">使用者ID</string>
 <string key="#30018">使用者名稱</string>
-<string key="#30019">保存設定</string>
+<string key="#30019">資源包支援</string>
+<string key="#30020">跨平台</string>
+<string key="#30021">Geyser</string>
+<string key="#30022">Floodgate</string>
+<string key="#30023">儲存配置</string>
