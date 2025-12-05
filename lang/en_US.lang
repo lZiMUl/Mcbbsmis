@@ -50,4 +50,8 @@
 <string key="#30016">Room Number</string>
 <string key="#30017">User ID</string>
 <string key="#30018">Username</string>
-<string key="#30019">Save Configuration</string>
+<string key="#30019">Resource Pack Support</string>
+<string key="#30020">Cross-Platform</string>
+<string key="#30021">Geyser</string>
+<string key="#30022">Floodgate</string>
+<string key="#30023">Save Configuration</string>

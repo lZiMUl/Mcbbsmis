@@ -50,4 +50,8 @@
 <string key="#30016">Номер комнаты</string>
 <string key="#30017">ID пользователя</string>
 <string key="#30018">Имя пользователя</string>
-<string key="#30019">Сохранить настройки</string>
+<string key="#30019">Поддержка ресурс-паков</string>
+<string key="#30020">Кроссплатформенность</string>
+<string key="#30021">Geyser</string>
+<string key="#30022">Floodgate</string>
+<string key="#30023">Сохранить конфигурацию</string>
