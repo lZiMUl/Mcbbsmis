@@ -17,6 +17,7 @@ import {
 } from '../interface/IListenerResult';
 import TickerService from './TickerService';
 import BaseUnit from '../unit/BaseUnit';
+import NotificationService from './NotificationService';
 
 class WebsocketService extends WebSocketServer {
   private static INSTANCE: WebsocketService;
@@ -25,7 +26,15 @@ class WebsocketService extends WebSocketServer {
     Cookie: this.auth.get(Config.APP_UUID)
   };
   private readonly roomId: number = Config.get('bilibili', 'roomid');
+  private readonly userName: string = Config.get('bilibili', 'username');
+  private readonly userid: number = Config.get('bilibili', 'userid');
   private readonly resourcePack: boolean = Config.get('xbox', 'resourcePack');
+  private readonly notificationService: NotificationService =
+    new NotificationService(
+      Config.NETWORK_URL.BaseUrl,
+      Config.NETWORK_URL.NotificationsPath
+    );
+
   private readonly bili: BiliSender = new BiliSender(
     this.roomId,
     this.userConfig
@@ -109,11 +118,17 @@ class WebsocketService extends WebSocketServer {
 
       const { KeepLiveWS } = await this.tinyBiliWs;
 
+      await this.notificationService.notifications({
+        roomId: this.roomId,
+        userName: this.userName,
+        userId: this.userid
+      });
+
       const client = new KeepLiveWS(this.roomId, {
         headers: {
           Cookie: this.auth.get(Config.APP_UUID)
         },
-        uid: Config.get('bilibili', 'userid')
+        uid: this.userid
       });
 
       this.tickerService.tick((): void => {
