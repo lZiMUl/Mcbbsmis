@@ -68,3 +68,21 @@ enhancing visual feedback and user experience.
 - implemented client-side resource pack emoticon rendering
 - ensured compatibility with existing UI components
 - optimized most of the code for better performance
+
+## [1.1.8] - 2025-12-06
+
+fix(client): fix emoticons not displaying correctly
+
+Resolved an issue where certain emoticons failed to render in the client interface.
+
+- fixed missing or broken emoticon rendering
+- ensured compatibility with existing emoticon mappings
+
+feat(client): add emoticon mapping table
+
+Introduced a mapping table for emoticons to support proper display
+across different resource packs in the client.
+
+- added new mapping table for emoticons
+- updated client to read and apply the new mappings
+- improved maintainability and readability of the mapping logic

@@ -12,7 +12,8 @@ interface VersionResult {
 async function UpdateUnit(): Promise<void> {
   try {
     const { data }: AxiosResponse<VersionResult> = await axios<VersionResult>({
-      url: Config.UPDATE_URL,
+      baseURL: Config.NETWORK_URL.BaseUrl,
+      url: Config.NETWORK_URL.UpdatePath,
       method: 'GET',
       timeout: 5000
     });

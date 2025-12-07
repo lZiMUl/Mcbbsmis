@@ -134,12 +134,16 @@ username = "${username_xbox}"
 # Game client resource pack support
 resourcePack = ${resourcePack}
 
+# Game client resource pack support
+resourcePack = ${resourcePack}
+
 # ==============================
 # cross-platform Settings
 # ==============================
 [crossPlatform]
 # Geyser support
 geyser = ${geyser}
+
 # Floodgate support
 floodgate = ${floodgate}
 `;

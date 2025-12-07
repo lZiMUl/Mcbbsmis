@@ -12,6 +12,7 @@ import InitUnit from './unit/InitUnit';
 import ProfileManager from './unit/ProfileManagerUnit';
 import BaseUnit from './unit/BaseUnit';
 import EmojiUnit from './unit/EmojiUnit';
+import INetworkUrl from './interface/INetworkUrl';
 
 class Config {
   // App Config
@@ -64,9 +65,11 @@ class Config {
     Config.PROFILES_FILE_PATH
   );
 
-  // Update Config
-  public static readonly UPDATE_URL: string =
-    'https://projects.lzimul.com/Mcbbsmis/update_info';
+  public static readonly NETWORK_URL: INetworkUrl = {
+    BaseUrl: 'https://projects.lzimul.com',
+    UpdatePath: '/mcbbsmis/api/update_info',
+    NotificationsPath: '/services/mcbbsmis/api/notifications'
+  };
 
   // i18n Config
   public static readonly LANGUAGE: LanguageUnit = new LanguageUnit(
