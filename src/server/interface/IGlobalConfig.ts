@@ -30,10 +30,6 @@ interface IGlobalConfig {
     geyser: boolean;
     floodgate: boolean;
   };
-  crossPlatform: {
-    geyser: boolean;
-    floodgate: boolean;
-  };
 }
 
 export default IGlobalConfig;
