@@ -86,3 +86,12 @@ across different resource packs in the client.
 - added new mapping table for emoticons
 - updated client to read and apply the new mappings
 - improved maintainability and readability of the mapping logic
+
+## [1.2.0] - 2026-01-12
+
+upgrade(client): upgrade modules
+
+None 
+
+- None
+

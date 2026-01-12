@@ -12,16 +12,7 @@ import {
 } from 'tiny-bilibili-ws';
 
 import { ELiveEvent } from '../enum/ELiveEvent';
-import {
-  IOnlineCount,
-  ISendDanmaku,
-  ISendGift,
-  IUserFollow,
-  IUserJoin,
-  IUserLike,
-  IUserShare,
-  IViewCount
-} from '../interface/IListenerResult';
+import { ISendGift } from '../interface/IListenerResult';
 import Config from '../config';
 import BaseUnit from '../unit/BaseUnit';
 
@@ -47,18 +38,18 @@ class BiliBiliService extends EventEmitter {
           switch (msgType) {
             case 'MSG_ENTER_ROOM':
               {
-                super.emit<IUserJoin>(ELiveEvent.USER_JOIN, { uname });
+                super.emit(ELiveEvent.USER_JOIN, { uname });
               }
               break;
 
             case 'MSG_FOLLOW':
               {
-                super.emit<IUserFollow>(ELiveEvent.USER_FOLLOW, { uname });
+                super.emit(ELiveEvent.USER_FOLLOW, { uname });
               }
               break;
             case 'MSG_SHARE_ROOM':
               {
-                super.emit<IUserShare>(ELiveEvent.USER_SHARE, { uname });
+                super.emit(ELiveEvent.USER_SHARE, { uname });
               }
               break;
           }
@@ -73,7 +64,7 @@ class BiliBiliService extends EventEmitter {
           data: { num }
         }
       }: Message<WATCHED_CHANGE>): void => {
-        super.emit<IViewCount>(ELiveEvent.VIEW_COUNT, { num });
+        super.emit(ELiveEvent.VIEW_COUNT, { num });
       }
     );
     socket.addListener(
@@ -83,7 +74,7 @@ class BiliBiliService extends EventEmitter {
           data: { count }
         }
       }: Message<ONLINE_RANK_COUNT>): void => {
-        super.emit<IOnlineCount>(ELiveEvent.ONLINE_COUNT, { count });
+        super.emit(ELiveEvent.ONLINE_COUNT, { count });
       }
     );
     socket.addListener(
@@ -93,14 +84,14 @@ class BiliBiliService extends EventEmitter {
           data: { uname, like_text }
         }
       }: Message<LIKE_INFO_V3_CLICK>): void => {
-        super.emit<IUserLike>(ELiveEvent.USER_LIKE, {
+        super.emit(ELiveEvent.USER_LIKE, {
           uname,
           like_text
         });
       }
     );
     socket.addListener('DANMU_MSG', ({ data }: Message<DANMU_MSG>): void => {
-      super.emit<ISendDanmaku>(ELiveEvent.SEND_DANMAKU, {
+      super.emit(ELiveEvent.SEND_DANMAKU, {
         danmu: data.info.at(1),
         uname: data.info.at(2).at(1),
         medalStatus: Boolean<number | undefined>(data.info.at(3)?.length),
@@ -115,7 +106,7 @@ class BiliBiliService extends EventEmitter {
           data: { uname, action, giftName, num }
         }
       }: Message<SEND_GIFT>): void => {
-        super.emit<SEND_GIFT>(ELiveEvent.SEND_GIFT, {
+        super.emit(ELiveEvent.SEND_GIFT, {
           uname,
           action,
           giftName,
