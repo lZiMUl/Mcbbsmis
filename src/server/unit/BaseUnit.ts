@@ -131,6 +131,7 @@ username = "${username_bili}"
 [xbox]
 # Game client username (used to identify commands)
 username = "${username_xbox}"
+
 # Game client resource pack support
 resourcePack = ${resourcePack}
 

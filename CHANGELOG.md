@@ -95,3 +95,10 @@ None
 
 - None
 
+## [1.2.1] - 2026-01-20
+
+fix(server): Init Service
+
+Reload Configs
+
+- no have connect tips
