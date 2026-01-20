@@ -50,7 +50,7 @@ class WebsocketService extends WebSocketServer {
     super({ host, port });
     this.host = host;
     this.port = port;
-    this.core();
+    this.core().then((v: void): void => v);
   }
 
   public static create(): WebsocketService {
@@ -65,6 +65,11 @@ class WebsocketService extends WebSocketServer {
 
   public async core(): Promise<void> {
     try {
+      super.addListener('listening', (): void => {
+        Config.LOGGER.info(
+          `${Config.LANGUAGE.get('#18')} => /connect ws://${this.host === '0.0.0.0' ? '127.0.0.1' : this.host}:${this.port}`
+        );
+      });
       super.addListener(
         'connection',
         (socket: InstanceType<typeof WebSocket.WebSocket>): void => {
@@ -164,9 +169,6 @@ class WebsocketService extends WebSocketServer {
       Config.LOGGER.info(Config.LANGUAGE.get('#16'));
       await client.runWhenConnected();
       Config.LOGGER.info(Config.LANGUAGE.get('#17'));
-      Config.LOGGER.info(
-        `${Config.LANGUAGE.get('#18')} => /connect ws://${this.host === '0.0.0.0' ? '127.0.0.1' : this.host}:${this.port}`
-      );
 
       const biliBiliService: BiliBiliService = new BiliBiliService(client);
       const hideUserJoin: (data: null) => void = BaseUnit.debounce(
