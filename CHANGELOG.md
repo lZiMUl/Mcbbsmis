@@ -91,7 +91,7 @@ across different resource packs in the client.
 
 upgrade(client): upgrade modules
 
-None 
+None
 
 - None
 
