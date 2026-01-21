@@ -102,3 +102,7 @@ fix(server): Init Service
 Reload Configs
 
 - no have connect tips
+
+## [1.2.2] - 2026-01-21
+
+fix(file): Init config file
