@@ -91,7 +91,7 @@ across different resource packs in the client.
 
 upgrade(client): upgrade modules
 
-None 
+None
 
 - None
 
@@ -102,3 +102,7 @@ fix(server): Init Service
 Reload Configs
 
 - no have connect tips
+
+## [1.2.2] - 2026-01-21
+
+fix(file): Init config file

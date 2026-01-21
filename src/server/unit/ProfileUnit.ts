@@ -1,4 +1,3 @@
-// @ts-ignore
 import { input, select, Separator } from '@inquirer/prompts';
 import Config from '../config';
 import { EMenu, ESelectProfileMenu } from '../enum/EMenu';
