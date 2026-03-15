@@ -1,7 +1,7 @@
 interface ICommandResult {
-  identifier: string;
-  command: string;
-  content: string;
+  identifier: string | null;
+  command: string | null;
+  content: string | null;
 }
 
 export default ICommandResult;

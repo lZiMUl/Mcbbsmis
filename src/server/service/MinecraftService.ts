@@ -7,7 +7,10 @@ import { faker } from '@faker-js/faker';
 
 class MinecraftService {
   private readonly identifier: string = Config.get('global', 'identifier');
-  private readonly identifierRegExp: RegExp = new RegExp('(.)(\\S+)\\s(.*)');
+  private readonly identifierRegExp: RegExp = new RegExp(
+    '^(.)(\\S+)(?:\\s(.*))?$',
+    'im'
+  );
   private player: string = Config.get('xbox', 'username');
   private readonly resourcePack: boolean = Config.get('xbox', 'resourcePack');
   private geyserSupport: boolean = Config.get('crossPlatform', 'geyser');
@@ -21,10 +24,11 @@ class MinecraftService {
 
   public parseCommand(message: string): ICommandResult {
     const data: RegExpMatchArray | null = message.match(this.identifierRegExp);
+    console.info(data);
     return {
-      identifier: data?.at(1) as string,
-      command: data?.at(2) as string,
-      content: data?.at(3) ?? ''
+      identifier: data?.at(1) ?? null,
+      command: data?.at(2) ?? null,
+      content: data?.at(3) ?? null
     };
   }
 
@@ -113,13 +117,13 @@ class MinecraftService {
                 case 'send':
                   {
                     bili?.send(
-                      this.resourcePack
-                        ? content.replace(
+                      (this.resourcePack
+                        ? content?.replace(
                             /[\uEF00-\uEF51]/g,
                             (code: string): string =>
                               Config.EMOJIS.getNameByCode(code)
                           )
-                        : content
+                        : content) as string
                     );
                   }
                   break;

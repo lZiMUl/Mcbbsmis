@@ -106,3 +106,11 @@ Reload Configs
 ## [1.2.2] - 2026-01-21
 
 fix(file): Init config file
+
+## [1.2.3] - 2026-03-14
+
+upgrade(client): upgrade modules 
+
+fix(client): modified the regular expression
+
+- Regular expression replace ```js (.)(\\S+)\\s(.*)')``` with ```js^(.)(\\S+)(?:\\s(.*))?$```
