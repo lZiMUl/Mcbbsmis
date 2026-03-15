@@ -38,7 +38,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
           publish_dir: ./docs
-          user_name: 'Mcbbsmis[bot]'
-          user_email: 'Mcbbsmis[bot]@lzimul.com'
+          user_name: 'Mcbbsmis [bot]'
+          user_email: 'Mcbbsmis@lzimul.com'
           commit_message: ${{ github.event.head_commit.message }}
           enable_jekyll: true
