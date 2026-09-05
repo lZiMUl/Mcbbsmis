@@ -1,3 +1,7 @@
+## [1.3.4] - 2026-9-5
+refactor(app): update module versions and reorganize project files
+
+
 ## [1.3.3] - 2026-9-5
 refactor(app): update module versions and reorganize project files
 
