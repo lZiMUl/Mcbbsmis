@@ -2,9 +2,9 @@ import { join, resolve } from 'node:path';
 import ELanguage from '../enum/ELanguage';
 import IGlobalConfig from '../interface/IGlobalConfig';
 import { existsSync, readFileSync } from 'node:fs';
-import InitUnit from './InitUnit';
+import InitUtils from './InitUtils';
 import { parse } from 'toml';
-import ProfileManager from './ProfileManagerUnit';
+import ProfileManager from './ProfileManagerUtils';
 import Config from '../config';
 
 class LanguageConfig {
@@ -24,12 +24,13 @@ class LanguageConfig {
     LanguageConfig.ProfileManager.getFilePathById(
       LanguageConfig.ProfileManager.getLastUsed
     );
+
   public static get<
     T extends keyof IGlobalConfig,
     V extends keyof IGlobalConfig[T]
   >(root: T, key: V): IGlobalConfig[T][V] {
     if (!existsSync(LanguageConfig.CONFIG_FILE_PATH)) {
-      InitUnit();
+      InitUtils();
     }
 
     const CONFIG_CONTENT: IGlobalConfig = parse(
@@ -42,7 +43,7 @@ class LanguageConfig {
   }
 }
 
-class LanguageUnit {
+class LanguageUtils {
   private static DEFAULT_LANG: ELanguage = ELanguage.EN_US;
   public readonly regExp: RegExp =
     /<string\s+key="#(\d+)">\s*([\s\S]*?)\s*<\/string>/g;
@@ -87,11 +88,13 @@ class LanguageUnit {
     } catch (err: unknown) {
       if (err instanceof Error) {
         throw new Error(
-          `Failed to read language file for ${lang}: ${err.message}`
+          `Failed to read language file for ${lang}: ${err.message}`,
+          { cause: err }
         );
       } else {
         throw new Error(
-          'Unknown error occurred while reading the language file.'
+          'Unknown error occurred while reading the language file.',
+          { cause: err }
         );
       }
     }
@@ -100,10 +103,10 @@ class LanguageUnit {
   private readFile(path: string): string {
     try {
       return this.tryReadFile(path, LanguageConfig.get('global', 'language'));
-    } catch (err: unknown) {
-      return this.tryReadFile(path, LanguageUnit.DEFAULT_LANG);
+    } catch {
+      return this.tryReadFile(path, LanguageUtils.DEFAULT_LANG);
     }
   }
 }
 
-export default LanguageUnit;
+export default LanguageUtils;

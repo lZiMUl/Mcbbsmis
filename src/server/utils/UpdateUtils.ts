@@ -1,7 +1,8 @@
 import axios, { AxiosResponse } from 'axios';
 import semver from 'semver';
 
-// @ts-ignore
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
 import { version as localVersion } from '../../package.json';
 import Config from '../config';
 
@@ -9,7 +10,7 @@ interface VersionResult {
   version: string;
 }
 
-async function UpdateUnit(): Promise<void> {
+async function UpdateUtils(): Promise<void> {
   try {
     const { data }: AxiosResponse<VersionResult> = await axios<VersionResult>({
       baseURL: Config.NETWORK_URL.BaseUrl,
@@ -24,8 +25,9 @@ async function UpdateUnit(): Promise<void> {
     } else {
       Config.LOGGER.info(Config.LANGUAGE.get('#31'));
     }
-  } catch (err: unknown) {
+  } catch {
     Config.LOGGER.error(Config.LANGUAGE.get('#5'));
   }
 }
-export default UpdateUnit;
+
+export default UpdateUtils;

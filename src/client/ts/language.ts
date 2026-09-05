@@ -15,7 +15,9 @@ document.addEventListener('DOMContentLoaded', async function () {
       })
     );
 
-    if (!res.ok) throw new Error('HTTP ' + res.status);
+    if (!res.ok) {
+      throw new Error('HTTP ' + res.status);
+    }
 
     const data: Array<ILanguage> = await res.json();
     select.innerHTML = '';
@@ -25,7 +27,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       opt.textContent = `${lang.name} (${lang.code})`;
       select.appendChild(opt);
     });
-  } catch (error) {
+  } catch {
     select.innerHTML = '<option value="">Select language</option>';
     errorElement.style.display = 'block';
   }

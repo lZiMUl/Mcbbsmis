@@ -5,7 +5,7 @@ import { writeFileSync } from 'node:fs';
 
 type TLogSeparator = (title: string, i?: number | undefined) => void;
 
-class BaseUnit {
+class BaseUtils {
   public static debounce<T>(
     cb: (data: T) => void,
     delay: number
@@ -177,14 +177,14 @@ floodgate = ${floodgate}
     const now = new Date();
     return [
       now.getFullYear(),
-      BaseUnit.padZero(now.getMonth() + 1),
-      BaseUnit.padZero(now.getDate()),
-      BaseUnit.padZero(now.getHours()),
-      BaseUnit.padZero(now.getMinutes()),
-      BaseUnit.padZero(now.getSeconds())
+      BaseUtils.padZero(now.getMonth() + 1),
+      BaseUtils.padZero(now.getDate()),
+      BaseUtils.padZero(now.getHours()),
+      BaseUtils.padZero(now.getMinutes()),
+      BaseUtils.padZero(now.getSeconds())
     ].join(separator);
   }
 }
 
-export default BaseUnit;
+export default BaseUtils;
 export type { TLogSeparator };

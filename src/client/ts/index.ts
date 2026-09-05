@@ -5,13 +5,17 @@ document.addEventListener('DOMContentLoaded', async function (): Promise<void> {
         method: 'GET'
       })
     );
-    if (!localeResponse.ok) throw new Error('HTTP ' + localeResponse.status);
+    if (!localeResponse.ok) {
+      throw new Error('HTTP ' + localeResponse.status);
+    }
     const data = await localeResponse.json();
 
     const configResponse: Response = await fetch(
       new Request('/api/config', { method: 'GET' })
     );
-    if (!configResponse.ok) throw new Error('Failed to fetch config');
+    if (!configResponse.ok) {
+      throw new Error('Failed to fetch config');
+    }
     const config = await configResponse.json();
 
     const features = config.options || {};
@@ -45,7 +49,7 @@ document.addEventListener('DOMContentLoaded', async function (): Promise<void> {
     ]
       .map(id => document.getElementById(id))
       .forEach(item => {
-        if (item)
+        if (item) {
           switch (item.id) {
             case 'title':
               item.innerText = `Mcbbsmis ${data[item.id]}`;
@@ -66,16 +70,19 @@ document.addEventListener('DOMContentLoaded', async function (): Promise<void> {
             case 'gift':
             case 'resourcePack':
             case 'geyser':
-            case 'floodgate':
+            case 'floodgate': {
               // Feature options
               const checkbox: HTMLInputElement =
                 document.createElement('input');
               checkbox.setAttribute('type', 'checkbox');
               checkbox.setAttribute('name', item.id);
-              if (features[item.id]) checkbox.setAttribute('checked', '');
+              if (features[item.id]) {
+                checkbox.setAttribute('checked', '');
+              }
               item.appendChild(checkbox);
               item.append(data[item.id]);
               break;
+            }
             case 'bilibiliProfile':
               item.innerText = `🎬 Bilibili ${data[item.id]}`;
               break;
@@ -88,6 +95,7 @@ document.addEventListener('DOMContentLoaded', async function (): Promise<void> {
             default:
               item.innerText = data[item.id];
           }
+        }
       });
 
     // Global

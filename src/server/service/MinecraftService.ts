@@ -94,7 +94,10 @@ class MinecraftService {
     }
   }
 
-  public parseEventResult(rawData: string, bili: BiliSender): void {
+  public async parseEventResult(
+    rawData: string,
+    bili: BiliSender
+  ): Promise<void> {
     const {
       body: { message, sender, type }
     }: IEventResult = JSON.parse(rawData);
@@ -116,7 +119,7 @@ class MinecraftService {
                   break;
                 case 'send':
                   {
-                    bili?.send(
+                    await bili?.send(
                       (this.resourcePack
                         ? content?.replace(
                             /[\uEF00-\uEF51]/g,

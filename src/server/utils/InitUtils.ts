@@ -1,23 +1,26 @@
 import { existsSync, mkdirSync } from 'node:fs';
 import Config from '../config';
-import BaseUnit from './BaseUnit';
+import BaseUtils from './BaseUtils';
 import ELanguage from '../enum/ELanguage';
-import ProfileUnit, { CreateProfileUnit } from './ProfileUnit';
-import ProfileManager from './ProfileManagerUnit';
+import ProfileUtils, { CreateProfileUnit } from './ProfileUtils';
+import ProfileManager from './ProfileManagerUtils';
 
-function InitUnit(force: boolean = false): void {
-  if (!existsSync(Config.CONFIG_ROOT_PATH))
+function InitUtils(force: boolean = false): void {
+  if (!existsSync(Config.CONFIG_ROOT_PATH)) {
     mkdirSync(Config.CONFIG_ROOT_PATH, { recursive: true });
-  if (!existsSync(Config.PROFILES_DIR_PATH))
+  }
+  if (!existsSync(Config.PROFILES_DIR_PATH)) {
     mkdirSync(Config.PROFILES_DIR_PATH, { recursive: true });
-  if (!existsSync(Config.COOKIES_DIR_PATH))
+  }
+  if (!existsSync(Config.COOKIES_DIR_PATH)) {
     mkdirSync(Config.COOKIES_DIR_PATH, { recursive: true });
+  }
 
   if (force) {
     Config.LOGGER.info(Config.LANGUAGE.get('#2'));
-    BaseUnit.saveFile(
+    BaseUtils.saveFile(
       Config.getProfilePath,
-      BaseUnit.formatConfigurationTemplate({
+      BaseUtils.formatConfigurationTemplate({
         host: '0.0.0.0',
         port: 5700,
         language: ELanguage.EN_US,
@@ -61,7 +64,7 @@ function InitUnit(force: boolean = false): void {
     return;
   }
 
-  ProfileUnit();
+  ProfileUtils();
 }
 
-export default InitUnit;
+export default InitUtils;

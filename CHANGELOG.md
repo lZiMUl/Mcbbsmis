@@ -1,3 +1,14 @@
+## [1.3.3] - 2026-9-5
+refactor(app): update module versions and reorganize project files
+
+- Update module versions
+- Rename folders and files
+- Optimize application startup speed
+
+## [1.2.3] - 2026-3-14
+
+fix(logging): Illegal debug log output
+
 ## [1.1.2] - 2025-11-21
 
 fix(logging): ensure log4js flushes on exit

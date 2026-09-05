@@ -2,7 +2,7 @@ import Router from '@koa/router';
 
 import { writeFileSync } from 'node:fs';
 import Config from '../../config';
-import BaseUnit from '../../unit/BaseUnit';
+import BaseUtils from '../../utils/BaseUtils';
 import IConfigurationTemplate from '../../interface/IConfigurationTemplate';
 
 const router: Router = new Router({
@@ -43,7 +43,7 @@ router.post('/', async (ctx): Promise<void> => {
   ctx.status = 200;
   ctx.type = 'text/html';
 
-  const CONFIG_CONTENT: string = BaseUnit.formatConfigurationTemplate(
+  const CONFIG_CONTENT: string = BaseUtils.formatConfigurationTemplate(
     normalizeConfig(
       ctx.request.body as BooleansToString<IConfigurationTemplate>
     )

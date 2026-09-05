@@ -6,6 +6,7 @@ class TickerService<T> {
   public getData<V extends T>(key: string): V | null {
     return this.cache.has(key) ? (this.cache.get(key) as V) : null;
   }
+
   public setData(key: string, value: T): void {
     this.cache.set(key, value);
   }

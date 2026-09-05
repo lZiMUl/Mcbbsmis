@@ -1,4 +1,5 @@
 import { readFileSync } from 'fs';
+import Config from '../config';
 
 interface IData {
   name: string;
@@ -8,8 +9,8 @@ interface IData {
 type TKv = Map<IData['name'], IData['code']>;
 type TVk = Map<IData['code'], IData['name']>;
 
-class EmojiUnit {
-  private static INSTANCE: EmojiUnit;
+class EmojiUtils {
+  private static INSTANCE: EmojiUtils;
   private readonly kv: TKv = new Map<IData['name'], IData['code']>();
   private readonly vk: TVk = new Map<IData['code'], IData['name']>();
 
@@ -17,11 +18,11 @@ class EmojiUnit {
     this.load(path);
   }
 
-  public static create(path: string): EmojiUnit {
-    if (!EmojiUnit.INSTANCE) {
-      return new EmojiUnit(path);
+  public static create(path: string): EmojiUtils {
+    if (!EmojiUtils.INSTANCE) {
+      return new EmojiUtils(path);
     }
-    return EmojiUnit.INSTANCE;
+    return EmojiUtils.INSTANCE;
   }
 
   public getCodeByName(name: string): string {
@@ -45,8 +46,12 @@ class EmojiUnit {
         this.kv.set(name, code);
         this.vk.set(code, name);
       }
-    } catch (error) {}
+    } catch (error) {
+      if (error instanceof Error) {
+        Config.LOGGER.error(error);
+      }
+    }
   }
 }
 
-export default EmojiUnit;
+export default EmojiUtils;
