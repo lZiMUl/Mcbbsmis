@@ -1,13 +1,18 @@
 import { input, select, Separator } from '@inquirer/prompts';
 import Config from '../config';
 import { EMenu, ESelectProfileMenu } from '../enum/EMenu';
-import BaseUnit, { TLogSeparator } from './BaseUnit';
+import BaseUtils, { TLogSeparator } from './BaseUtils';
 import { IProfile } from '../interface/IProfileTemplate';
 import App from '../index';
-import OptionsUnit, { IOptionsGenerator } from './OptionsUnit';
-import ProfileManager from './ProfileManagerUnit';
+import OptionsUtils, { IOptionsGenerator } from './OptionsUtils';
+import ProfileManager from './ProfileManagerUtils';
 
-const stepBar: TLogSeparator = BaseUnit.createLogSeparator(0);
+type Choice = {
+  value: ESelectProfileMenu | string;
+  name?: string;
+};
+
+const stepBar: TLogSeparator = BaseUtils.createLogSeparator(0);
 
 async function CreateProfileUnit(): Promise<void> {
   try {
@@ -27,69 +32,22 @@ async function CreateProfileUnit(): Promise<void> {
       }
     });
 
-    OptionsUnit().then((result: IOptionsGenerator | void): void => {
+    OptionsUtils().then((result: IOptionsGenerator | void): void => {
       if (result) {
-        BaseUnit.saveFile(
+        BaseUtils.saveFile(
           profileManager.buildProfilePath(profileName),
-          BaseUnit.formatConfigurationTemplate(result)
+          BaseUtils.formatConfigurationTemplate(result)
         );
         Config.LOGGER.info(
           '✅ Configuration completed. Please restart the project to take effect.'
         );
-        BaseUnit.exitWithMessage(Config.MESSAGE.AUTO_EXIT, 2);
+        BaseUtils.exitWithMessage(Config.MESSAGE.AUTO_EXIT, 2);
       }
     });
-  } catch (error) {
-    BaseUnit.exitWithMessage(Config.MESSAGE.FORCE_EXIT);
+  } catch {
+    BaseUtils.exitWithMessage(Config.MESSAGE.FORCE_EXIT);
   }
 }
-
-function ProfileUnit(): void {
-  const profileManager: ProfileManager = ProfileManager.create();
-
-  void new Promise(async (): Promise<void> => {
-    try {
-      // Menu
-      stepBar('Mcbbsmis Main Menu');
-      const menu: EMenu = await select({
-        message: 'Menu: ',
-        choices: [
-          {
-            name: `Continue? (${profileManager.getNameById(profileManager.getLastUsed)})`,
-            value: EMenu.CONTINUE
-          },
-          {
-            name: 'Select an profile',
-            value: EMenu.PROFILE
-          },
-          {
-            name: 'Exit',
-            value: EMenu.EXIT
-          }
-        ]
-      });
-
-      switch (menu) {
-        case EMenu.CONTINUE:
-          App(profileManager.getLastUsed);
-          break;
-        case EMenu.PROFILE:
-          await SelectProfile(profileManager);
-          break;
-        case EMenu.EXIT:
-          BaseUnit.exitWithMessage();
-          break;
-      }
-    } catch (error) {
-      BaseUnit.exitWithMessage(Config.MESSAGE.FORCE_EXIT);
-    }
-  });
-}
-
-type Choice = {
-  value: ESelectProfileMenu | string;
-  name?: string;
-};
 
 async function SelectProfile(profileManager: ProfileManager): Promise<void> {
   try {
@@ -120,18 +78,62 @@ async function SelectProfile(profileManager: ProfileManager): Promise<void> {
         await CreateProfileUnit();
         break;
       case ESelectProfileMenu.BACK:
-        ProfileUnit();
+        // eslint-disable-next-line no-use-before-define
+        ProfileUtils();
         break;
 
       default:
         profileManager.setProfile(selectProfileMenu);
         Config.reload();
-        ProfileUnit();
+        // eslint-disable-next-line no-use-before-define
+        ProfileUtils();
     }
-  } catch (error) {
-    BaseUnit.exitWithMessage(Config.MESSAGE.FORCE_EXIT);
+  } catch {
+    BaseUtils.exitWithMessage(Config.MESSAGE.FORCE_EXIT);
   }
 }
 
-export default ProfileUnit;
+function ProfileUtils(): void {
+  const profileManager: ProfileManager = ProfileManager.create();
+
+  void new Promise((): void => {
+    try {
+      // Menu
+      stepBar('Mcbbsmis Main Menu');
+      select({
+        message: 'Menu: ',
+        choices: [
+          {
+            name: `Continue? (${profileManager.getNameById(profileManager.getLastUsed)})`,
+            value: EMenu.CONTINUE
+          },
+          {
+            name: 'Select an profile',
+            value: EMenu.PROFILE
+          },
+          {
+            name: 'Exit',
+            value: EMenu.EXIT
+          }
+        ]
+      }).then((menu: EMenu): void => {
+        switch (menu) {
+          case EMenu.CONTINUE:
+            App(profileManager.getLastUsed);
+            break;
+          case EMenu.PROFILE:
+            SelectProfile(profileManager);
+            break;
+          case EMenu.EXIT:
+            BaseUtils.exitWithMessage();
+            break;
+        }
+      });
+    } catch {
+      BaseUtils.exitWithMessage(Config.MESSAGE.FORCE_EXIT);
+    }
+  });
+}
+
+export default ProfileUtils;
 export { ProfileManager, CreateProfileUnit };

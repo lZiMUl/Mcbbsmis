@@ -1,13 +1,14 @@
 import IProfileTemplate, { IProfile } from '../interface/IProfileTemplate';
 import Config from '../config';
-import BaseUnit from './BaseUnit';
+import BaseUtils from './BaseUtils';
 import fs from 'node:fs';
 import { faker } from '@faker-js/faker/locale/ar';
 import { join } from 'node:path';
-import InitUnit from './InitUnit';
+import InitUtils from './InitUtils';
 
 class DataSever {
   protected readonly root: string;
+
   public constructor(root: string) {
     this.root = root;
   }
@@ -19,7 +20,7 @@ class DataSever {
           encoding: 'utf-8'
         })
       ) as IProfileTemplate;
-    } catch (error) {
+    } catch {
       return {
         lastUsed: '',
         profiles: []
@@ -28,9 +29,9 @@ class DataSever {
   }
 
   public save(profileTemplate: IProfileTemplate): void {
-    BaseUnit.saveFile(
+    BaseUtils.saveFile(
       Config.PROFILES_FILE_PATH,
-      BaseUnit.formatProfileTemplate(profileTemplate)
+      BaseUtils.formatProfileTemplate(profileTemplate)
     );
   }
 }
@@ -38,6 +39,7 @@ class DataSever {
 class ProfileManager extends DataSever {
   private static INSTANCE: ProfileManager;
   private content: IProfileTemplate;
+
   private constructor(root: string) {
     super(root);
     this.content = super.load();
@@ -118,7 +120,7 @@ class ProfileManager extends DataSever {
       recursive: true,
       retryDelay: 1000
     });
-    InitUnit();
+    InitUtils();
   }
 }
 

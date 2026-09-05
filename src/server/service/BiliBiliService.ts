@@ -14,7 +14,7 @@ import {
 import { ELiveEvent } from '../enum/ELiveEvent';
 import { ISendGift } from '../interface/IListenerResult';
 import Config from '../config';
-import BaseUnit from '../unit/BaseUnit';
+import BaseUnit from '../utils/BaseUtils';
 
 class BiliBiliService extends EventEmitter {
   private static GiftHashMap: Map<string, any> = new Map<string, any>();
@@ -121,7 +121,9 @@ class BiliBiliService extends EventEmitter {
     cb: (data: T) => void,
     status: boolean = false
   ): void {
-    if (status) super.addListener(event, cb);
+    if (status) {
+      super.addListener(event, cb);
+    }
   }
 
   public giftDebounce<T extends ISendGift>(

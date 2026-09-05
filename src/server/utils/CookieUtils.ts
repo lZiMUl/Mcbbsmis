@@ -9,13 +9,16 @@ import {
 
 import Config from '../config';
 
-class Cookie {
+class CookieUtils {
   private readonly path: string;
 
   public constructor(path: string = Config.COOKIES_DIR_PATH) {
     this.path = path;
-    if (!existsSync(this.path)) mkdirSync(this.path, { recursive: true });
+    if (!existsSync(this.path)) {
+      mkdirSync(this.path, { recursive: true });
+    }
   }
+
   public has(uuid: string): boolean {
     return existsSync(join(this.path, `./${uuid}.txt`));
   }
@@ -42,4 +45,4 @@ class Cookie {
   }
 }
 
-export default Cookie;
+export default CookieUtils;

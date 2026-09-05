@@ -25,29 +25,30 @@ function renderAscii(
   }, colorSpeed);
 
   return new Promise(
-    async (
+    (
       resolve: (value: string | PromiseLike<string>) => void,
-      reject: (reason?: any) => void
-    ): Promise<void> => {
+      reject: (reason?: unknown) => void
+    ): void => {
       try {
-        const data: string = await figlet.text(content, { font });
-        const lines: Array<string> = data?.split('\n');
+        figlet.text(content, { font }).then((data: string): void => {
+          const lines: Array<string> = data?.split('\n');
 
-        const charTimer: NodeJS.Timeout = setInterval((): void => {
-          const grad: GradientFunction = gradient([
-            ...colors.slice(colorIndex),
-            ...colors.slice(0, colorIndex)
-          ]);
+          const charTimer: NodeJS.Timeout = setInterval((): void => {
+            const grad: GradientFunction = gradient([
+              ...colors.slice(colorIndex),
+              ...colors.slice(0, colorIndex)
+            ]);
 
-          process.stdout.write('\x1B[0;0H');
-          process.stdout.write(grad.multiline(lines.join('\n')));
+            process.stdout.write('\x1B[0;0H');
+            process.stdout.write(grad.multiline(lines.join('\n')));
 
-          if (++frame > colors.length) {
-            clearInterval(charTimer);
-            clearInterval(colorTimer);
-            resolve('');
-          }
-        }, charSpeed);
+            if (++frame > colors.length) {
+              clearInterval(charTimer);
+              clearInterval(colorTimer);
+              resolve('');
+            }
+          }, charSpeed);
+        });
       } catch (error) {
         return reject(error);
       }

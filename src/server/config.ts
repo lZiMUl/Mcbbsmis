@@ -1,4 +1,5 @@
-// @ts-ignore
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
 import { name, version } from '../package.json';
 import { join, resolve } from 'node:path';
 import { readFileSync } from 'node:fs';
@@ -6,13 +7,14 @@ import { readFileSync } from 'node:fs';
 import log4js, { Log4js, Logger } from 'log4js';
 import { parse } from 'toml';
 
-import LanguageUnit from './unit/LanguageUnit';
 import IGlobalConfig from './interface/IGlobalConfig';
-import InitUnit from './unit/InitUnit';
-import ProfileManager from './unit/ProfileManagerUnit';
-import BaseUnit from './unit/BaseUnit';
-import EmojiUnit from './unit/EmojiUnit';
 import INetworkUrl from './interface/INetworkUrl';
+
+import BaseUtils from './utils/BaseUtils';
+import InitUtils from './utils/InitUtils';
+import LanguageUtils from './utils/LanguageUtils';
+import ProfileManagerUtils from './utils/ProfileManagerUtils';
+import EmojiUtils from './utils/EmojiUtils';
 
 class Config {
   // App Config
@@ -26,7 +28,7 @@ class Config {
   public static readonly APP_UUID: string =
     '9f7eb9ce-6a2a-4267-8923-494fd42ded83';
   public static readonly STARTUP_TIMESTAMP: string =
-    BaseUnit.getCurrentTimestamp();
+    BaseUtils.getCurrentTimestamp();
 
   // Path Config
   public static readonly ROOT_PATH: string = resolve('.');
@@ -51,7 +53,7 @@ class Config {
     Config.DATA_DIR_PATH,
     'emojis.json'
   );
-  public static readonly EMOJIS: EmojiUnit = EmojiUnit.create(
+  public static readonly EMOJIS: EmojiUtils = EmojiUtils.create(
     Config.EMOJIS_FILE_PATH
   );
 
@@ -61,9 +63,8 @@ class Config {
     'InteractWordV2.proto'
   );
 
-  static readonly ProfileManager: ProfileManager = ProfileManager.create(
-    Config.PROFILES_FILE_PATH
-  );
+  static readonly ProfileManager: ProfileManagerUtils =
+    ProfileManagerUtils.create(Config.PROFILES_FILE_PATH);
 
   public static readonly NETWORK_URL: INetworkUrl = {
     BaseUrl: 'https://projects.lzimul.com',
@@ -72,7 +73,7 @@ class Config {
   };
 
   // i18n Config
-  public static readonly LANGUAGE: LanguageUnit = new LanguageUnit(
+  public static readonly LANGUAGE: LanguageUtils = new LanguageUtils(
     Config.ROOT_PATH
   );
 
@@ -131,9 +132,9 @@ class Config {
           flag: 'r'
         })
       );
-    } catch (error) {
+    } catch {
       Config.LOGGER.error(Config.LANGUAGE.get('#7'));
-      InitUnit(true);
+      InitUtils(true);
     }
   }
 
@@ -149,11 +150,13 @@ class Config {
       Config.LOGGER.info(
         `${Config.LANGUAGE.get('#6')}: [${root} -> ${key as string}] => ${data}`
       );
-      if (data === void 0) throw new Error();
+      if (data === void 0) {
+        throw new Error();
+      }
       return data;
-    } catch (error) {
+    } catch {
       Config.LOGGER.error(Config.LANGUAGE.get('#7'));
-      InitUnit(true);
+      InitUtils(true);
       return this.get(root, key);
     }
   }

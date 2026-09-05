@@ -1,14 +1,14 @@
+import { clearInterval, setInterval } from 'node:timers';
 import { Command, OptionValues } from 'commander';
+import open from 'open';
 import Config from './config';
-import update from './unit/UpdateUnit';
 import WebService from './service/WebService';
 import WebsocketService from './service/WebSocketService';
-import AuthUnit from './unit/AuthUnit';
-import open from 'open';
-import LogoUnit from './unit/LogoUnit';
-import InitUnit from './unit/InitUnit';
-import { clearInterval, setInterval } from 'node:timers';
-import BaseUnit from './unit/BaseUnit';
+import InitUtils from './utils/InitUtils';
+import LogoUtils from './utils/LogoUtils';
+import UpdateUtils from './utils/UpdateUtils';
+import BaseUtils from './utils/BaseUtils';
+import AuthUtils from './utils/AuthUtils';
 
 function App(uuid: string): void {
   const program: Command = new Command(Config.APP_NAME);
@@ -21,7 +21,7 @@ function App(uuid: string): void {
 
   const options: OptionValues = program.opts();
 
-  const auth: AuthUnit = AuthUnit.create(uuid);
+  const auth: AuthUtils = AuthUtils.create(uuid);
 
   const checkLogin: NodeJS.Timeout = setInterval((): void => {
     if (auth.has(uuid)) {
@@ -43,30 +43,34 @@ function App(uuid: string): void {
             try {
               await open(WEB_URL);
             } catch (error) {
-              Config.LOGGER.info(WEB_URL);
+              if (error instanceof Error) {
+                Config.LOGGER.info(WEB_URL);
+              }
             }
           }
         );
-      } else WebsocketService.create();
+      } else {
+        WebsocketService.create();
+      }
     }
   }, 2000);
 }
 
-LogoUnit(`${Config.APP_NAME}`, 100, 100).then(() => {
+LogoUtils(`${Config.APP_NAME}`, 100, 100).then(() => {
   Config.LOGGER.info(Config.LANGUAGE.get('#0'));
   Config.LOGGER.info(Config.LANGUAGE.get('#3'));
 
-  update().finally((): void => {
+  UpdateUtils().finally((): void => {
     Config.LOGGER.info(Config.LANGUAGE.get('#8'));
-    InitUnit();
+    InitUtils();
   });
 });
 
 process.on('SIGINT', (): void =>
-  Config.LOG4JS.shutdown((): void => BaseUnit.exitWithMessage())
+  Config.LOG4JS.shutdown((): void => BaseUtils.exitWithMessage())
 );
 process.on('SIGTERM', (): void =>
-  Config.LOG4JS.shutdown((): void => BaseUnit.exitWithMessage())
+  Config.LOG4JS.shutdown((): void => BaseUtils.exitWithMessage())
 );
 process.on('beforeExit', (): void => Config.LOG4JS.shutdown());
 

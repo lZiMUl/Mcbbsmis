@@ -3,9 +3,11 @@ interface IProfile {
   uuid: string;
   createTime?: number;
 }
+
 interface IProfileTemplate {
   lastUsed: string;
   profiles: IProfile[];
 }
+
 export default IProfileTemplate;
 export type { IProfile };

@@ -1,7 +1,7 @@
 import BiliSender, { IConfig } from 'bili-sender';
 import { RawData, Server, WebSocket, WebSocketServer } from 'ws';
 import Config from '../config';
-import AuthUnit from '../unit/AuthUnit';
+import AuthUnit from '../utils/AuthUtils';
 import MinecraftService from './MinecraftService';
 import BiliBiliService from './BiliBiliService';
 import { ELiveEvent } from '../enum/ELiveEvent';
@@ -16,7 +16,7 @@ import {
   IViewCount
 } from '../interface/IListenerResult';
 import TickerService from './TickerService';
-import BaseUnit from '../unit/BaseUnit';
+import BaseUnit from '../utils/BaseUtils';
 import NotificationService from './NotificationService';
 
 class WebsocketService extends WebSocketServer {
@@ -72,7 +72,7 @@ class WebsocketService extends WebSocketServer {
       });
       super.addListener(
         'connection',
-        (socket: InstanceType<typeof WebSocket.WebSocket>): void => {
+        (socket: InstanceType<typeof WebSocket>): void => {
           Config.LOGGER.info(Config.LANGUAGE.get('#22'));
           this.minecraft = new MinecraftService(socket);
           this.minecraft?.sendMessage(
@@ -148,22 +148,25 @@ class WebsocketService extends WebSocketServer {
           );
         }
 
-        if (viewStatus)
+        if (viewStatus) {
           ActionBar.push(
             `§f${viewText}§d: §b[§f${
               this.tickerService.getData<number>(ELiveEvent.VIEW_COUNT) ||
               loadingText
             }§b]`
           );
-        if (onlineStatus)
+        }
+        if (onlineStatus) {
           ActionBar.push(
             `§f${onlineText}§d: §b[§f${
               this.tickerService.getData<number>(ELiveEvent.ONLINE_COUNT) ||
               loadingText
             }§b]`
           );
-        if (ActionBar.length)
+        }
+        if (ActionBar.length) {
           this.minecraft?.sendActionBar(ActionBar.join(' §g| '));
+        }
       }, 0.45);
 
       Config.LOGGER.info(Config.LANGUAGE.get('#16'));
@@ -274,11 +277,14 @@ class WebsocketService extends WebSocketServer {
         giftStatus
       );
 
-      ['error', 'close', 'wsClientError'].forEach(
-        (event: string): Server =>
-          super.addListener(event, (): boolean => client.close())
+      ['error', 'close', 'wsClientError'].forEach((event: string): Server =>
+        super.addListener(event, (): boolean => client.close())
       );
-    } catch (err: unknown) {}
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        Config.LOGGER.error(error);
+      }
+    }
   }
 }
 

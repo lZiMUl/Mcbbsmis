@@ -1,8 +1,7 @@
-// @ts-ignore
 import { checkbox, confirm, input, number, select } from '@inquirer/prompts';
 import ELanguage from '../enum/ELanguage';
 import Config from '../config';
-import BaseUnit, { TLogSeparator } from './BaseUnit';
+import BaseUtils, { TLogSeparator } from './BaseUtils';
 
 interface IListenEventOptions {
   join: boolean;
@@ -70,13 +69,13 @@ function CrossPlatformGenerator(
 
 const max: number = 3;
 
-const retryBar: TLogSeparator = BaseUnit.createLogSeparator(max);
-const stepBar: TLogSeparator = BaseUnit.createLogSeparator(6);
+const retryBar: TLogSeparator = BaseUtils.createLogSeparator(max);
+const stepBar: TLogSeparator = BaseUtils.createLogSeparator(6);
 
-async function OptionsUnit(i: number = 1): Promise<IOptionsGenerator | void> {
+async function OptionsUtils(i: number = 1): Promise<IOptionsGenerator | void> {
   try {
     if (i > max) {
-      BaseUnit.exitWithMessage('Too many failed attempts. Exiting.');
+      BaseUtils.exitWithMessage('Too many failed attempts. Exiting.');
     }
 
     retryBar('Retry Bar', i);
@@ -198,8 +197,9 @@ async function OptionsUnit(i: number = 1): Promise<IOptionsGenerator | void> {
 
     // Continue
     stepBar('Final Step: Is the current configuration correct?', 6);
+    // eslint-dis
     if (!(await confirm({ message: 'Continue?', default: true }))) {
-      return await OptionsUnit(i + 1);
+      return await OptionsUtils(i + 1);
     }
 
     return {
@@ -215,12 +215,12 @@ async function OptionsUnit(i: number = 1): Promise<IOptionsGenerator | void> {
       ...listenEventOptions,
       ...crossPlatformOptions
     };
-  } catch (error) {
-    BaseUnit.exitWithMessage(Config.MESSAGE.FORCE_EXIT);
+  } catch {
+    BaseUtils.exitWithMessage(Config.MESSAGE.FORCE_EXIT);
   }
 }
 
-export default OptionsUnit;
+export default OptionsUtils;
 export type {
   IOptionsGenerator,
   IListenEventOptions,

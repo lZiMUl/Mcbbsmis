@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="com.ilscipio.shadcn.settings.ShadcnSettingsState">
+    <registryConfigs>
+      <RegistryConfigState>
+        <option name="id" value="official" />
+        <option name="name" value="Official shadcn/ui" />
+        <option name="namespace" value="@shadcn" />
+        <option name="baseUrl" value="https://ui.shadcn.com/r" />
+        <option name="type" value="official" />
+        <option name="builtin" value="true" />
+        <option name="description" value="The official shadcn/ui component registry" />
+      </RegistryConfigState>
+      <RegistryConfigState>
+        <option name="id" value="21st-dev" />
+        <option name="name" value="21st.dev" />
+        <option name="namespace" value="@21st" />
+        <option name="baseUrl" value="https://21st.dev/r" />
+        <option name="type" value="community" />
+        <option name="enabled" value="false" />
+        <option name="builtin" value="true" />
+        <option name="description" value="Open-source community components from 21st.dev" />
+        <option name="homepage" value="https://21st.dev" />
+      </RegistryConfigState>
+    </registryConfigs>
+  </component>
+</project>

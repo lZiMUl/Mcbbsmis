@@ -20,6 +20,7 @@ class NotificationService {
     });
     this.url = url;
   }
+
   public async notifications({
     roomId,
     userName,
