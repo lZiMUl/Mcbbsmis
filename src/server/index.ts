@@ -56,7 +56,7 @@ function App(uuid: string): void {
   }, 2000);
 }
 
-LogoUtils(`${Config.APP_NAME}`, 100, 100).then(() => {
+LogoUtils(`${Config.APP_NAME}`, 50, 50).then(() => {
   Config.LOGGER.info(Config.LANGUAGE.get('#0'));
   Config.LOGGER.info(Config.LANGUAGE.get('#3'));
 

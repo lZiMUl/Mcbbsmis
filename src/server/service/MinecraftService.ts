@@ -24,7 +24,6 @@ class MinecraftService {
 
   public parseCommand(message: string): ICommandResult {
     const data: RegExpMatchArray | null = message.match(this.identifierRegExp);
-    console.info(data);
     return {
       identifier: data?.at(1) ?? null,
       command: data?.at(2) ?? null,

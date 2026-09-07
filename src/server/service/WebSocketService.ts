@@ -50,7 +50,7 @@ class WebsocketService extends WebSocketServer {
     super({ host, port });
     this.host = host;
     this.port = port;
-    this.core().then((v: void): void => v);
+    this.core();
   }
 
   public static create(): WebsocketService {
@@ -131,7 +131,7 @@ class WebsocketService extends WebSocketServer {
 
       const client = new KeepLiveWS(this.roomId, {
         headers: {
-          Cookie: this.auth.get(Config.APP_UUID)
+          ...this.userConfig
         },
         uid: this.userid
       });

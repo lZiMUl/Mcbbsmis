@@ -16,7 +16,8 @@ class NotificationService {
 
   public constructor(baseUrl: string, url: string) {
     this.axios = axios.create({
-      baseURL: baseUrl
+      baseURL: baseUrl,
+      timeout: 5000
     });
     this.url = url;
   }

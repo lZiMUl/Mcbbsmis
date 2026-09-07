@@ -1,57 +1,86 @@
+## [1.3.5] - 2026-9-7
+
+- Optimize application startup speed
+
+
 ## [1.3.4] - 2026-9-5
+
 refactor(app): update module versions and reorganize project files
 
 
 ## [1.3.3] - 2026-9-5
+
 refactor(app): update module versions and reorganize project files
 
 - Update module versions
 - Rename folders and files
 - Optimize application startup speed
 
-## [1.2.3] - 2026-3-14
 
+## [1.2.3] - 2026-03-14
+
+upgrade(client): upgrade modules
+
+fix(client): modified the regular expression
 fix(logging): Illegal debug log output
 
-## [1.1.2] - 2025-11-21
+- Regular expression replace ```js (.)(\\S+)\\s(.*)')``` with ```js^(.)(\\S+)(?:\\s(.*))?$```
 
-fix(logging): ensure log4js flushes on exit
 
-- Handle SIGINT, SIGTERM, and beforeExit events
-- Prevent log loss when process exits
-- Ensure dateFile appender directory exists
+## [1.2.2] - 2026-01-21
 
-refactor(app): optimize authentication polling and service startup
+fix(file): Init config file
 
-- Replace recursive timeout with interval
-- Add flag to avoid multiple service instances
-- Simplify control flow and logging
 
-## [1.1.3] - 2025-11-23
+## [1.2.1] - 2026-01-20
 
-fix(logging): Illegal debug log output
+fix(server): Init Service
 
-## [1.1.4] - 2025-11-24
+Reload Configs
 
-fix(logging): prevent rapid duplicate log file generation, normalize variable and method names
+- no have connect tips
 
-- Prevents creation of multiple log files within a short interval by using a consistent startup timestamp.
-- Standardizes variable and method names: `padZero` → `padZero`, `getTimestamp` → `getCurrentTimestamp`,
-  `logSeparator` → `createLogSeparator`, etc.
-- Improves readability and maintainability of logging and configuration utilities.
 
-## [1.1.5] - 2025-11-26
+## [1.2.0] - 2026-01-12
 
-feat(server): add support for Paper server environment
+upgrade(client): upgrade modules
 
-Added compatibility layer for Paper-based Minecraft servers.
-This update ensures the platform runs correctly under Paper, improves API
-adaptation, and aligns behavior with Bukkit/Spigot implementations.
+None
 
-- implemented Paper-specific environment detection
-- improved compatibility with Paper event handling
-- ensured configuration behaves consistently across Paper builds
-- prepared foundation for future cross-platform expansion
+- None
+
+
+## [1.1.8] - 2025-12-06
+
+fix(client): fix emoticons not displaying correctly
+
+Resolved an issue where certain emoticons failed to render in the client interface.
+
+- fixed missing or broken emoticon rendering
+- ensured compatibility with existing emoticon mappings
+
+feat(client): add emoticon mapping table
+
+Introduced a mapping table for emoticons to support proper display
+across different resource packs in the client.
+
+- added new mapping table for emoticons
+- updated client to read and apply the new mappings
+- improved maintainability and readability of the mapping logic
+
+
+## [1.1.7] - 2025-12-05
+
+feat(client): show resource pack emoticons
+
+Added support for displaying emoticons from client resource packs.
+This update allows custom resource pack icons to appear in the client interface,
+enhancing visual feedback and user experience.
+
+- implemented client-side resource pack emoticon rendering
+- ensured compatibility with existing UI components
+- optimized most of the code for better performance
+
 
 ## [1.1.6] - 2025-11-28
 
@@ -72,60 +101,46 @@ flow, ensuring platform selection only applies when explicitly enabled.
 This restores expected behavior where cross-platform support becomes active only
 when users choose to enable it.
 
-## [1.1.7] - 2025-12-05
 
-feat(client): show resource pack emoticons
+## [1.1.5] - 2025-11-26
 
-Added support for displaying emoticons from client resource packs.
-This update allows custom resource pack icons to appear in the client interface,
-enhancing visual feedback and user experience.
+feat(server): add support for Paper server environment
 
-- implemented client-side resource pack emoticon rendering
-- ensured compatibility with existing UI components
-- optimized most of the code for better performance
+Added compatibility layer for Paper-based Minecraft servers.
+This update ensures the platform runs correctly under Paper, improves API
+adaptation, and aligns behavior with Bukkit/Spigot implementations.
 
-## [1.1.8] - 2025-12-06
+- implemented Paper-specific environment detection
+- improved compatibility with Paper event handling
+- ensured configuration behaves consistently across Paper builds
+- prepared foundation for future cross-platform expansion
 
-fix(client): fix emoticons not displaying correctly
 
-Resolved an issue where certain emoticons failed to render in the client interface.
+## [1.1.4] - 2025-11-24
 
-- fixed missing or broken emoticon rendering
-- ensured compatibility with existing emoticon mappings
+fix(logging): prevent rapid duplicate log file generation, normalize variable and method names
 
-feat(client): add emoticon mapping table
+- Prevents creation of multiple log files within a short interval by using a consistent startup timestamp.
+- Standardizes variable and method names: `padZero` → `padZero`, `getTimestamp` → `getCurrentTimestamp`,
+  `logSeparator` → `createLogSeparator`, etc.
+- Improves readability and maintainability of logging and configuration utilities.
 
-Introduced a mapping table for emoticons to support proper display
-across different resource packs in the client.
 
-- added new mapping table for emoticons
-- updated client to read and apply the new mappings
-- improved maintainability and readability of the mapping logic
+## [1.1.3] - 2025-11-23
 
-## [1.2.0] - 2026-01-12
+fix(logging): Illegal debug log output
 
-upgrade(client): upgrade modules
 
-None
+## [1.1.2] - 2025-11-21
 
-- None
+fix(logging): ensure log4js flushes on exit
 
-## [1.2.1] - 2026-01-20
+- Handle SIGINT, SIGTERM, and beforeExit events
+- Prevent log loss when process exits
+- Ensure dateFile appender directory exists
 
-fix(server): Init Service
+refactor(app): optimize authentication polling and service startup
 
-Reload Configs
-
-- no have connect tips
-
-## [1.2.2] - 2026-01-21
-
-fix(file): Init config file
-
-## [1.2.3] - 2026-03-14
-
-upgrade(client): upgrade modules 
-
-fix(client): modified the regular expression
-
-- Regular expression replace ```js (.)(\\S+)\\s(.*)')``` with ```js^(.)(\\S+)(?:\\s(.*))?$```
+- Replace recursive timeout with interval
+- Add flag to avoid multiple service instances
+- Simplify control flow and logging
