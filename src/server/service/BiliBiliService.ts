@@ -8,6 +8,7 @@ import {
   Message,
   ONLINE_RANK_COUNT,
   SEND_GIFT,
+  SEND_GIFT_V2,
   WATCHED_CHANGE
 } from 'tiny-bilibili-ws';
 
@@ -99,6 +100,7 @@ class BiliBiliService extends EventEmitter {
         medalName: data.info.at(3).at(1)
       });
     });
+
     socket.addListener(
       'SEND_GIFT',
       ({
@@ -110,6 +112,22 @@ class BiliBiliService extends EventEmitter {
           uname,
           action,
           giftName,
+          num
+        });
+      }
+    );
+
+    socket.addListener(
+      'SEND_GIFT_V2',
+      ({
+        data: {
+          data: { uname, action, gift_name, num }
+        }
+      }: Message<SEND_GIFT_V2>): void => {
+        super.emit(ELiveEvent.SEND_GIFT, {
+          uname,
+          action,
+          gift_name,
           num
         });
       }
