@@ -1,3 +1,10 @@
+## [1.3.6] - 2026-9-29
+
+fix(server): gift event
+- Update module versions
+- Add SEND_GIFT_V2 Event
+
+
 ## [1.3.5] - 2026-9-7
 
 - Optimize application startup speed

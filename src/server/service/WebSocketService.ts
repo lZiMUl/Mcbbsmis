@@ -1,5 +1,6 @@
 import BiliSender, { IConfig } from 'bili-sender';
 import { RawData, Server, WebSocket, WebSocketServer } from 'ws';
+import { KeepLiveWS } from 'tiny-bilibili-ws';
 import Config from '../config';
 import AuthUnit from '../utils/AuthUtils';
 import MinecraftService from './MinecraftService';
@@ -39,7 +40,6 @@ class WebsocketService extends WebSocketServer {
     this.roomId,
     this.userConfig
   );
-  private readonly tinyBiliWs = import('tiny-bilibili-ws');
   private minecraft: MinecraftService | undefined;
   private tickerService: TickerService<string | number | null> =
     new TickerService<string | number | null>();
@@ -50,7 +50,7 @@ class WebsocketService extends WebSocketServer {
     super({ host, port });
     this.host = host;
     this.port = port;
-    this.core();
+    void this.core();
   }
 
   public static create(): WebsocketService {
@@ -120,8 +120,6 @@ class WebsocketService extends WebSocketServer {
         Config.get('options', 'danmaku'),
         Config.get('options', 'gift')
       ];
-
-      const { KeepLiveWS } = await this.tinyBiliWs;
 
       await this.notificationService.notifications({
         roomId: this.roomId,
