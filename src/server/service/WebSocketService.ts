@@ -1,7 +1,6 @@
 import BiliSender, { IConfig } from 'bili-sender';
 import { RawData, Server, WebSocket, WebSocketServer } from 'ws';
 import { KeepLiveWS } from 'tiny-bilibili-ws';
-
 import Config from '../config';
 import AuthUnit from '../utils/AuthUtils';
 import MinecraftService from './MinecraftService';
