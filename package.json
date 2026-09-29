@@ -135,5 +135,8 @@
     "access": "public",
     "tag": "latest"
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "allowScripts": {
+    "@parcel/watcher": true
+  }
 }
