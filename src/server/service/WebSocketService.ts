@@ -131,6 +131,8 @@ class WebsocketService extends WebSocketServer {
         headers: {
           ...this.userConfig
         },
+        ssl: true,
+        platform: 'web',
         uid: this.userid
       });
 

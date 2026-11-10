@@ -1,3 +1,9 @@
+## [1.3.6] - 2026-10-27
+
+fix(server): module
+- Update module versions
+
+
 ## [1.3.6] - 2026-9-29
 
 fix(server): gift event
