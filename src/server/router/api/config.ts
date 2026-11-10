@@ -28,7 +28,6 @@ router.get('/', async ctx => {
     },
     bilibili: {
       roomid: Config.get('bilibili', 'roomid'),
-      userid: Config.get('bilibili', 'userid'),
       username: Config.get('bilibili', 'username')
     },
     xbox: {

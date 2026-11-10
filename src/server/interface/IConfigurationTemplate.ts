@@ -14,7 +14,6 @@ interface IConfigurationTemplate {
   danmaku: boolean;
   gift: boolean;
   roomid: number;
-  userid: number;
   username_bili: string;
   username_xbox: string;
   resourcePack: boolean;

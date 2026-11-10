@@ -38,7 +38,6 @@ document.addEventListener('DOMContentLoaded', async function (): Promise<void> {
       'gift',
       'bilibiliProfile',
       'bili-roomid',
-      'bili-userid',
       'bili-username',
       'xbox-username',
       'resourcePack',
@@ -119,8 +118,6 @@ document.addEventListener('DOMContentLoaded', async function (): Promise<void> {
     if (config.bilibili) {
       (document.getElementById('roomid-input') as HTMLInputElement).value =
         config.bilibili.roomid;
-      (document.getElementById('bili_userid-input') as HTMLInputElement).value =
-        config.bilibili.userid;
       (
         document.getElementById('bili_username-input') as HTMLInputElement
       ).value = config.bilibili.username;

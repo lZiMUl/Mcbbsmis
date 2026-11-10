@@ -19,6 +19,8 @@ import {
 import TickerService from './TickerService';
 import BaseUnit from '../utils/BaseUtils';
 import NotificationService from './NotificationService';
+import { ParseCookie } from '../tools/ParseCookie';
+import { getBuvid } from '../tools/getBuvid';
 
 class WebsocketService extends WebSocketServer {
   private static INSTANCE: WebsocketService;
@@ -28,7 +30,6 @@ class WebsocketService extends WebSocketServer {
   };
   private readonly roomId: number = Config.get('bilibili', 'roomid');
   private readonly userName: string = Config.get('bilibili', 'username');
-  private readonly userid: number = Config.get('bilibili', 'userid');
   private readonly resourcePack: boolean = Config.get('xbox', 'resourcePack');
   private readonly notificationService: NotificationService =
     new NotificationService(
@@ -121,11 +122,22 @@ class WebsocketService extends WebSocketServer {
         Config.get('options', 'gift')
       ];
 
-      await this.notificationService.notifications({
-        roomId: this.roomId,
-        userName: this.userName,
-        userId: this.userid
-      });
+      const Cookie: ParseCookie = new ParseCookie(this.userConfig.Cookie);
+
+      const uid: number | undefined = Cookie.get<number>('DedeUserID') ?? 0;
+      const buvid: string = await getBuvid();
+
+      try {
+        await this.notificationService.notifications({
+          roomId: this.roomId,
+          userName: this.userName,
+          userId: uid
+        });
+      } catch (err) {
+        if (err instanceof Error) {
+          Config.LOGGER.error(err.message);
+        }
+      }
 
       const client = new KeepLiveWS(this.roomId, {
         headers: {
@@ -133,7 +145,9 @@ class WebsocketService extends WebSocketServer {
         },
         ssl: true,
         platform: 'web',
-        uid: this.userid
+        protover: 3,
+        uid: Number(uid),
+        buvid
       });
 
       this.tickerService.tick((): void => {

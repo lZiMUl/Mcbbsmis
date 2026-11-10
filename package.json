@@ -79,7 +79,7 @@
     "@koa/bodyparser": "^6.1.0",
     "@koa/router": "^15.7.1",
     "axios": "^1.21.1",
-    "bili-sender": "^1.1.1",
+    "bili-sender": "^1.1.2",
     "commander": "^15.1.0",
     "figlet": "^1.12.0",
     "gradient-string": "^3.0.0",
@@ -90,7 +90,7 @@
     "protobufjs": "^8.8.1",
     "qrcode-terminal": "^0.12.0",
     "semver": "^7.8.6",
-    "tiny-bilibili-ws": "1.1.1",
+    "tiny-bilibili-ws": "1.0.2",
     "toml": "^5.0.1",
     "ws": "^8.22.2"
   },
