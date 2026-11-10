@@ -25,7 +25,6 @@ interface IOptionsGenerator extends IListenEventOptions, ICrossPlatformOptions {
   language: ELanguage;
   identifier: string;
   roomid: number;
-  userid: number;
   username_bili: string;
   username_xbox: string;
   resourcePack: boolean;
@@ -117,15 +116,14 @@ async function OptionsUtils(i: number = 1): Promise<IOptionsGenerator | void> {
 
     // Configure
     stepBar('Next: Configure Host/Port/User', 2);
-    const [
-      host,
-      port,
-      identifier,
-      roomid,
-      userid,
-      username_bili,
-      username_xbox
-    ]: [string, number, string, number, number, string, string] = [
+    const [host, port, identifier, roomid, username_bili, username_xbox]: [
+      string,
+      number,
+      string,
+      number,
+      string,
+      string
+    ] = [
       await input({ message: 'Host: ', default: '0.0.0.0', required: true }),
       await number({ message: 'Port: ', default: 5700, required: true }),
       await input({
@@ -138,11 +136,6 @@ async function OptionsUtils(i: number = 1): Promise<IOptionsGenerator | void> {
       await number({
         message: 'BiliBili Room Number: ',
         default: 9329583,
-        required: true
-      }),
-      await number({
-        message: 'BiliBili UserID: ',
-        default: 291883246,
         required: true
       }),
       await input({
@@ -208,7 +201,6 @@ async function OptionsUtils(i: number = 1): Promise<IOptionsGenerator | void> {
       language,
       identifier,
       roomid,
-      userid,
       username_bili,
       username_xbox,
       resourcePack: resourcePackOptions,

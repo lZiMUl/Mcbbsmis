@@ -34,7 +34,6 @@ function InitUtils(force: boolean = false): void {
         danmaku: true,
         gift: true,
         roomid: 9329583,
-        userid: 291883246,
         username_bili: 'lZiMUl',
         username_xbox: 'lZiMUl',
         resourcePack: false,
@@ -46,7 +45,7 @@ function InitUtils(force: boolean = false): void {
   }
   const profilesExists: boolean = existsSync(Config.PROFILES_FILE_PATH);
   if (!profilesExists) {
-    CreateProfileUnit();
+    void CreateProfileUnit();
     return;
   }
 
@@ -60,7 +59,7 @@ function InitUtils(force: boolean = false): void {
     Config.LOGGER.warn(Config.LANGUAGE.get('#1'));
     Config.LOGGER.info(Config.LANGUAGE.get('#2'));
     profileManager.delete();
-    CreateProfileUnit();
+    void CreateProfileUnit();
     return;
   }
 

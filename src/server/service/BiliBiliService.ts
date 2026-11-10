@@ -8,7 +8,8 @@ import {
   Message,
   ONLINE_RANK_COUNT,
   SEND_GIFT,
-  SEND_GIFT_V2,
+  // TODO Upgrade
+  // SEND_GIFT_V2,
   WATCHED_CHANGE
 } from 'tiny-bilibili-ws';
 
@@ -117,6 +118,7 @@ class BiliBiliService extends EventEmitter {
       }
     );
 
+    /* TODO Upgrade
     socket.addListener(
       'SEND_GIFT_V2',
       ({
@@ -132,6 +134,7 @@ class BiliBiliService extends EventEmitter {
         });
       }
     );
+     */
   }
 
   public addService<T>(

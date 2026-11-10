@@ -27,7 +27,6 @@ router.get('/', async ctx => {
     gift: Config.LANGUAGE.get('#30014'),
     bilibiliProfile: Config.LANGUAGE.get('#30015'),
     'bili-roomid': Config.LANGUAGE.get('#30016'),
-    'bili-userid': Config.LANGUAGE.get('#30017'),
     'bili-username': Config.LANGUAGE.get('#30018'),
     'xbox-username': Config.LANGUAGE.get('#30018'),
     resourcePack: Config.LANGUAGE.get('#30019'),

@@ -49,7 +49,6 @@ class BaseUtils {
     danmaku,
     gift,
     roomid,
-    userid,
     username_bili,
     username_xbox,
     resourcePack,
@@ -118,9 +117,6 @@ gift = ${gift}
 [bilibili] 
 # Live room ID
 roomid = ${roomid}
-
-# BiliBili user ID
-userid = ${userid}
 
 # BiliBili username
 username = "${username_bili}" 

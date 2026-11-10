@@ -30,7 +30,6 @@ function normalizeConfig(
     danmaku: body.danmaku === 'on' || false,
     gift: body.gift === 'on' || false,
     roomid: Number(body.roomid) || 9329583,
-    userid: Number(body.userid) || 291883246,
     username_bili: body.username_bili || 'lZiMUl',
     username_xbox: body.username_xbox || 'lZiMUl',
     resourcePack: body.resourcePack === 'on' || false,
